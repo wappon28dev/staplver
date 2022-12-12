@@ -1,4 +1,5 @@
 import 'package:aibas/model/state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,6 +8,11 @@ final themeProvider =
 
 class ThemeNotifier extends StateNotifier<ThemeState> {
   ThemeNotifier() : super(const ThemeState());
+
+  void updateThemeMode(ThemeMode newThemeMode) {
+    if (kDebugMode) print('newThemeMode => $newThemeMode');
+    state = state.copyWith(themeMode: newThemeMode);
+  }
 
   ThemeData getLightTheme(ColorScheme? lightColorScheme) {
     var scheme = ColorScheme.fromSeed(
@@ -37,10 +43,5 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       useMaterial3: true,
       colorScheme: scheme,
     );
-  }
-
-  void updateThemeMode(ThemeMode newThemeMode) {
-    print('newThemeMode => $newThemeMode');
-    state = state.copyWith(themeMode: newThemeMode);
   }
 }

@@ -1,5 +1,4 @@
-
-import 'package:aibas/vm/directory.dart';
+import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/theme.dart';
 import 'package:drag_and_drop_windows/drag_and_drop_windows.dart';
 import 'package:dynamic_color/dynamic_color.dart';

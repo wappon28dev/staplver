@@ -164,7 +164,9 @@ abstract class _ThemeState implements ThemeState {
 
 /// @nodoc
 mixin _$ContentsState {
-  Directory? get targetDirectory => throw _privateConstructorUsedError;
+  DirectoryKinds get directoryKinds => throw _privateConstructorUsedError;
+  Directory? get workingDirectory => throw _privateConstructorUsedError;
+  Directory? get backupDirectory => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ContentsStateCopyWith<ContentsState> get copyWith =>
@@ -177,7 +179,10 @@ abstract class $ContentsStateCopyWith<$Res> {
           ContentsState value, $Res Function(ContentsState) then) =
       _$ContentsStateCopyWithImpl<$Res, ContentsState>;
   @useResult
-  $Res call({Directory? targetDirectory});
+  $Res call(
+      {DirectoryKinds directoryKinds,
+      Directory? workingDirectory,
+      Directory? backupDirectory});
 }
 
 /// @nodoc
@@ -193,12 +198,22 @@ class _$ContentsStateCopyWithImpl<$Res, $Val extends ContentsState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? targetDirectory = freezed,
+    Object? directoryKinds = null,
+    Object? workingDirectory = freezed,
+    Object? backupDirectory = freezed,
   }) {
     return _then(_value.copyWith(
-      targetDirectory: freezed == targetDirectory
-          ? _value.targetDirectory
-          : targetDirectory // ignore: cast_nullable_to_non_nullable
+      directoryKinds: null == directoryKinds
+          ? _value.directoryKinds
+          : directoryKinds // ignore: cast_nullable_to_non_nullable
+              as DirectoryKinds,
+      workingDirectory: freezed == workingDirectory
+          ? _value.workingDirectory
+          : workingDirectory // ignore: cast_nullable_to_non_nullable
+              as Directory?,
+      backupDirectory: freezed == backupDirectory
+          ? _value.backupDirectory
+          : backupDirectory // ignore: cast_nullable_to_non_nullable
               as Directory?,
     ) as $Val);
   }
@@ -212,7 +227,10 @@ abstract class _$$_ContentsStateCopyWith<$Res>
       __$$_ContentsStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Directory? targetDirectory});
+  $Res call(
+      {DirectoryKinds directoryKinds,
+      Directory? workingDirectory,
+      Directory? backupDirectory});
 }
 
 /// @nodoc
@@ -226,12 +244,22 @@ class __$$_ContentsStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? targetDirectory = freezed,
+    Object? directoryKinds = null,
+    Object? workingDirectory = freezed,
+    Object? backupDirectory = freezed,
   }) {
     return _then(_$_ContentsState(
-      targetDirectory: freezed == targetDirectory
-          ? _value.targetDirectory
-          : targetDirectory // ignore: cast_nullable_to_non_nullable
+      directoryKinds: null == directoryKinds
+          ? _value.directoryKinds
+          : directoryKinds // ignore: cast_nullable_to_non_nullable
+              as DirectoryKinds,
+      workingDirectory: freezed == workingDirectory
+          ? _value.workingDirectory
+          : workingDirectory // ignore: cast_nullable_to_non_nullable
+              as Directory?,
+      backupDirectory: freezed == backupDirectory
+          ? _value.backupDirectory
+          : backupDirectory // ignore: cast_nullable_to_non_nullable
               as Directory?,
     ));
   }
@@ -240,14 +268,22 @@ class __$$_ContentsStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_ContentsState with DiagnosticableTreeMixin implements _ContentsState {
-  const _$_ContentsState({this.targetDirectory});
+  const _$_ContentsState(
+      {this.directoryKinds = DirectoryKinds.working,
+      this.workingDirectory,
+      this.backupDirectory});
 
   @override
-  final Directory? targetDirectory;
+  @JsonKey()
+  final DirectoryKinds directoryKinds;
+  @override
+  final Directory? workingDirectory;
+  @override
+  final Directory? backupDirectory;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ContentsState(targetDirectory: $targetDirectory)';
+    return 'ContentsState(directoryKinds: $directoryKinds, workingDirectory: $workingDirectory, backupDirectory: $backupDirectory)';
   }
 
   @override
@@ -255,7 +291,9 @@ class _$_ContentsState with DiagnosticableTreeMixin implements _ContentsState {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'ContentsState'))
-      ..add(DiagnosticsProperty('targetDirectory', targetDirectory));
+      ..add(DiagnosticsProperty('directoryKinds', directoryKinds))
+      ..add(DiagnosticsProperty('workingDirectory', workingDirectory))
+      ..add(DiagnosticsProperty('backupDirectory', backupDirectory));
   }
 
   @override
@@ -263,12 +301,17 @@ class _$_ContentsState with DiagnosticableTreeMixin implements _ContentsState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ContentsState &&
-            (identical(other.targetDirectory, targetDirectory) ||
-                other.targetDirectory == targetDirectory));
+            (identical(other.directoryKinds, directoryKinds) ||
+                other.directoryKinds == directoryKinds) &&
+            (identical(other.workingDirectory, workingDirectory) ||
+                other.workingDirectory == workingDirectory) &&
+            (identical(other.backupDirectory, backupDirectory) ||
+                other.backupDirectory == backupDirectory));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, targetDirectory);
+  int get hashCode => Object.hash(
+      runtimeType, directoryKinds, workingDirectory, backupDirectory);
 
   @JsonKey(ignore: true)
   @override
@@ -278,11 +321,17 @@ class _$_ContentsState with DiagnosticableTreeMixin implements _ContentsState {
 }
 
 abstract class _ContentsState implements ContentsState {
-  const factory _ContentsState({final Directory? targetDirectory}) =
-      _$_ContentsState;
+  const factory _ContentsState(
+      {final DirectoryKinds directoryKinds,
+      final Directory? workingDirectory,
+      final Directory? backupDirectory}) = _$_ContentsState;
 
   @override
-  Directory? get targetDirectory;
+  DirectoryKinds get directoryKinds;
+  @override
+  Directory? get workingDirectory;
+  @override
+  Directory? get backupDirectory;
   @override
   @JsonKey(ignore: true)
   _$$_ContentsStateCopyWith<_$_ContentsState> get copyWith =>
