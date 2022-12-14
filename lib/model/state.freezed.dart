@@ -15,6 +15,151 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
+mixin _$PageState {
+  int get navbarIndex => throw _privateConstructorUsedError;
+  String get currentPjName => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $PageStateCopyWith<PageState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PageStateCopyWith<$Res> {
+  factory $PageStateCopyWith(PageState value, $Res Function(PageState) then) =
+      _$PageStateCopyWithImpl<$Res, PageState>;
+  @useResult
+  $Res call({int navbarIndex, String currentPjName});
+}
+
+/// @nodoc
+class _$PageStateCopyWithImpl<$Res, $Val extends PageState>
+    implements $PageStateCopyWith<$Res> {
+  _$PageStateCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? navbarIndex = null,
+    Object? currentPjName = null,
+  }) {
+    return _then(_value.copyWith(
+      navbarIndex: null == navbarIndex
+          ? _value.navbarIndex
+          : navbarIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      currentPjName: null == currentPjName
+          ? _value.currentPjName
+          : currentPjName // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_PageStateCopyWith<$Res> implements $PageStateCopyWith<$Res> {
+  factory _$$_PageStateCopyWith(
+          _$_PageState value, $Res Function(_$_PageState) then) =
+      __$$_PageStateCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int navbarIndex, String currentPjName});
+}
+
+/// @nodoc
+class __$$_PageStateCopyWithImpl<$Res>
+    extends _$PageStateCopyWithImpl<$Res, _$_PageState>
+    implements _$$_PageStateCopyWith<$Res> {
+  __$$_PageStateCopyWithImpl(
+      _$_PageState _value, $Res Function(_$_PageState) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? navbarIndex = null,
+    Object? currentPjName = null,
+  }) {
+    return _then(_$_PageState(
+      navbarIndex: null == navbarIndex
+          ? _value.navbarIndex
+          : navbarIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      currentPjName: null == currentPjName
+          ? _value.currentPjName
+          : currentPjName // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_PageState with DiagnosticableTreeMixin implements _PageState {
+  const _$_PageState({this.navbarIndex = 0, this.currentPjName = ''});
+
+  @override
+  @JsonKey()
+  final int navbarIndex;
+  @override
+  @JsonKey()
+  final String currentPjName;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PageState(navbarIndex: $navbarIndex, currentPjName: $currentPjName)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PageState'))
+      ..add(DiagnosticsProperty('navbarIndex', navbarIndex))
+      ..add(DiagnosticsProperty('currentPjName', currentPjName));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_PageState &&
+            (identical(other.navbarIndex, navbarIndex) ||
+                other.navbarIndex == navbarIndex) &&
+            (identical(other.currentPjName, currentPjName) ||
+                other.currentPjName == currentPjName));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, navbarIndex, currentPjName);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_PageStateCopyWith<_$_PageState> get copyWith =>
+      __$$_PageStateCopyWithImpl<_$_PageState>(this, _$identity);
+}
+
+abstract class _PageState implements PageState {
+  const factory _PageState(
+      {final int navbarIndex, final String currentPjName}) = _$_PageState;
+
+  @override
+  int get navbarIndex;
+  @override
+  String get currentPjName;
+  @override
+  @JsonKey(ignore: true)
+  _$$_PageStateCopyWith<_$_PageState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$ThemeState {
   ThemeMode get themeMode => throw _privateConstructorUsedError;
   bool get useDynamicColor => throw _privateConstructorUsedError;

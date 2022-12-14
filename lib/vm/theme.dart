@@ -1,7 +1,9 @@
 import 'package:aibas/model/state.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final themeProvider =
     StateNotifierProvider<ThemeNotifier, ThemeState>((ref) => ThemeNotifier());
@@ -14,9 +16,9 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     state = state.copyWith(themeMode: newThemeMode);
   }
 
-  ThemeData getLightTheme(ColorScheme? lightColorScheme) {
+  ThemeData getLightTheme(ColorScheme? lightColorScheme, BuildContext context) {
     var scheme = ColorScheme.fromSeed(
-      seedColor: Colors.blue,
+      seedColor: Colors.green,
     );
 
     if (state.useDynamicColor && lightColorScheme != null) {
@@ -26,12 +28,13 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
+      fontFamily: GoogleFonts.mPlus1().fontFamily,
     );
   }
 
-  ThemeData getDarkTheme(ColorScheme? darkColorScheme) {
+  ThemeData getDarkTheme(ColorScheme? darkColorScheme, BuildContext context) {
     var scheme = ColorScheme.fromSeed(
-      seedColor: Colors.blue,
+      seedColor: Colors.green,
       brightness: Brightness.dark,
     );
 
@@ -42,6 +45,8 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
+      brightness: Brightness.dark,
+      fontFamily: GoogleFonts.mPlus1().fontFamily,
     );
   }
 }
