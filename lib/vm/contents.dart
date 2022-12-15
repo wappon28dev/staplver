@@ -23,7 +23,7 @@ class ContentsNotifier extends StateNotifier<ContentsState> {
   }
 
   void _updateWorkingDirectory(Directory newWorkingDirectory) {
-    if (kDebugMode) print('newTargetDirectory => $newWorkingDirectory');
+    if (kDebugMode) print('newWorkingDirectory => $newWorkingDirectory');
     state = state.copyWith(workingDirectory: newWorkingDirectory);
   }
 

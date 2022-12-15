@@ -32,3 +32,10 @@ class ContentsState with _$ContentsState {
     Directory? backupDirectory,
   }) = _ContentsState;
 }
+
+@freezed
+class CmdSVNState with _$CmdSVNState {
+  const factory CmdSVNState({
+    @Default('') String stdout,
+  }) = _CmdSVNState;
+}

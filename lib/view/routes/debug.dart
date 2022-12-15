@@ -1,3 +1,4 @@
+import 'package:aibas/model/repo/svn.dart';
 import 'package:aibas/model/state.dart';
 import 'package:aibas/view/components/navbar.dart';
 import 'package:aibas/vm/contents.dart';
@@ -17,6 +18,7 @@ class PageDebug extends ConsumerWidget {
     final themeState = ref.watch(themeProvider);
     final contentsState = ref.watch(contentsProvider);
     final contentsNotifier = ref.watch(contentsProvider.notifier);
+    final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
 
     List<DropdownMenuItem<DirectoryKinds>> dropdownList() {
       final dropdown = <DropdownMenuItem<DirectoryKinds>>[];
@@ -50,6 +52,10 @@ class PageDebug extends ConsumerWidget {
             },
           ),
           Text(themeState.themeMode.name),
+          ElevatedButton(
+            onPressed: cmdSVNNotifier.runCreate,
+            child: const Text('svn create'),
+          )
         ],
       ),
     );

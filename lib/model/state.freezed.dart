@@ -482,3 +482,129 @@ abstract class _ContentsState implements ContentsState {
   _$$_ContentsStateCopyWith<_$_ContentsState> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+mixin _$CmdSVNState {
+  String get stdout => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $CmdSVNStateCopyWith<CmdSVNState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $CmdSVNStateCopyWith<$Res> {
+  factory $CmdSVNStateCopyWith(
+          CmdSVNState value, $Res Function(CmdSVNState) then) =
+      _$CmdSVNStateCopyWithImpl<$Res, CmdSVNState>;
+  @useResult
+  $Res call({String stdout});
+}
+
+/// @nodoc
+class _$CmdSVNStateCopyWithImpl<$Res, $Val extends CmdSVNState>
+    implements $CmdSVNStateCopyWith<$Res> {
+  _$CmdSVNStateCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? stdout = null,
+  }) {
+    return _then(_value.copyWith(
+      stdout: null == stdout
+          ? _value.stdout
+          : stdout // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_CmdSVNStateCopyWith<$Res>
+    implements $CmdSVNStateCopyWith<$Res> {
+  factory _$$_CmdSVNStateCopyWith(
+          _$_CmdSVNState value, $Res Function(_$_CmdSVNState) then) =
+      __$$_CmdSVNStateCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String stdout});
+}
+
+/// @nodoc
+class __$$_CmdSVNStateCopyWithImpl<$Res>
+    extends _$CmdSVNStateCopyWithImpl<$Res, _$_CmdSVNState>
+    implements _$$_CmdSVNStateCopyWith<$Res> {
+  __$$_CmdSVNStateCopyWithImpl(
+      _$_CmdSVNState _value, $Res Function(_$_CmdSVNState) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? stdout = null,
+  }) {
+    return _then(_$_CmdSVNState(
+      stdout: null == stdout
+          ? _value.stdout
+          : stdout // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_CmdSVNState with DiagnosticableTreeMixin implements _CmdSVNState {
+  const _$_CmdSVNState({this.stdout = ''});
+
+  @override
+  @JsonKey()
+  final String stdout;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'CmdSVNState(stdout: $stdout)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CmdSVNState'))
+      ..add(DiagnosticsProperty('stdout', stdout));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_CmdSVNState &&
+            (identical(other.stdout, stdout) || other.stdout == stdout));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, stdout);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_CmdSVNStateCopyWith<_$_CmdSVNState> get copyWith =>
+      __$$_CmdSVNStateCopyWithImpl<_$_CmdSVNState>(this, _$identity);
+}
+
+abstract class _CmdSVNState implements CmdSVNState {
+  const factory _CmdSVNState({final String stdout}) = _$_CmdSVNState;
+
+  @override
+  String get stdout;
+  @override
+  @JsonKey(ignore: true)
+  _$$_CmdSVNStateCopyWith<_$_CmdSVNState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
