@@ -83,7 +83,7 @@ class NavBar {
   }
 
   Widget getRailsNavbar(
-    Column mainContent,
+    Widget mainContent,
   ) {
     final pageState = ref.watch(pageProvider);
     final pageNotifier = ref.read(pageProvider.notifier);
@@ -126,7 +126,7 @@ class NavBar {
       children: [
         orientation == Orientation.landscape ? rails : const SizedBox(),
         const VerticalDivider(thickness: 1, width: 1),
-        Expanded(child: mainContent),
+        Expanded(child: mainContent)
       ],
     );
   }
