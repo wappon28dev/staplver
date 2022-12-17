@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'state.freezed.dart';
+part 'state.g.dart';
 
 @freezed
 class PageState with _$PageState {
@@ -38,4 +39,15 @@ class CmdSVNState with _$CmdSVNState {
   const factory CmdSVNState({
     @Default('') String stdout,
   }) = _CmdSVNState;
+}
+
+@freezed
+class ConfigState with _$ConfigState {
+  const factory ConfigState({
+    @Default({'': ''}) Map<String, String> projectDirectories,
+  }) = _ConfigState;
+  const ConfigState._();
+
+  factory ConfigState.fromJson(Map<String, dynamic> json) =>
+      _$ConfigStateFromJson(json);
 }

@@ -3,9 +3,10 @@ include: package:pedantic_mono/analysis_options.yaml
 linter:
     rules:
 
-exclude:
-    - "lib/model/state.freezed.dart"
-
 analyzer:
+    exclude:
+        - "lib/model/state.freezed.dart"
+        - "lib/model/state.*.dart"
+
     errors:
         always_put_control_body_on_new_line: ignore

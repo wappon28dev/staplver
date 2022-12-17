@@ -608,3 +608,162 @@ abstract class _CmdSVNState implements CmdSVNState {
   _$$_CmdSVNStateCopyWith<_$_CmdSVNState> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+ConfigState _$ConfigStateFromJson(Map<String, dynamic> json) {
+  return _ConfigState.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ConfigState {
+  Map<String, String> get projectDirectories =>
+      throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $ConfigStateCopyWith<ConfigState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ConfigStateCopyWith<$Res> {
+  factory $ConfigStateCopyWith(
+          ConfigState value, $Res Function(ConfigState) then) =
+      _$ConfigStateCopyWithImpl<$Res, ConfigState>;
+  @useResult
+  $Res call({Map<String, String> projectDirectories});
+}
+
+/// @nodoc
+class _$ConfigStateCopyWithImpl<$Res, $Val extends ConfigState>
+    implements $ConfigStateCopyWith<$Res> {
+  _$ConfigStateCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? projectDirectories = null,
+  }) {
+    return _then(_value.copyWith(
+      projectDirectories: null == projectDirectories
+          ? _value.projectDirectories
+          : projectDirectories // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_ConfigStateCopyWith<$Res>
+    implements $ConfigStateCopyWith<$Res> {
+  factory _$$_ConfigStateCopyWith(
+          _$_ConfigState value, $Res Function(_$_ConfigState) then) =
+      __$$_ConfigStateCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({Map<String, String> projectDirectories});
+}
+
+/// @nodoc
+class __$$_ConfigStateCopyWithImpl<$Res>
+    extends _$ConfigStateCopyWithImpl<$Res, _$_ConfigState>
+    implements _$$_ConfigStateCopyWith<$Res> {
+  __$$_ConfigStateCopyWithImpl(
+      _$_ConfigState _value, $Res Function(_$_ConfigState) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? projectDirectories = null,
+  }) {
+    return _then(_$_ConfigState(
+      projectDirectories: null == projectDirectories
+          ? _value._projectDirectories
+          : projectDirectories // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_ConfigState extends _ConfigState with DiagnosticableTreeMixin {
+  const _$_ConfigState(
+      {final Map<String, String> projectDirectories = const {'': ''}})
+      : _projectDirectories = projectDirectories,
+        super._();
+
+  factory _$_ConfigState.fromJson(Map<String, dynamic> json) =>
+      _$$_ConfigStateFromJson(json);
+
+  final Map<String, String> _projectDirectories;
+  @override
+  @JsonKey()
+  Map<String, String> get projectDirectories {
+    if (_projectDirectories is EqualUnmodifiableMapView)
+      return _projectDirectories;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_projectDirectories);
+  }
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'ConfigState(projectDirectories: $projectDirectories)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ConfigState'))
+      ..add(DiagnosticsProperty('projectDirectories', projectDirectories));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_ConfigState &&
+            const DeepCollectionEquality()
+                .equals(other._projectDirectories, _projectDirectories));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_projectDirectories));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_ConfigStateCopyWith<_$_ConfigState> get copyWith =>
+      __$$_ConfigStateCopyWithImpl<_$_ConfigState>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_ConfigStateToJson(
+      this,
+    );
+  }
+}
+
+abstract class _ConfigState extends ConfigState {
+  const factory _ConfigState({final Map<String, String> projectDirectories}) =
+      _$_ConfigState;
+  const _ConfigState._() : super._();
+
+  factory _ConfigState.fromJson(Map<String, dynamic> json) =
+      _$_ConfigState.fromJson;
+
+  @override
+  Map<String, String> get projectDirectories;
+  @override
+  @JsonKey(ignore: true)
+  _$$_ConfigStateCopyWith<_$_ConfigState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
