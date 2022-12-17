@@ -12,6 +12,7 @@ class PageState with _$PageState {
   const factory PageState({
     @Default(0) int navbarIndex,
     @Default('') String currentPjName,
+    @Default(0) int createPjIndex,
   }) = _PageState;
 }
 

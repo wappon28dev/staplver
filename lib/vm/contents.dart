@@ -22,12 +22,12 @@ class ContentsNotifier extends StateNotifier<ContentsState> {
     state = state.copyWith(directoryKinds: newDirectoryKinds);
   }
 
-  void _updateWorkingDirectory(Directory newWorkingDirectory) {
+  void updateWorkingDirectory(Directory newWorkingDirectory) {
     if (kDebugMode) print('newWorkingDirectory => $newWorkingDirectory');
     state = state.copyWith(workingDirectory: newWorkingDirectory);
   }
 
-  void _updateBackupDirectory(Directory newBackupDirectory) {
+  void updateBackupDirectory(Directory newBackupDirectory) {
     if (kDebugMode) print('newBackupDirectory => $newBackupDirectory');
     state = state.copyWith(backupDirectory: newBackupDirectory);
   }
@@ -51,11 +51,11 @@ class ContentsNotifier extends StateNotifier<ContentsState> {
     await _getSingleDirectory(paths).then((directory) {
       switch (state.directoryKinds) {
         case DirectoryKinds.backup:
-          _updateBackupDirectory(directory);
+          updateBackupDirectory(directory);
           break;
 
         case DirectoryKinds.working:
-          _updateWorkingDirectory(directory);
+          updateWorkingDirectory(directory);
           break;
       }
     });

@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$PageState {
   int get navbarIndex => throw _privateConstructorUsedError;
   String get currentPjName => throw _privateConstructorUsedError;
+  int get createPjIndex => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PageStateCopyWith<PageState> get copyWith =>
@@ -29,7 +30,7 @@ abstract class $PageStateCopyWith<$Res> {
   factory $PageStateCopyWith(PageState value, $Res Function(PageState) then) =
       _$PageStateCopyWithImpl<$Res, PageState>;
   @useResult
-  $Res call({int navbarIndex, String currentPjName});
+  $Res call({int navbarIndex, String currentPjName, int createPjIndex});
 }
 
 /// @nodoc
@@ -47,6 +48,7 @@ class _$PageStateCopyWithImpl<$Res, $Val extends PageState>
   $Res call({
     Object? navbarIndex = null,
     Object? currentPjName = null,
+    Object? createPjIndex = null,
   }) {
     return _then(_value.copyWith(
       navbarIndex: null == navbarIndex
@@ -57,6 +59,10 @@ class _$PageStateCopyWithImpl<$Res, $Val extends PageState>
           ? _value.currentPjName
           : currentPjName // ignore: cast_nullable_to_non_nullable
               as String,
+      createPjIndex: null == createPjIndex
+          ? _value.createPjIndex
+          : createPjIndex // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -68,7 +74,7 @@ abstract class _$$_PageStateCopyWith<$Res> implements $PageStateCopyWith<$Res> {
       __$$_PageStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int navbarIndex, String currentPjName});
+  $Res call({int navbarIndex, String currentPjName, int createPjIndex});
 }
 
 /// @nodoc
@@ -84,6 +90,7 @@ class __$$_PageStateCopyWithImpl<$Res>
   $Res call({
     Object? navbarIndex = null,
     Object? currentPjName = null,
+    Object? createPjIndex = null,
   }) {
     return _then(_$_PageState(
       navbarIndex: null == navbarIndex
@@ -94,6 +101,10 @@ class __$$_PageStateCopyWithImpl<$Res>
           ? _value.currentPjName
           : currentPjName // ignore: cast_nullable_to_non_nullable
               as String,
+      createPjIndex: null == createPjIndex
+          ? _value.createPjIndex
+          : createPjIndex // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -101,7 +112,8 @@ class __$$_PageStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_PageState with DiagnosticableTreeMixin implements _PageState {
-  const _$_PageState({this.navbarIndex = 0, this.currentPjName = ''});
+  const _$_PageState(
+      {this.navbarIndex = 0, this.currentPjName = '', this.createPjIndex = 0});
 
   @override
   @JsonKey()
@@ -109,10 +121,13 @@ class _$_PageState with DiagnosticableTreeMixin implements _PageState {
   @override
   @JsonKey()
   final String currentPjName;
+  @override
+  @JsonKey()
+  final int createPjIndex;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PageState(navbarIndex: $navbarIndex, currentPjName: $currentPjName)';
+    return 'PageState(navbarIndex: $navbarIndex, currentPjName: $currentPjName, createPjIndex: $createPjIndex)';
   }
 
   @override
@@ -121,7 +136,8 @@ class _$_PageState with DiagnosticableTreeMixin implements _PageState {
     properties
       ..add(DiagnosticsProperty('type', 'PageState'))
       ..add(DiagnosticsProperty('navbarIndex', navbarIndex))
-      ..add(DiagnosticsProperty('currentPjName', currentPjName));
+      ..add(DiagnosticsProperty('currentPjName', currentPjName))
+      ..add(DiagnosticsProperty('createPjIndex', createPjIndex));
   }
 
   @override
@@ -132,11 +148,14 @@ class _$_PageState with DiagnosticableTreeMixin implements _PageState {
             (identical(other.navbarIndex, navbarIndex) ||
                 other.navbarIndex == navbarIndex) &&
             (identical(other.currentPjName, currentPjName) ||
-                other.currentPjName == currentPjName));
+                other.currentPjName == currentPjName) &&
+            (identical(other.createPjIndex, createPjIndex) ||
+                other.createPjIndex == createPjIndex));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, navbarIndex, currentPjName);
+  int get hashCode =>
+      Object.hash(runtimeType, navbarIndex, currentPjName, createPjIndex);
 
   @JsonKey(ignore: true)
   @override
@@ -147,12 +166,16 @@ class _$_PageState with DiagnosticableTreeMixin implements _PageState {
 
 abstract class _PageState implements PageState {
   const factory _PageState(
-      {final int navbarIndex, final String currentPjName}) = _$_PageState;
+      {final int navbarIndex,
+      final String currentPjName,
+      final int createPjIndex}) = _$_PageState;
 
   @override
   int get navbarIndex;
   @override
   String get currentPjName;
+  @override
+  int get createPjIndex;
   @override
   @JsonKey(ignore: true)
   _$$_PageStateCopyWith<_$_PageState> get copyWith =>

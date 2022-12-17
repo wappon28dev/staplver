@@ -14,4 +14,9 @@ class PageNotifier extends StateNotifier<PageState> {
     if (kDebugMode) print('newNavbarIndex => $newNavbarIndex');
     state = state.copyWith(navbarIndex: newNavbarIndex);
   }
+
+  void updateCreatePjIndex(int newCreatePjIndex) {
+    if (kDebugMode) print('newCreatePjIndex => $newCreatePjIndex');
+    state = state.copyWith(createPjIndex: newCreatePjIndex);
+  }
 }
