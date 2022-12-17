@@ -4,8 +4,6 @@ on:
     push:
         branches:
             - main
-        paths:
-            - "lib/**"
     pull_request:
         types: [opened, synchronize, reopened]
         paths:
@@ -108,7 +106,10 @@ jobs:
               run: flutter pub run build_runner build --delete-conflicting-outputs
 
             - name: 🐧 Enable Linux build
-              run: flutter config --enable-linux-desktop
+              run: |
+                  sudo apt-get update -y
+                  sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+                  flutter config --enable-linux-desktop
 
             - name: 🍱 Build artifacts
               run: flutter build linux --release
