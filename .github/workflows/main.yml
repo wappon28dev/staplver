@@ -1,0 +1,130 @@
+name: make release packages
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - "lib/**"
+    pull_request:
+        types: [opened, synchronize, reopened]
+        paths:
+            - "lib/**"
+    workflow_dispatch:
+
+jobs:
+    build-and-release-windows:
+        runs-on: windows-latest
+
+        steps:
+            - uses: actions/checkout@v3
+            - uses: subosito/flutter-action@v2
+              with:
+                  channel: "stable"
+                  cache: true
+
+            - name: 🎉 Install project dependencies
+              run: flutter pub get
+
+            - name: 📦️ Generate intermediates
+              run: flutter pub run build_runner build --delete-conflicting-outputs
+
+            - name: 🏁 Enable windows build
+              run: flutter config --enable-windows-desktop
+
+            - name: 🍱 Build artifacts
+              run: flutter build windows --release
+
+            - name: 🚀 Make windows release zip
+              if: startsWith(github.ref, 'refs/tags/')
+              uses: thedoctor0/zip-release@master
+              with:
+                  type: "zip"
+                  filename: AIBAS-windows.zip
+                  directory: build/windows/runner/Release
+
+            - name: 🚚 Windows Release
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  files: build/windows/runner/Release/AIBAS-windows.zip
+
+    build-and-release-macos:
+        runs-on: macos-latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - uses: subosito/flutter-action@v2
+              with:
+                  channel: "stable"
+                  cache: true
+
+            - name: 🎉 Install project dependencies
+              run: flutter pub get
+
+            - name: 📦️ Generate intermediates
+              run: flutter pub run build_runner build --delete-conflicting-outputs
+
+            - name: 🍎 Enable macOS build
+              run: flutter config --enable-macos-desktop
+
+            - name: 🍱 Build artifacts
+              run: flutter build macos --release
+
+            - name: 🚀 Make macos release zip
+              if: startsWith(github.ref, 'refs/tags/')
+              uses: thedoctor0/zip-release@master
+              with:
+                  type: "zip"
+                  filename: AIBAS-macos.zip
+                  directory: build/macos/Build/Products/Release
+
+            - name: 🚚 macOS Release
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  files: build/macos/Build/Products/Release/AIBAS-macos.zip
+
+    build-and-release-linux:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - uses: subosito/flutter-action@v2
+              with:
+                  channel: "stable"
+                  cache: true
+
+            - name: 🎉 Install project dependencies
+              run: flutter pub get
+
+            - name: 📦️ Generate intermediates
+              run: flutter pub run build_runner build --delete-conflicting-outputs
+
+            - name: 🐧 Enable Linux build
+              run: flutter config --enable-linux-desktop
+
+            - name: 🍱 Build artifacts
+              run: flutter build linux --release
+
+            - name: 🚀 Make macos release zip
+              if: startsWith(github.ref, 'refs/tags/')
+              uses: thedoctor0/zip-release@master
+              with:
+                  type: "zip"
+                  filename: AIBAS-linux.zip
+                  directory: build/linux/Build/Products/Release
+
+            - name: 🚚 macOS Release
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  files: build/linux/Build/Products/Release/AIBAS-linux.zip
