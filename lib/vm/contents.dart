@@ -17,22 +17,17 @@ enum DragAndDropErrors {
 class ContentsNotifier extends StateNotifier<ContentsState> {
   ContentsNotifier() : super(const ContentsState());
 
-  void updateDirectoryKinds(DirectoryKinds newDirectoryKinds) {
-    if (kDebugMode) print('newDirectoryKinds => $newDirectoryKinds');
-    state = state.copyWith(directoryKinds: newDirectoryKinds);
+  void updateWorkingDir(Directory? newWorkingDirectory) {
+    debugPrint('newWorkingDirectory => $newWorkingDirectory');
+    state = state.copyWith(workingDir: newWorkingDirectory);
   }
 
-  void updateWorkingDirectory(Directory newWorkingDirectory) {
-    if (kDebugMode) print('newWorkingDirectory => $newWorkingDirectory');
-    state = state.copyWith(workingDirectory: newWorkingDirectory);
+  void updateBackupDir(Directory? newBackupDirectory) {
+    debugPrint('newBackupDirectory => $newBackupDirectory');
+    state = state.copyWith(backupDir: newBackupDirectory);
   }
 
-  void updateBackupDirectory(Directory newBackupDirectory) {
-    if (kDebugMode) print('newBackupDirectory => $newBackupDirectory');
-    state = state.copyWith(backupDirectory: newBackupDirectory);
-  }
-
-  Future<Directory> _getSingleDirectory(List<String> paths) async {
+  Future<Directory> getSingleDirectory(List<String> paths) async {
     if (paths.length != 1) {
       return Future.error(DragAndDropErrors.multiPathsProvided);
     }
@@ -45,19 +40,5 @@ class ContentsNotifier extends StateNotifier<ContentsState> {
       return Future.error(DragAndDropErrors.isNotDirectory);
     }
     return Directory(paths[0]);
-  }
-
-  Future<void> handleDragAndDrop(List<String> paths) async {
-    await _getSingleDirectory(paths).then((directory) {
-      switch (state.directoryKinds) {
-        case DirectoryKinds.backup:
-          updateBackupDirectory(directory);
-          break;
-
-        case DirectoryKinds.working:
-          updateWorkingDirectory(directory);
-          break;
-      }
-    });
   }
 }

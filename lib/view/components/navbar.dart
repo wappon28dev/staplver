@@ -51,11 +51,14 @@ class NavBar {
   FloatingActionButton fab(BuildContext context, {bool fromRails = false}) =>
       FloatingActionButton(
         tooltip: '新規プロジェクトを作成',
-        onPressed: () => RouteController.runPush(
-          context: context,
-          page: const PageCreateProject(),
-          isReplace: false,
-        ),
+        onPressed: () {
+          RouteController(context, ref).home2fab();
+          RouteController.runPush(
+            context: context,
+            page: const PageCreatePj(),
+            isReplace: false,
+          );
+        },
         elevation: fromRails ? 0 : null,
         child: const Icon(Icons.add),
       );

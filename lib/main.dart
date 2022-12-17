@@ -20,9 +20,6 @@ class AIBAS extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeState = ref.watch(themeProvider);
 
-    dropEventStream
-        .listen(ref.read(contentsProvider.notifier).handleDragAndDrop);
-
     return DynamicColorBuilder(
       builder: (ColorScheme? lightColorScheme, ColorScheme? darkColorScheme) {
         return MaterialApp(

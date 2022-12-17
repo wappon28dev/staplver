@@ -24,14 +24,13 @@ class ThemeState with _$ThemeState {
   }) = _ThemeState;
 }
 
-enum DirectoryKinds { working, backup }
+enum DirectoryKinds { working, backup, none }
 
 @freezed
 class ContentsState with _$ContentsState {
   const factory ContentsState({
-    @Default(DirectoryKinds.working) DirectoryKinds directoryKinds,
-    Directory? workingDirectory,
-    Directory? backupDirectory,
+    Directory? workingDir,
+    Directory? backupDir,
   }) = _ContentsState;
 }
 

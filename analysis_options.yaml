@@ -10,3 +10,4 @@ analyzer:
 
     errors:
         always_put_control_body_on_new_line: ignore
+        avoid_slow_async_io: ignore

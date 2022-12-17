@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aibas/view/components/create_pj/set_ignore_files.dart';
 import 'package:aibas/view/components/create_pj/set_pj_config.dart';
 import 'package:aibas/view/components/create_pj/set_pj_details.dart';
@@ -7,11 +9,19 @@ import 'package:aibas/vm/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PageCreateProject extends ConsumerWidget {
-  const PageCreateProject({super.key});
+// local ref
+final pjNameProvider = StateProvider<String>((ref) => '');
+final workingDirProvider = StateProvider<Directory?>((ref) => null);
+final backupDirProvider = StateProvider<Directory?>((ref) => null);
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
+class CompCreatePjHelper {
+  Widget wrap(
+    BuildContext context,
+    WidgetRef ref,
+    // ignore: avoid_positional_boolean_parameters
+    bool isValidContents,
+    Widget mainContent,
+  ) {
     final pageState = ref.watch(pageProvider);
     final pageNotifier = ref.read(pageProvider.notifier);
 
@@ -37,7 +47,7 @@ class PageCreateProject extends ConsumerWidget {
         return SizedBox(
           height: 40,
           child: ElevatedButton(
-            onPressed: runNextPage,
+            onPressed: isValidContents ? runNextPage : null,
             style: ElevatedButton.styleFrom(
               foregroundColor:
                   Theme.of(context).colorScheme.onSecondaryContainer,
@@ -56,7 +66,7 @@ class PageCreateProject extends ConsumerWidget {
         return SizedBox(
           height: 40,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: isValidContents ? () {} : null,
             style: ElevatedButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.primary,
@@ -73,12 +83,62 @@ class PageCreateProject extends ConsumerWidget {
       }
     }
 
+    return Column(
+      children: [
+        Expanded(child: mainContent),
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: 40,
+                  child: TextButton.icon(
+                    label: const Text('戻る'),
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: index == 0 ? null : runPreviousPage,
+                  ),
+                ),
+                getForwardOrFinishedWidget(),
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class PageCreatePj extends ConsumerWidget {
+  const PageCreatePj({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageState = ref.watch(pageProvider);
+
+    final index = pageState.createPjIndex;
+
+    final comps = [
+      const CompSetWorkingDir(),
+      const CompSetIgnoreFiles(),
+      const CompSetPjConfig(),
+      const CompSetPjDetails(),
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-        ),
+        actions: [
+          SizedBox(
+            width: 60,
+            child: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.close),
+            ),
+          ),
+        ],
+        leading: const SizedBox(),
         title: Text(
           '新規プロジェクトの作成 (${index + 1}/${comps.length})',
           style: myTextStyle(fontWeight: FontWeight.w600),
@@ -98,39 +158,7 @@ class PageCreateProject extends ConsumerWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(child: comps[index]),
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: SizedBox(
-              height: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    height: 40,
-                    child: TextButton.icon(
-                      label: const Text('戻る'),
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: index == 0 ? null : runPreviousPage,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 40,
-                    child: TextButton.icon(
-                      label: const Text('リセット'),
-                      icon: const Icon(Icons.restart_alt),
-                      onPressed: null,
-                    ),
-                  ),
-                  getForwardOrFinishedWidget(),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
+      body: comps[index],
     );
   }
 }

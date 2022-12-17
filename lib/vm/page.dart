@@ -11,12 +11,12 @@ class PageNotifier extends StateNotifier<PageState> {
   PageNotifier() : super(const PageState());
 
   void updateNavbarIndex(int newNavbarIndex) {
-    if (kDebugMode) print('newNavbarIndex => $newNavbarIndex');
+    debugPrint('newNavbarIndex => $newNavbarIndex');
     state = state.copyWith(navbarIndex: newNavbarIndex);
   }
 
   void updateCreatePjIndex(int newCreatePjIndex) {
-    if (kDebugMode) print('newCreatePjIndex => $newCreatePjIndex');
+    debugPrint('newCreatePjIndex => $newCreatePjIndex');
     state = state.copyWith(createPjIndex: newCreatePjIndex);
   }
 }

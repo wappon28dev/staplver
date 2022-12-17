@@ -1,15 +1,17 @@
 import 'package:aibas/view/components/create_pj/states.dart';
+import 'package:aibas/view/routes/create_pj.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 
-class CompSetIgnoreFiles extends StatefulWidget {
+class CompSetIgnoreFiles extends ConsumerStatefulWidget {
   const CompSetIgnoreFiles({super.key});
 
   @override
   _CompSetIgnoreFilesState createState() => _CompSetIgnoreFilesState();
 }
 
-class _CompSetIgnoreFilesState extends State<CompSetIgnoreFiles> {
+class _CompSetIgnoreFilesState extends ConsumerState<CompSetIgnoreFiles> {
   String _selectedNode = '';
   TreeViewController _treeViewController = TreeViewController();
   bool docsOpen = true;
@@ -33,6 +35,8 @@ class _CompSetIgnoreFilesState extends State<CompSetIgnoreFiles> {
   final ExpanderModifier _expanderModifier = ExpanderModifier.none;
   bool _allowParentSelect = false;
   bool _supportParentDoubleTap = false;
+
+  final layout = CompCreatePjHelper();
 
   @override
   void initState() {
@@ -67,56 +71,62 @@ class _CompSetIgnoreFilesState extends State<CompSetIgnoreFiles> {
       ),
       colorScheme: Theme.of(context).colorScheme,
     );
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        height: double.infinity,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.all(10),
-                child: TreeView(
-                  controller: _treeViewController,
-                  allowParentSelect: _allowParentSelect,
-                  supportParentDoubleTap: _supportParentDoubleTap,
-                  onExpansionChanged: _expandNode,
-                  onNodeTap: (key) {
-                    debugPrint('Selected: $key');
-                    setState(() {
-                      _selectedNode = key;
-                      _treeViewController =
-                          _treeViewController.copyWith<Key>(selectedKey: key);
-                    });
-                  },
-                  theme: treeViewTheme,
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                FocusScope.of(context).unfocus();
-              },
-              child: Container(
-                padding: const EdgeInsets.only(top: 20),
-                alignment: Alignment.center,
-                child: Text(
-                  _treeViewController.getNode<dynamic>(_selectedNode) == null
-                      ? ''
-                      : _treeViewController
-                              .getNode<dynamic>(_selectedNode)
-                              ?.label ??
-                          '',
+
+    return layout.wrap(
+      context,
+      ref,
+      true,
+      GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          height: double.infinity,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: TreeView(
+                    controller: _treeViewController,
+                    allowParentSelect: _allowParentSelect,
+                    supportParentDoubleTap: _supportParentDoubleTap,
+                    onExpansionChanged: _expandNode,
+                    onNodeTap: (key) {
+                      debugPrint('Selected: $key');
+                      setState(() {
+                        _selectedNode = key;
+                        _treeViewController =
+                            _treeViewController.copyWith<Key>(selectedKey: key);
+                      });
+                    },
+                    theme: treeViewTheme,
+                  ),
                 ),
               ),
-            )
-          ],
+              GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(top: 20),
+                  alignment: Alignment.center,
+                  child: Text(
+                    _treeViewController.getNode<dynamic>(_selectedNode) == null
+                        ? ''
+                        : _treeViewController
+                                .getNode<dynamic>(_selectedNode)
+                                ?.label ??
+                            '',
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

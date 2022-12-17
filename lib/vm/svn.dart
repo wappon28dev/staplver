@@ -24,12 +24,10 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<bool> _directoryExist(ContentsState contentsState) async {
     var result = false;
     await Future.wait(<Future<bool>>[
-      contentsState.workingDirectory?.exists() ??
-          Future.error('作業フォルダーが見つかりません'),
-      contentsState.backupDirectory?.exists() ??
-          Future.error('バックアップフォルダーが見つかりません'),
+      contentsState.workingDir?.exists() ?? Future.error('作業フォルダーが見つかりません'),
+      contentsState.backupDir?.exists() ?? Future.error('バックアップフォルダーが見つかりません'),
     ]).then((value) => result = value[0]).catchError((dynamic err) {
-      if (kDebugMode) print(err);
+      debugPrint(err.toString());
       result = false;
     });
 
@@ -52,10 +50,10 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final contentsState = ref.watch(contentsProvider);
     if (!await _directoryExist(contentsState)) return;
 
-    Directory.current = contentsState.backupDirectory;
+    Directory.current = contentsState.backupDir;
     await Process.run('svnadmin', [
       'create',
-      contentsState.backupDirectory?.path ?? '',
+      contentsState.backupDir?.path ?? '',
     ]).then(_updateStdout);
   }
 
@@ -63,10 +61,10 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final contentsState = ref.watch(contentsProvider);
     if (!await _directoryExist(contentsState)) return;
 
-    final backupUri = contentsState.backupDirectory?.uri.toString();
+    final backupUri = contentsState.backupDir?.uri.toString();
     print(backupUri);
 
-    Directory.current = contentsState.workingDirectory;
+    Directory.current = contentsState.workingDir;
 
     await Process.run('svn', ['import', backupUri ?? '', '-m', '"import"'])
         .then(_updateStdout);
@@ -76,17 +74,17 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final contentsState = ref.watch(contentsProvider);
     if (!await _directoryExist(contentsState)) return;
 
-    final workingDirName = contentsState.workingDirectory?.name;
-    Directory.current = contentsState.workingDirectory?.parent;
+    final workingDirName = contentsState.workingDir?.name;
+    Directory.current = contentsState.workingDir?.parent;
 
-    await contentsState.workingDirectory?.rename('_$workingDirName');
+    await contentsState.workingDir?.rename('_$workingDirName');
   }
 
   Future<void> runCheckout() async {
     final contentsState = ref.watch(contentsProvider);
 
-    final backupUri = contentsState.backupDirectory?.uri.toString();
-    Directory.current = contentsState.workingDirectory?.parent;
+    final backupUri = contentsState.backupDir?.uri.toString();
+    Directory.current = contentsState.workingDir?.parent;
 
     await Process.run('svn', ['checkout', backupUri ?? '']).then(_updateStdout);
   }
@@ -95,7 +93,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final contentsState = ref.watch(contentsProvider);
     if (!await _directoryExist(contentsState)) return;
 
-    Directory.current = contentsState.workingDirectory;
+    Directory.current = contentsState.workingDir;
 
     await Process.run('svn', ['add', '.', '--force']).then(_updateStdout);
   }
@@ -104,7 +102,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final contentsState = ref.watch(contentsProvider);
     if (!await _directoryExist(contentsState)) return;
 
-    Directory.current = contentsState.workingDirectory;
+    Directory.current = contentsState.workingDir;
 
     await Process.run('svn', ['commit', '-m', '"$commitMsg"'])
         .then(_updateStdout);
@@ -114,7 +112,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final contentsState = ref.watch(contentsProvider);
     if (!await _directoryExist(contentsState)) return;
 
-    Directory.current = contentsState.workingDirectory;
+    Directory.current = contentsState.workingDir;
 
     await Process.run('svn', ['up']).then(_updateStdout);
   }

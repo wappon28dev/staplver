@@ -1,4 +1,4 @@
-import 'package:aibas/model/helper/svn.dart';
+import 'package:aibas/vm/svn.dart';
 import 'package:aibas/model/state.dart';
 import 'package:aibas/view/components/navbar.dart';
 import 'package:aibas/vm/contents.dart';
@@ -21,37 +21,15 @@ class PageDebug extends ConsumerWidget {
     final cmdSVNState = ref.watch(cmdSVNProvider);
     final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
 
-    List<DropdownMenuItem<DirectoryKinds>> dropdownList() {
-      final dropdown = <DropdownMenuItem<DirectoryKinds>>[];
-      for (final element in DirectoryKinds.values) {
-        dropdown.add(
-          DropdownMenuItem<DirectoryKinds>(
-            value: element,
-            child: Text(element.name),
-          ),
-        );
-      }
-      return dropdown;
-    }
-
     return navbar.getRailsNavbar(
       context,
       Column(
         children: <Widget>[
           Text(
-            'working => ${contentsState.workingDirectory?.path ?? 'null'}',
+            'working => ${contentsState.workingDir?.path ?? 'null'}',
           ),
           Text(
-            'backup => ${contentsState.backupDirectory?.path ?? 'null'}',
-          ),
-          DropdownButton<DirectoryKinds>(
-            value: contentsState.directoryKinds,
-            items: dropdownList(),
-            onChanged: (DirectoryKinds? newVal) {
-              if (newVal != null) {
-                contentsNotifier.updateDirectoryKinds(newVal);
-              }
-            },
+            'backup => ${contentsState.backupDir?.path ?? 'null'}',
           ),
           Text(themeState.themeMode.name),
           Text('log =>\n ${cmdSVNState.stdout}'),

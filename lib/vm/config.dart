@@ -12,7 +12,7 @@ class ConfigNotifier extends StateNotifier<ConfigState> {
   ConfigNotifier() : super(const ConfigState());
 
   void updateDirectories(Map<Directory, Directory> newProjectDirectories) {
-    if (kDebugMode) print('newProjectDirectories => $newProjectDirectories');
+    debugPrint('newProjectDirectories => $newProjectDirectories');
 
     final strPrjDir = newProjectDirectories.cast<String, String>();
 
@@ -20,6 +20,6 @@ class ConfigNotifier extends StateNotifier<ConfigState> {
   }
 
   void exportConfig() {
-    if (kDebugMode) print(state.toJson());
+    debugPrint(state.toJson().toString());
   }
 }

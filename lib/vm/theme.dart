@@ -8,13 +8,13 @@ import 'package:google_fonts/google_fonts.dart';
 final themeProvider =
     StateNotifierProvider<ThemeNotifier, ThemeState>((ref) => ThemeNotifier());
 
-const myTextStyle = GoogleFonts.mPlus1;
+const myTextStyle = GoogleFonts.bizUDPGothic;
 
 class ThemeNotifier extends StateNotifier<ThemeState> {
   ThemeNotifier() : super(const ThemeState());
 
   void updateThemeMode(ThemeMode newThemeMode) {
-    if (kDebugMode) print('newThemeMode => $newThemeMode');
+    debugPrint('newThemeMode => $newThemeMode');
     state = state.copyWith(themeMode: newThemeMode);
   }
 
@@ -30,7 +30,11 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      fontFamily: GoogleFonts.mPlus1().fontFamily,
+      fontFamily: myTextStyle().fontFamily,
+      textTheme: TextTheme(
+        bodyText1: myTextStyle(fontWeight: FontWeight.w500),
+        bodyText2: myTextStyle(fontWeight: FontWeight.w500),
+      ),
     );
   }
 
@@ -48,7 +52,11 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       useMaterial3: true,
       colorScheme: scheme,
       brightness: Brightness.dark,
-      fontFamily: GoogleFonts.mPlus1().fontFamily,
+      fontFamily: myTextStyle().fontFamily,
+      textTheme: TextTheme(
+        bodyText1: myTextStyle(fontWeight: FontWeight.w500),
+        bodyText2: myTextStyle(fontWeight: FontWeight.w500),
+      ),
     );
   }
 }

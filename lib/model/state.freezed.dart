@@ -332,9 +332,8 @@ abstract class _ThemeState implements ThemeState {
 
 /// @nodoc
 mixin _$ContentsState {
-  DirectoryKinds get directoryKinds => throw _privateConstructorUsedError;
-  Directory? get workingDirectory => throw _privateConstructorUsedError;
-  Directory? get backupDirectory => throw _privateConstructorUsedError;
+  Directory? get workingDir => throw _privateConstructorUsedError;
+  Directory? get backupDir => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ContentsStateCopyWith<ContentsState> get copyWith =>
@@ -347,10 +346,7 @@ abstract class $ContentsStateCopyWith<$Res> {
           ContentsState value, $Res Function(ContentsState) then) =
       _$ContentsStateCopyWithImpl<$Res, ContentsState>;
   @useResult
-  $Res call(
-      {DirectoryKinds directoryKinds,
-      Directory? workingDirectory,
-      Directory? backupDirectory});
+  $Res call({Directory? workingDir, Directory? backupDir});
 }
 
 /// @nodoc
@@ -366,22 +362,17 @@ class _$ContentsStateCopyWithImpl<$Res, $Val extends ContentsState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? directoryKinds = null,
-    Object? workingDirectory = freezed,
-    Object? backupDirectory = freezed,
+    Object? workingDir = freezed,
+    Object? backupDir = freezed,
   }) {
     return _then(_value.copyWith(
-      directoryKinds: null == directoryKinds
-          ? _value.directoryKinds
-          : directoryKinds // ignore: cast_nullable_to_non_nullable
-              as DirectoryKinds,
-      workingDirectory: freezed == workingDirectory
-          ? _value.workingDirectory
-          : workingDirectory // ignore: cast_nullable_to_non_nullable
+      workingDir: freezed == workingDir
+          ? _value.workingDir
+          : workingDir // ignore: cast_nullable_to_non_nullable
               as Directory?,
-      backupDirectory: freezed == backupDirectory
-          ? _value.backupDirectory
-          : backupDirectory // ignore: cast_nullable_to_non_nullable
+      backupDir: freezed == backupDir
+          ? _value.backupDir
+          : backupDir // ignore: cast_nullable_to_non_nullable
               as Directory?,
     ) as $Val);
   }
@@ -395,10 +386,7 @@ abstract class _$$_ContentsStateCopyWith<$Res>
       __$$_ContentsStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {DirectoryKinds directoryKinds,
-      Directory? workingDirectory,
-      Directory? backupDirectory});
+  $Res call({Directory? workingDir, Directory? backupDir});
 }
 
 /// @nodoc
@@ -412,22 +400,17 @@ class __$$_ContentsStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? directoryKinds = null,
-    Object? workingDirectory = freezed,
-    Object? backupDirectory = freezed,
+    Object? workingDir = freezed,
+    Object? backupDir = freezed,
   }) {
     return _then(_$_ContentsState(
-      directoryKinds: null == directoryKinds
-          ? _value.directoryKinds
-          : directoryKinds // ignore: cast_nullable_to_non_nullable
-              as DirectoryKinds,
-      workingDirectory: freezed == workingDirectory
-          ? _value.workingDirectory
-          : workingDirectory // ignore: cast_nullable_to_non_nullable
+      workingDir: freezed == workingDir
+          ? _value.workingDir
+          : workingDir // ignore: cast_nullable_to_non_nullable
               as Directory?,
-      backupDirectory: freezed == backupDirectory
-          ? _value.backupDirectory
-          : backupDirectory // ignore: cast_nullable_to_non_nullable
+      backupDir: freezed == backupDir
+          ? _value.backupDir
+          : backupDir // ignore: cast_nullable_to_non_nullable
               as Directory?,
     ));
   }
@@ -436,22 +419,16 @@ class __$$_ContentsStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_ContentsState with DiagnosticableTreeMixin implements _ContentsState {
-  const _$_ContentsState(
-      {this.directoryKinds = DirectoryKinds.working,
-      this.workingDirectory,
-      this.backupDirectory});
+  const _$_ContentsState({this.workingDir, this.backupDir});
 
   @override
-  @JsonKey()
-  final DirectoryKinds directoryKinds;
+  final Directory? workingDir;
   @override
-  final Directory? workingDirectory;
-  @override
-  final Directory? backupDirectory;
+  final Directory? backupDir;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ContentsState(directoryKinds: $directoryKinds, workingDirectory: $workingDirectory, backupDirectory: $backupDirectory)';
+    return 'ContentsState(workingDir: $workingDir, backupDir: $backupDir)';
   }
 
   @override
@@ -459,9 +436,8 @@ class _$_ContentsState with DiagnosticableTreeMixin implements _ContentsState {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'ContentsState'))
-      ..add(DiagnosticsProperty('directoryKinds', directoryKinds))
-      ..add(DiagnosticsProperty('workingDirectory', workingDirectory))
-      ..add(DiagnosticsProperty('backupDirectory', backupDirectory));
+      ..add(DiagnosticsProperty('workingDir', workingDir))
+      ..add(DiagnosticsProperty('backupDir', backupDir));
   }
 
   @override
@@ -469,17 +445,14 @@ class _$_ContentsState with DiagnosticableTreeMixin implements _ContentsState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ContentsState &&
-            (identical(other.directoryKinds, directoryKinds) ||
-                other.directoryKinds == directoryKinds) &&
-            (identical(other.workingDirectory, workingDirectory) ||
-                other.workingDirectory == workingDirectory) &&
-            (identical(other.backupDirectory, backupDirectory) ||
-                other.backupDirectory == backupDirectory));
+            (identical(other.workingDir, workingDir) ||
+                other.workingDir == workingDir) &&
+            (identical(other.backupDir, backupDir) ||
+                other.backupDir == backupDir));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, directoryKinds, workingDirectory, backupDirectory);
+  int get hashCode => Object.hash(runtimeType, workingDir, backupDir);
 
   @JsonKey(ignore: true)
   @override
@@ -490,16 +463,13 @@ class _$_ContentsState with DiagnosticableTreeMixin implements _ContentsState {
 
 abstract class _ContentsState implements ContentsState {
   const factory _ContentsState(
-      {final DirectoryKinds directoryKinds,
-      final Directory? workingDirectory,
-      final Directory? backupDirectory}) = _$_ContentsState;
+      {final Directory? workingDir,
+      final Directory? backupDir}) = _$_ContentsState;
 
   @override
-  DirectoryKinds get directoryKinds;
+  Directory? get workingDir;
   @override
-  Directory? get workingDirectory;
-  @override
-  Directory? get backupDirectory;
+  Directory? get backupDir;
   @override
   @JsonKey(ignore: true)
   _$$_ContentsStateCopyWith<_$_ContentsState> get copyWith =>

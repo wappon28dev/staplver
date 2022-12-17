@@ -63,7 +63,7 @@ class PageHome extends ConsumerWidget {
             ),
             TextSpan(
               text: '\n$timeStr',
-              style: GoogleFonts.mPlus1(
+              style: myTextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 20,
               ),
