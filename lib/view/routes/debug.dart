@@ -1,4 +1,4 @@
-import 'package:aibas/model/repo/svn.dart';
+import 'package:aibas/model/helper/svn.dart';
 import 'package:aibas/model/state.dart';
 import 'package:aibas/view/components/navbar.dart';
 import 'package:aibas/vm/contents.dart';
@@ -35,8 +35,8 @@ class PageDebug extends ConsumerWidget {
     }
 
     return navbar.getRailsNavbar(
+      context,
       Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
             'working => ${contentsState.workingDirectory?.path ?? 'null'}',

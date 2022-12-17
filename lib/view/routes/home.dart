@@ -1,6 +1,4 @@
-import 'package:aibas/model/state.dart';
 import 'package:aibas/view/components/navbar.dart';
-import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/now.dart';
 import 'package:aibas/vm/theme.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -31,7 +29,7 @@ class PageHome extends ConsumerWidget {
           children: <TextSpan>[
             TextSpan(
               text: 'AIBAS',
-              style: GoogleFonts.mPlus1(
+              style: myTextStyle(
                 fontWeight: FontWeight.w800,
                 color: Theme.of(context).colorScheme.primary,
                 fontSize: 40,
@@ -39,7 +37,7 @@ class PageHome extends ConsumerWidget {
             ),
             TextSpan(
               text: ' へようこそ',
-              style: GoogleFonts.mPlus1(
+              style: myTextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 20,
               ),
@@ -79,6 +77,7 @@ class PageHome extends ConsumerWidget {
     );
 
     return navbar.getRailsNavbar(
+      context,
       Column(
         children: <Widget>[
           SizedBox(

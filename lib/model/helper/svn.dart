@@ -50,7 +50,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
   Future<void> runCreate() async {
     final contentsState = ref.watch(contentsProvider);
-    if (contentsState.backupDirectory == null) return;
+    if (!await _directoryExist(contentsState)) return;
 
     Directory.current = contentsState.backupDirectory;
     await Process.run('svnadmin', [

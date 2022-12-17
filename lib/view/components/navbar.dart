@@ -1,3 +1,5 @@
+import 'package:aibas/view/routes/create_project.dart';
+import 'package:aibas/view/util/transition.dart';
 import 'package:aibas/vm/page.dart';
 
 import 'package:flutter/material.dart';
@@ -46,17 +48,17 @@ class NavBar {
     ),
   ];
 
-  FloatingActionButton? getFAB() {
-    return orientation == Orientation.portrait
-        ? FloatingActionButton(
-            tooltip: '新規プロジェクトを作成',
-            onPressed: () {
-              // Add your onPressed code here!
-            },
-            child: const Icon(Icons.add),
-          )
-        : null;
-  }
+  FloatingActionButton fab(BuildContext context, {bool fromRails = false}) =>
+      FloatingActionButton(
+        tooltip: '新規プロジェクトを作成',
+        onPressed: () => RouteController.runPush(
+          context: context,
+          page: const PageCreateProject(),
+          isReplace: false,
+        ),
+        elevation: fromRails ? 0 : null,
+        child: const Icon(Icons.add),
+      );
 
   Widget getBottomNavbar() {
     final pageState = ref.watch(pageProvider);
@@ -83,7 +85,8 @@ class NavBar {
   }
 
   Widget getRailsNavbar(
-    Widget mainContent,
+    BuildContext context,
+    Column mainContent,
   ) {
     final pageState = ref.watch(pageProvider);
     final pageNotifier = ref.read(pageProvider.notifier);
@@ -108,26 +111,24 @@ class NavBar {
           const Text('🐍', style: TextStyle(fontSize: 40)),
           Padding(
             padding: const EdgeInsets.all(8),
-            child: FloatingActionButton(
-              tooltip: '新規プロジェクトを作成',
-              elevation: 0,
-              onPressed: () {
-                // Add your onPressed code here!
-              },
-              child: const Icon(Icons.add),
-            ),
+            child: fab(context, fromRails: true),
           ),
         ],
       ),
       destinations: railDest,
     );
 
-    return Row(
-      children: [
-        orientation == Orientation.landscape ? rails : const SizedBox(),
-        const VerticalDivider(thickness: 1, width: 1),
-        Expanded(child: mainContent)
-      ],
-    );
+    if (orientation == Orientation.landscape) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          rails,
+          const VerticalDivider(thickness: 1, width: 1),
+          Expanded(child: SingleChildScrollView(child: mainContent))
+        ],
+      );
+    } else {
+      return Center(child: mainContent);
+    }
   }
 }

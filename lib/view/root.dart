@@ -14,6 +14,7 @@ class AppRoot extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final orientation = MediaQuery.of(context).orientation;
     final navbar = NavBar(ref: ref, orientation: orientation);
+    final isPortrait = orientation == Orientation.portrait;
 
     final pageState = ref.watch(pageProvider);
 
@@ -26,7 +27,7 @@ class AppRoot extends ConsumerWidget {
 
     return Scaffold(
       bottomNavigationBar: navbar.getBottomNavbar(),
-      floatingActionButton: navbar.getFAB(),
+      floatingActionButton: isPortrait ? navbar.fab(context) : null,
       body: pages[pageState.navbarIndex],
     );
   }

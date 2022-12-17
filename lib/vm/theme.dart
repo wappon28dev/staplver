@@ -8,6 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 final themeProvider =
     StateNotifierProvider<ThemeNotifier, ThemeState>((ref) => ThemeNotifier());
 
+const myTextStyle = GoogleFonts.mPlus1;
+
 class ThemeNotifier extends StateNotifier<ThemeState> {
   ThemeNotifier() : super(const ThemeState());
 

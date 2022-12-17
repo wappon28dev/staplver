@@ -1,7 +1,4 @@
-import 'package:aibas/model/state.dart';
 import 'package:aibas/view/components/navbar.dart';
-import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,16 +12,17 @@ class PageSettings extends ConsumerWidget {
     final navbar = NavBar(ref: ref, orientation: orientation);
 
     return navbar.getRailsNavbar(
+      context,
       Column(
         children: <Widget>[
-          Container(
+          SizedBox(
             height: 100,
             child: Row(),
           ),
-          Divider(
+          const Divider(
             thickness: 2,
           ),
-          Text('data'),
+          const Text('data'),
         ],
       ),
     );
