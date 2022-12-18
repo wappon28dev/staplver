@@ -22,6 +22,11 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
   final Ref ref;
 
+  void updateProgress(double newProgress) {
+    debugPrint('newProgress => $newProgress');
+    state = state.copyWith(progress: newProgress);
+  }
+
   Future<bool> _directoryExist(ContentsState contentsState) async {
     final currentPj = ref.watch(projectsProvider).currentPj;
 
@@ -42,11 +47,54 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final stderr = process.stderr.toString();
 
     if (kDebugMode) {
-      print('out => $stdout');
-      print('err => $stderr');
+      print('out => \n $stdout');
+      print('err => \n $stderr');
     }
 
     state = state.copyWith(stdout: stdout + stderr);
+  }
+
+  Future<void> runStatus() async {
+    final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
+    if (currentPj == null) return;
+    if (!await _directoryExist(contentsState)) return;
+
+    debugPrint('>> runStatus << ');
+
+    Directory.current = currentPj.workingDir;
+    await Process.run('svn', [
+      'status',
+    ]).then(_updateStdout);
+  }
+
+  Future<void> runInfo() async {
+    final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
+    if (currentPj == null) return;
+    if (!await _directoryExist(contentsState)) return;
+
+    debugPrint('>> runInfo << ');
+
+    Directory.current = currentPj.workingDir;
+    await Process.run('svn', [
+      'info',
+    ]).then(_updateStdout);
+  }
+
+  Future<void> runLog() async {
+    final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
+    if (currentPj == null) return;
+    if (!await _directoryExist(contentsState)) return;
+
+    debugPrint('>> runLog << ');
+
+    Directory.current = currentPj.workingDir;
+    await Process.run('svn', ['log', '--diff']).then(_updateStdout);
   }
 
   Future<void> runCreate() async {
@@ -55,6 +103,8 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
     if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
+
+    debugPrint('>> runCreate << ');
 
     Directory.current = currentPj.backupDir;
     await Process.run('svnadmin', [
@@ -70,6 +120,8 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
 
+    debugPrint('>> runImport << ');
+
     final backupUri = currentPj.backupDir.uri.toString();
     Directory.current = currentPj.workingDir;
 
@@ -84,6 +136,8 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
 
+    debugPrint('>> runRename << ');
+
     final workingDirName = currentPj.workingDir.name;
     Directory.current = currentPj.workingDir.parent;
 
@@ -94,6 +148,8 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final currentPj = ref.watch(projectsProvider).currentPj;
 
     if (currentPj == null) return;
+
+    debugPrint('>> runCheckout << ');
 
     final backupUri = currentPj.backupDir.uri.toString();
     Directory.current = currentPj.workingDir.parent;
@@ -108,6 +164,8 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
 
+    debugPrint('>> runStaging << ');
+
     Directory.current = currentPj.workingDir;
 
     await Process.run('svn', ['add', '.', '--force']).then(_updateStdout);
@@ -119,6 +177,8 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
     if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
+
+    debugPrint('>> runCommit << ');
 
     Directory.current = currentPj.workingDir;
 
@@ -132,6 +192,8 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
     if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
+
+    debugPrint('>> update << ');
 
     Directory.current = currentPj.workingDir;
 

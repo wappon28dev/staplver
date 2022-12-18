@@ -1,11 +1,17 @@
 import 'dart:io';
 
 import 'package:aibas/model/state.dart';
+import 'package:aibas/vm/svn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Project {
-  Project(this.name, this.workingDir, this.backupDir, this.backupMin);
+  Project({
+    required this.name,
+    required this.workingDir,
+    required this.backupDir,
+    required this.backupMin,
+  });
 
   String name;
   Directory workingDir;
@@ -14,13 +20,15 @@ class Project {
 }
 
 final projectsProvider = StateNotifierProvider<ProjectsNotifier, ProjectsState>(
-  (ref) => ProjectsNotifier(),
+  ProjectsNotifier.new,
 );
 
 class ProjectsNotifier extends StateNotifier<ProjectsState> {
-  ProjectsNotifier() : super(const ProjectsState());
+  ProjectsNotifier(this.ref) : super(const ProjectsState());
 
-  void addProject(Project newProject) {
+  final Ref ref;
+
+  void addSavedProject(Project newProject) {
     debugPrint('newProject => $newProject');
     final savedProjectsClone = state.savedProjects?.toList();
 
@@ -28,5 +36,38 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
     savedProjectsClone.add(newProject);
 
     state = state.copyWith(savedProjects: savedProjectsClone);
+  }
+
+  void updateSavedProject(List<Project> newSavedProjects) {
+    debugPrint('newProjects => $newSavedProjects');
+    state = state.copyWith(savedProjects: newSavedProjects);
+  }
+
+  void updateCurrentPjIndex(int newCurrentPjIndex) {
+    if (state.savedProjects == null) throw Exception('savedProjects is null!');
+    debugPrint('newCurrentPjIndex => $newCurrentPjIndex');
+    assert((state.savedProjects?.length ?? 99) >= newCurrentPjIndex);
+  }
+
+  Future<void> initProject() async {
+    final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
+
+    final queue = [
+      () async => cmdSVNNotifier.runCreate(),
+      () async => cmdSVNNotifier.runImport(),
+      () async => cmdSVNNotifier.runRename(),
+      () async => cmdSVNNotifier.runCheckout(),
+      () async => cmdSVNNotifier.runStaging(),
+      () async => cmdSVNNotifier.update(),
+    ];
+
+    debugPrint('-- init project --');
+    cmdSVNNotifier.updateProgress(0);
+
+    for (var i = 0; i < queue.length; i++) {
+      await queue[i]();
+      cmdSVNNotifier.updateProgress(i / queue.length);
+    }
+    debugPrint('-- end --');
   }
 }

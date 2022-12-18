@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:aibas/model/state.dart';
@@ -5,9 +6,9 @@ import 'package:aibas/view/components/create_pj/set_ignore_files.dart';
 import 'package:aibas/view/components/create_pj/set_pj_config.dart';
 import 'package:aibas/view/components/create_pj/set_pj_details.dart';
 import 'package:aibas/view/components/create_pj/set_working_dir.dart';
-import 'package:aibas/view/util/transition.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
+import 'package:aibas/vm/projects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,7 +22,7 @@ class CompCreatePjHelper {
     const CompSetWorkingDir(),
     const CompSetIgnoreFiles(),
     const CompSetPjConfig(),
-    const CompSetPjDetails(),
+    CompSetPjDetails(),
   ];
 
   void runInit(WidgetRef ref, int compIndex) {
@@ -37,14 +38,38 @@ class CompCreatePjHelper {
     init[compIndex]();
   }
 
+  Future<void> runCreateProject(WidgetRef ref) async {
+    final projectsNotifier = ref.watch(projectsProvider.notifier);
+
+    final pjNameState = ref.watch(pjNameProvider);
+    final workingDirState = ref.watch(workingDirProvider);
+    final backupDirState = ref.watch(backupDirProvider);
+
+    if (workingDirState == null || backupDirState == null) {
+      throw Exception('newProject contains null!');
+    }
+
+    final newProject = Project(
+      name: pjNameState,
+      workingDir: workingDirState,
+      backupDir: backupDirState,
+      backupMin: 20,
+    );
+
+    projectsNotifier
+      ..updateSavedProject([newProject])
+      ..updateCurrentPjIndex(0);
+    await projectsNotifier.initProject();
+  }
+
   Future<void> runDispose(BuildContext context, WidgetRef ref) async {
     Navigator.pop(context);
-    await Future<void>.delayed(const Duration(milliseconds: 300));
 
     final contentsNotifier = ref.read(contentsProvider.notifier);
     final pageNotifier = ref.read(pageProvider.notifier);
 
     contentsNotifier.updateDragAndDropSendTo(DirectoryKinds.none);
+    await Future<void>.delayed(const Duration(milliseconds: 300));
     pageNotifier.updateCreatePjIndex(-1);
   }
 
@@ -94,7 +119,13 @@ class CompCreatePjHelper {
         return SizedBox(
           height: 40,
           child: ElevatedButton(
-            onPressed: isValidContents ? () => runDispose(context, ref) : null,
+            onPressed: isValidContents
+                ? () async {
+                    await runCreateProject(ref);
+                    // ignore: use_build_context_synchronously
+                    await runDispose(context, ref);
+                  }
+                : null,
             style: ElevatedButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.primary,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aibas/view/routes/create_pj.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/svn.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,6 +18,9 @@ class CompSetPjConfig extends ConsumerWidget {
     final pjNameNotifier = ref.read(pjNameProvider.notifier);
     final workingDirState = ref.watch(workingDirProvider);
     final backupDirState = ref.watch(backupDirProvider);
+    final backupDirNotifier = ref.read(backupDirProvider.notifier);
+
+    final textController = TextEditingController(text: backupDirState?.path);
 
     bool isValidContents() {
       // null check
@@ -33,13 +37,32 @@ class CompSetPjConfig extends ConsumerWidget {
       }
     }
 
+    Future<void> handleClick() async {
+      final selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      if (selectedDirectory == null) return;
+      backupDirNotifier.state = Directory(selectedDirectory);
+    }
+
     String? getBackupDirStr() {
       if (contentsState.defaultBackupDir != null) {
         return '${contentsState.defaultBackupDir?.path} (既定)';
       }
 
-      if (backupDirState != null) {
-        return backupDirState.path;
+      return null;
+    }
+
+    String? validator(String? newVal) {
+      if (newVal == null || newVal.isEmpty) {
+        return 'バックアップフォルダーのパスを入力してください';
+      }
+
+      try {
+        if (!Directory(newVal).existsSync()) {
+          return '入力したバックアップフォルダーのパスは存在しません';
+        }
+        // ignore: avoid_catches_without_on_clauses
+      } catch (_, __) {
+        return '入力したバックアップフォルダーのパスは存在しません';
       }
 
       return null;
@@ -106,7 +129,7 @@ class CompSetPjConfig extends ConsumerWidget {
           ),
         ),
         Expanded(
-          flex: 12,
+          flex: 13,
           child: TextFormField(
             decoration: InputDecoration(
               hintText: getWorkingDirStr(),
@@ -114,14 +137,6 @@ class CompSetPjConfig extends ConsumerWidget {
               border: const OutlineInputBorder(),
             ),
           ),
-        ),
-        Expanded(
-          child: workingDirState?.existsSync() ?? false
-              ? const Icon(Icons.check)
-              : Icon(
-                  Icons.error_outline,
-                  color: Theme.of(context).colorScheme.error,
-                ),
         ),
       ],
     );
@@ -141,31 +156,20 @@ class CompSetPjConfig extends ConsumerWidget {
         Expanded(
           flex: 12,
           child: TextFormField(
+            controller: textController,
             autovalidateMode: AutovalidateMode.always,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'バックアップフォルダーを入力してください';
-              }
-
-              if (!Directory(value).existsSync()) {
-                return 'バックアップフォルダーが存在しません';
-              }
-              return null;
-            },
-            initialValue: getBackupDirStr(),
+            validator: validator,
             decoration: InputDecoration(
-              hintText: getBackupDirStr() == null ? '(ドラッグアンドドロップでも指定可)' : null,
+              hintText: getBackupDirStr() ?? '(ドラッグアンドドロップでも指定可)',
               border: const OutlineInputBorder(),
             ),
           ),
         ),
         Expanded(
-          child: backupDirState?.existsSync() ?? false
-              ? const Icon(Icons.check)
-              : Icon(
-                  Icons.error_outline,
-                  color: Theme.of(context).colorScheme.error,
-                ),
+          child: IconButton(
+            onPressed: handleClick,
+            icon: const Icon(Icons.more_horiz),
+          ),
         ),
       ],
     );
@@ -196,7 +200,10 @@ class CompSetPjConfig extends ConsumerWidget {
             child: TextButton.icon(
               label: const Text('リセット'),
               icon: const Icon(Icons.restart_alt),
-              onPressed: null,
+              onPressed: () => textController.text =
+                  contentsState.defaultBackupDir?.path ??
+                      backupDirState?.path ??
+                      '',
             ),
           ),
           const SizedBox(height: 20),
