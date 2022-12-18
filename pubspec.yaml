@@ -21,7 +21,6 @@ dependencies:
   flutter_riverpod: ^2.1.1
   flutter_treeview: ^1.0.7+1
   freezed_annotation: ^2.2.0
-  google_fonts: ^3.0.1
   hooks_riverpod: ^2.1.1
   intl: ^0.18.0
   json_serializable: ^6.5.4
@@ -37,3 +36,16 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: M PLUS 1
+      fonts:
+        - asset: assets/fonts/MPLUS1-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/MPLUS1-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/MPLUS1-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/MPLUS1-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/MPLUS1-Black.ttf
+          weight: 900
