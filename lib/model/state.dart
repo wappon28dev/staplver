@@ -1,18 +1,18 @@
 import 'dart:io';
 
+import 'package:aibas/vm/projects.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'state.freezed.dart';
-part 'state.g.dart';
+// part 'state.g.dart';
 
 @freezed
 class PageState with _$PageState {
   const factory PageState({
     @Default(0) int navbarIndex,
-    @Default('') String currentPjName,
-    @Default(0) int createPjIndex,
+    @Default(-1) int createPjIndex,
   }) = _PageState;
 }
 
@@ -24,13 +24,13 @@ class ThemeState with _$ThemeState {
   }) = _ThemeState;
 }
 
-enum DirectoryKinds { working, backup, none }
+enum DirectoryKinds { defaultWorking, working, backup, none }
 
 @freezed
 class ContentsState with _$ContentsState {
   const factory ContentsState({
-    Directory? workingDir,
-    Directory? backupDir,
+    Directory? defaultBackupDir,
+    @Default(DirectoryKinds.none) DirectoryKinds dragAndDropSendTo,
   }) = _ContentsState;
 }
 
@@ -42,12 +42,12 @@ class CmdSVNState with _$CmdSVNState {
 }
 
 @freezed
-class ConfigState with _$ConfigState {
-  const factory ConfigState({
-    @Default({'': ''}) Map<String, String> projectDirectories,
-  }) = _ConfigState;
-  const ConfigState._();
+class ProjectsState with _$ProjectsState {
+  const factory ProjectsState({
+    List<Project>? savedProjects,
+    @Default(0) int currentPjIndex,
+  }) = _ProjectsState;
+  const ProjectsState._();
 
-  factory ConfigState.fromJson(Map<String, dynamic> json) =>
-      _$ConfigStateFromJson(json);
+  Project? get currentPj => savedProjects?[currentPjIndex];
 }

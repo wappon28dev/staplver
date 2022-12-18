@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:aibas/model/state.dart';
+import 'package:aibas/view/routes/create_pj.dart';
+import 'package:aibas/vm/svn.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final contentsProvider = StateNotifierProvider<ContentsNotifier, ContentsState>(
-  (ref) => ContentsNotifier(),
+  ContentsNotifier.new,
 );
 
 enum DragAndDropErrors {
@@ -15,16 +17,18 @@ enum DragAndDropErrors {
 }
 
 class ContentsNotifier extends StateNotifier<ContentsState> {
-  ContentsNotifier() : super(const ContentsState());
+  ContentsNotifier(this.ref) : super(const ContentsState());
 
-  void updateWorkingDir(Directory? newWorkingDirectory) {
-    debugPrint('newWorkingDirectory => $newWorkingDirectory');
-    state = state.copyWith(workingDir: newWorkingDirectory);
+  final Ref ref;
+
+  void updateDefaultBackupDir(Directory? newDefaultBackupDir) {
+    debugPrint('newDefaultBackupDir => $newDefaultBackupDir');
+    state = state.copyWith(defaultBackupDir: newDefaultBackupDir);
   }
 
-  void updateBackupDir(Directory? newBackupDirectory) {
-    debugPrint('newBackupDirectory => $newBackupDirectory');
-    state = state.copyWith(backupDir: newBackupDirectory);
+  void updateDragAndDropSendTo(DirectoryKinds newDragAndDropSendTo) {
+    debugPrint('newDragAndDropSendTo => $newDragAndDropSendTo');
+    state = state.copyWith(dragAndDropSendTo: newDragAndDropSendTo);
   }
 
   Future<Directory> getSingleDirectory(List<String> paths) async {
@@ -40,5 +44,25 @@ class ContentsNotifier extends StateNotifier<ContentsState> {
       return Future.error(DragAndDropErrors.isNotDirectory);
     }
     return Directory(paths[0]);
+  }
+
+  Future<void> handleDragAndDrop(List<String> paths) async {
+    final dir = await getSingleDirectory(paths);
+    switch (state.dragAndDropSendTo) {
+      case DirectoryKinds.none:
+        return;
+
+      case DirectoryKinds.defaultWorking:
+        updateDefaultBackupDir(dir);
+        break;
+
+      case DirectoryKinds.backup:
+        ref.read(backupDirProvider.notifier).state = dir;
+        break;
+
+      case DirectoryKinds.working:
+        ref.read(workingDirProvider.notifier).state = dir;
+        ref.read(pjNameProvider.notifier).state = dir.name;
+    }
   }
 }

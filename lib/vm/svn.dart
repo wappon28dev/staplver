@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:aibas/model/state.dart';
 import 'package:aibas/vm/contents.dart';
+import 'package:aibas/vm/projects.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,10 +23,12 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   final Ref ref;
 
   Future<bool> _directoryExist(ContentsState contentsState) async {
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
     var result = false;
     await Future.wait(<Future<bool>>[
-      contentsState.workingDir?.exists() ?? Future.error('作業フォルダーが見つかりません'),
-      contentsState.backupDir?.exists() ?? Future.error('バックアップフォルダーが見つかりません'),
+      currentPj?.workingDir.exists() ?? Future.error('作業フォルダーが見つかりません'),
+      currentPj?.backupDir.exists() ?? Future.error('バックアップフォルダーが見つかりません'),
     ]).then((value) => result = value[0]).catchError((dynamic err) {
       debugPrint(err.toString());
       result = false;
@@ -48,61 +51,76 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
   Future<void> runCreate() async {
     final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
+    if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
 
-    Directory.current = contentsState.backupDir;
+    Directory.current = currentPj.backupDir;
     await Process.run('svnadmin', [
       'create',
-      contentsState.backupDir?.path ?? '',
+      currentPj.backupDir.path,
     ]).then(_updateStdout);
   }
 
   Future<void> runImport() async {
     final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
+    if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
 
-    final backupUri = contentsState.backupDir?.uri.toString();
-    print(backupUri);
+    final backupUri = currentPj.backupDir.uri.toString();
+    Directory.current = currentPj.workingDir;
 
-    Directory.current = contentsState.workingDir;
-
-    await Process.run('svn', ['import', backupUri ?? '', '-m', '"import"'])
+    await Process.run('svn', ['import', backupUri, '-m', '"import"'])
         .then(_updateStdout);
   }
 
   Future<void> runRename() async {
     final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
+    if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
 
-    final workingDirName = contentsState.workingDir?.name;
-    Directory.current = contentsState.workingDir?.parent;
+    final workingDirName = currentPj.workingDir.name;
+    Directory.current = currentPj.workingDir.parent;
 
-    await contentsState.workingDir?.rename('_$workingDirName');
+    await currentPj.workingDir.rename('_$workingDirName');
   }
 
   Future<void> runCheckout() async {
-    final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
 
-    final backupUri = contentsState.backupDir?.uri.toString();
-    Directory.current = contentsState.workingDir?.parent;
+    if (currentPj == null) return;
 
-    await Process.run('svn', ['checkout', backupUri ?? '']).then(_updateStdout);
+    final backupUri = currentPj.backupDir.uri.toString();
+    Directory.current = currentPj.workingDir.parent;
+
+    await Process.run('svn', ['checkout', backupUri]).then(_updateStdout);
   }
 
   Future<void> runStaging() async {
     final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
+    if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
 
-    Directory.current = contentsState.workingDir;
+    Directory.current = currentPj.workingDir;
 
     await Process.run('svn', ['add', '.', '--force']).then(_updateStdout);
   }
 
   Future<void> runCommit(String commitMsg) async {
     final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
+    if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
 
-    Directory.current = contentsState.workingDir;
+    Directory.current = currentPj.workingDir;
 
     await Process.run('svn', ['commit', '-m', '"$commitMsg"'])
         .then(_updateStdout);
@@ -110,9 +128,12 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
   Future<void> update() async {
     final contentsState = ref.watch(contentsProvider);
+    final currentPj = ref.watch(projectsProvider).currentPj;
+
+    if (currentPj == null) return;
     if (!await _directoryExist(contentsState)) return;
 
-    Directory.current = contentsState.workingDir;
+    Directory.current = currentPj.workingDir;
 
     await Process.run('svn', ['up']).then(_updateStdout);
   }

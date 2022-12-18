@@ -1,14 +1,10 @@
 import 'package:aibas/model/state.dart';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 final themeProvider =
     StateNotifierProvider<ThemeNotifier, ThemeState>((ref) => ThemeNotifier());
-
-const myTextStyle = GoogleFonts.bizUDPGothic;
 
 class ThemeNotifier extends StateNotifier<ThemeState> {
   ThemeNotifier() : super(const ThemeState());
@@ -30,11 +26,7 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      fontFamily: myTextStyle().fontFamily,
-      textTheme: TextTheme(
-        bodyText1: myTextStyle(fontWeight: FontWeight.w500),
-        bodyText2: myTextStyle(fontWeight: FontWeight.w500),
-      ),
+      fontFamily: 'M PLUS 1',
     );
   }
 
@@ -52,11 +44,7 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       useMaterial3: true,
       colorScheme: scheme,
       brightness: Brightness.dark,
-      fontFamily: myTextStyle().fontFamily,
-      textTheme: TextTheme(
-        bodyText1: myTextStyle(fontWeight: FontWeight.w500),
-        bodyText2: myTextStyle(fontWeight: FontWeight.w500),
-      ),
+      fontFamily: 'M PLUS 1',
     );
   }
 }
