@@ -6,8 +6,6 @@ class CompSetPjDetails extends ConsumerWidget {
   const CompSetPjDetails({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final layout = CompCreatePjHelper();
-
-    return Container();
+    return CompCreatePjHelper().wrap(context, ref, true, const SizedBox());
   }
 }

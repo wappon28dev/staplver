@@ -33,8 +33,8 @@ class _CompSetIgnoreFilesState extends ConsumerState<CompSetIgnoreFiles> {
   final ExpanderPosition _expanderPosition = ExpanderPosition.start;
   final ExpanderType _expanderType = ExpanderType.caret;
   final ExpanderModifier _expanderModifier = ExpanderModifier.none;
-  bool _allowParentSelect = false;
-  bool _supportParentDoubleTap = false;
+  final bool _allowParentSelect = false;
+  final bool _supportParentDoubleTap = false;
 
   final layout = CompCreatePjHelper();
 

@@ -1,7 +1,6 @@
 import 'package:aibas/view/routes/create_pj.dart';
 import 'package:aibas/view/util/transition.dart';
 import 'package:aibas/vm/page.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -52,7 +51,7 @@ class NavBar {
       FloatingActionButton(
         tooltip: '新規プロジェクトを作成',
         onPressed: () {
-          RouteController(context, ref).home2fab();
+          RouteController(ref).home2fab();
           RouteController.runPush(
             context: context,
             page: const PageCreatePj(),
@@ -89,7 +88,7 @@ class NavBar {
 
   Widget getRailsNavbar(
     BuildContext context,
-    Column mainContent,
+    Widget mainContent,
   ) {
     final pageState = ref.watch(pageProvider);
     final pageNotifier = ref.read(pageProvider.notifier);
@@ -127,7 +126,7 @@ class NavBar {
         children: [
           rails,
           const VerticalDivider(thickness: 1, width: 1),
-          Expanded(child: SingleChildScrollView(child: mainContent))
+          Expanded(child: mainContent)
         ],
       );
     } else {

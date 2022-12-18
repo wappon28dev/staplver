@@ -1,3 +1,4 @@
+import 'package:aibas/model/state.dart';
 import 'package:aibas/view/routes/create_pj.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
@@ -5,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RouteController {
-  RouteController(this.context, this.ref);
-  BuildContext context;
+  RouteController(this.ref);
   WidgetRef ref;
 
   static void runPush({
@@ -31,6 +31,10 @@ class RouteController {
 
   void home2fab() {
     final pageNotifier = ref.read(pageProvider.notifier);
+    final contentsState = ref.watch(contentsProvider);
+    final contentsNotifier = ref.read(contentsProvider.notifier);
+
+    // local
     final pjNameNotifier = ref.read(pjNameProvider.notifier);
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
     final backupDirNotifier = ref.read(backupDirProvider.notifier);
@@ -39,7 +43,8 @@ class RouteController {
     pageNotifier.updateCreatePjIndex(0);
     pjNameNotifier.state = '';
     workingDirNotifier.state = null;
-    backupDirNotifier.state = null;
+    backupDirNotifier.state = contentsState.defaultBackupDir;
+    contentsNotifier.updateDragAndDropSendTo(DirectoryKinds.working);
     debugPrint('-- end --');
   }
 }

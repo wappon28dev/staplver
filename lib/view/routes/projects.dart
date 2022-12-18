@@ -11,25 +11,22 @@ class PageProjects extends ConsumerWidget {
     final orientation = MediaQuery.of(context).orientation;
     final navbar = NavBar(ref: ref, orientation: orientation);
 
-    return navbar.getRailsNavbar(
-      context,
-      Column(
-        children: <Widget>[
-          SizedBox(
-            height: 100,
-            child: Row(),
-          ),
-          const Divider(
-            thickness: 2,
-          ),
-          const Text('data'),
-          const Text('data'),
-          const Text('data'),
-          const Text('data'),
-          const Text('data'),
-          const Text('data'),
-        ],
-      ),
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 100,
+          child: Row(),
+        ),
+        const Divider(
+          thickness: 2,
+        ),
+        const Text('data'),
+        const Text('data'),
+        const Text('data'),
+        const Text('data'),
+        const Text('data'),
+        const Text('data'),
+      ],
     );
   }
 }

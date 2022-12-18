@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:aibas/model/state.dart';
 import 'package:aibas/view/components/create_pj/set_ignore_files.dart';
 import 'package:aibas/view/components/create_pj/set_pj_config.dart';
 import 'package:aibas/view/components/create_pj/set_pj_details.dart';
 import 'package:aibas/view/components/create_pj/set_working_dir.dart';
+import 'package:aibas/view/util/transition.dart';
+import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
-import 'package:aibas/vm/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,6 +17,37 @@ final workingDirProvider = StateProvider<Directory?>((ref) => null);
 final backupDirProvider = StateProvider<Directory?>((ref) => null);
 
 class CompCreatePjHelper {
+  final comps = [
+    const CompSetWorkingDir(),
+    const CompSetIgnoreFiles(),
+    const CompSetPjConfig(),
+    const CompSetPjDetails(),
+  ];
+
+  void runInit(WidgetRef ref, int compIndex) {
+    final contentsNotifier = ref.read(contentsProvider.notifier);
+
+    final init = [
+      () => contentsNotifier.updateDragAndDropSendTo(DirectoryKinds.working),
+      () => contentsNotifier.updateDragAndDropSendTo(DirectoryKinds.none),
+      () => contentsNotifier.updateDragAndDropSendTo(DirectoryKinds.backup),
+      () => contentsNotifier.updateDragAndDropSendTo(DirectoryKinds.none),
+    ];
+
+    init[compIndex]();
+  }
+
+  Future<void> runDispose(BuildContext context, WidgetRef ref) async {
+    Navigator.pop(context);
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+
+    final contentsNotifier = ref.read(contentsProvider.notifier);
+    final pageNotifier = ref.read(pageProvider.notifier);
+
+    contentsNotifier.updateDragAndDropSendTo(DirectoryKinds.none);
+    pageNotifier.updateCreatePjIndex(-1);
+  }
+
   Widget wrap(
     BuildContext context,
     WidgetRef ref,
@@ -27,19 +60,14 @@ class CompCreatePjHelper {
 
     final index = pageState.createPjIndex;
 
-    final comps = [
-      const CompSetWorkingDir(),
-      const CompSetIgnoreFiles(),
-      const CompSetPjConfig(),
-      const CompSetPjDetails(),
-    ];
-
     void runNextPage() {
       pageNotifier.updateCreatePjIndex(index + 1);
+      runInit(ref, index + 1);
     }
 
     void runPreviousPage() {
       pageNotifier.updateCreatePjIndex(index - 1);
+      runInit(ref, index - 1);
     }
 
     Widget getForwardOrFinishedWidget() {
@@ -66,7 +94,7 @@ class CompCreatePjHelper {
         return SizedBox(
           height: 40,
           child: ElevatedButton(
-            onPressed: isValidContents ? () {} : null,
+            onPressed: isValidContents ? () => runDispose(context, ref) : null,
             style: ElevatedButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.primary,
@@ -120,12 +148,7 @@ class PageCreatePj extends ConsumerWidget {
 
     final index = pageState.createPjIndex;
 
-    final comps = [
-      const CompSetWorkingDir(),
-      const CompSetIgnoreFiles(),
-      const CompSetPjConfig(),
-      const CompSetPjDetails(),
-    ];
+    final comps = CompCreatePjHelper().comps;
 
     return Scaffold(
       appBar: AppBar(
@@ -133,7 +156,7 @@ class PageCreatePj extends ConsumerWidget {
           SizedBox(
             width: 60,
             child: IconButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => CompCreatePjHelper().runDispose(context, ref),
               icon: const Icon(Icons.close),
             ),
           ),
@@ -141,7 +164,7 @@ class PageCreatePj extends ConsumerWidget {
         leading: const SizedBox(),
         title: Text(
           '新規プロジェクトの作成 (${index + 1}/${comps.length})',
-          style: myTextStyle(fontWeight: FontWeight.w600),
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
         bottom: PreferredSize(

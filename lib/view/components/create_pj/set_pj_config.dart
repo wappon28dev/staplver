@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:aibas/view/routes/create_pj.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/svn.dart';
-import 'package:aibas/vm/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -9,12 +10,20 @@ class CompSetPjConfig extends ConsumerWidget {
   const CompSetPjConfig({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final layout = CompCreatePjHelper();
+    final contentsState = ref.watch(contentsProvider);
 
+    // local ref
     final pjNameState = ref.watch(pjNameProvider);
     final pjNameNotifier = ref.read(pjNameProvider.notifier);
     final workingDirState = ref.watch(workingDirProvider);
     final backupDirState = ref.watch(backupDirProvider);
+
+    bool isValidContents() {
+      // null check
+      if (workingDirState == null || backupDirState == null) return false;
+
+      return workingDirState.existsSync() && backupDirState.existsSync();
+    }
 
     String getWorkingDirStr() {
       if (workingDirState != null) {
@@ -25,11 +34,15 @@ class CompSetPjConfig extends ConsumerWidget {
     }
 
     String? getBackupDirStr() {
-      if (backupDirState != null) {
-        return '${backupDirState.path} (既定)';
-      } else {
-        return null;
+      if (contentsState.defaultBackupDir != null) {
+        return '${contentsState.defaultBackupDir?.path} (既定)';
       }
+
+      if (backupDirState != null) {
+        return backupDirState.path;
+      }
+
+      return null;
     }
 
     final pjNameField = Row(
@@ -58,8 +71,7 @@ class CompSetPjConfig extends ConsumerWidget {
             },
             onChanged: (newVal) => pjNameNotifier.state = newVal,
             decoration: InputDecoration(
-              errorStyle:
-                  myTextStyle(color: Theme.of(context).colorScheme.error),
+              errorStyle: TextStyle(color: Theme.of(context).colorScheme.error),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Theme.of(context).colorScheme.error,
@@ -129,20 +141,39 @@ class CompSetPjConfig extends ConsumerWidget {
         Expanded(
           flex: 12,
           child: TextFormField(
+            autovalidateMode: AutovalidateMode.always,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'バックアップフォルダーを入力してください';
+              }
+
+              if (!Directory(value).existsSync()) {
+                return 'バックアップフォルダーが存在しません';
+              }
+              return null;
+            },
+            initialValue: getBackupDirStr(),
             decoration: InputDecoration(
-              hintText: getBackupDirStr(),
+              hintText: getBackupDirStr() == null ? '(ドラッグアンドドロップでも指定可)' : null,
               border: const OutlineInputBorder(),
             ),
           ),
         ),
-        const Expanded(child: Icon(Icons.check)),
+        Expanded(
+          child: backupDirState?.existsSync() ?? false
+              ? const Icon(Icons.check)
+              : Icon(
+                  Icons.error_outline,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+        ),
       ],
     );
 
-    return layout.wrap(
+    return CompCreatePjHelper().wrap(
       context,
       ref,
-      true,
+      isValidContents(),
       Column(
         children: [
           const SizedBox(height: 20),
@@ -153,7 +184,6 @@ class CompSetPjConfig extends ConsumerWidget {
               children: [
                 const SizedBox(height: 40),
                 pjNameField,
-                Text(pjNameState),
                 const SizedBox(height: 40),
                 workingDirField,
                 const SizedBox(height: 40),
@@ -170,7 +200,6 @@ class CompSetPjConfig extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const Text('asdfasdf')
         ],
       ),
     );
