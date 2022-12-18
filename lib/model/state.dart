@@ -38,6 +38,7 @@ class ContentsState with _$ContentsState {
 class CmdSVNState with _$CmdSVNState {
   const factory CmdSVNState({
     @Default('') String stdout,
+    @Default(0) double progress,
   }) = _CmdSVNState;
 }
 

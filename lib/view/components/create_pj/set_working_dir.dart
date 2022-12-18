@@ -16,6 +16,7 @@ class CompSetWorkingDir extends ConsumerWidget {
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
 
     final layout = CompCreatePjHelper();
+    final textController = TextEditingController(text: workingDirState?.path);
 
     bool isValidContents() {
       return workingDirState != null;
@@ -26,8 +27,68 @@ class CompSetWorkingDir extends ConsumerWidget {
       if (selectedDirectory == null) return;
       final dir = Directory(selectedDirectory);
       workingDirNotifier.state = dir;
+      textController.text = dir.path;
       pjNameNotifier.state = dir.name;
     }
+
+    String? validator(String? newVal) {
+      if (newVal == null || newVal.isEmpty) {
+        return '作業フォルダーのパスを入力してください';
+      }
+
+      try {
+        if (!Directory(newVal).existsSync()) {
+          return '入力した作業フォルダーのパスは存在しません';
+        }
+        // ignore: avoid_catches_without_on_clauses
+      } catch (_, __) {
+        return '入力した作業フォルダーのパスは存在しません';
+      }
+
+      return null;
+    }
+
+    final workingDirField = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Column(
+            children: const [
+              Icon(Icons.folder, size: 47),
+              Text('作業フォルダー', textAlign: TextAlign.center),
+            ],
+          ),
+        ),
+        Expanded(
+          flex: 12,
+          child: Focus(
+            child: TextFormField(
+              controller: textController,
+              autovalidateMode: AutovalidateMode.always,
+              validator: validator,
+              decoration: const InputDecoration(
+                hintText: '(ドラッグアンドドロップでも指定可)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            onFocusChange: (hasFocus) {
+              if (!hasFocus) {
+                if (validator(textController.text) == null) {
+                  workingDirNotifier.state = Directory(textController.text);
+                }
+              }
+            },
+          ),
+        ),
+        Expanded(
+          child: IconButton(
+            onPressed: handleClick,
+            icon: const Icon(Icons.more_horiz),
+          ),
+        ),
+      ],
+    );
 
     return layout.wrap(
       context,
@@ -66,7 +127,8 @@ class CompSetWorkingDir extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
+          workingDirField,
           SizedBox(
             height: 40,
             child: TextButton.icon(
@@ -77,8 +139,6 @@ class CompSetWorkingDir extends ConsumerWidget {
                   : null,
             ),
           ),
-          const SizedBox(height: 20),
-          Text(workingDirState?.path ?? '')
         ],
       ),
     );

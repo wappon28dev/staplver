@@ -47,15 +47,12 @@ class AppRoot extends ConsumerWidget {
                   fontSize: 40,
                 ),
               ),
-              const Text(
-                ' / ホーム',
-                style: TextStyle(fontSize: 20),
+              Text(
+                ' / ${NavBar.dest[pageState.navbarIndex].label}',
+                style: const TextStyle(fontSize: 20),
               )
             ],
           ),
-          bottom: PreferredSize(
-              child: LinearProgressIndicator(),
-              preferredSize: Size.fromHeight(10)),
           actions: [
             Padding(
               padding: const EdgeInsets.all(10),

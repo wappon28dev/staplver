@@ -24,7 +24,7 @@ class NavBar {
   WidgetRef ref;
   Orientation orientation;
 
-  List<Destination> dest = [
+  static List<Destination> dest = [
     Destination(
       icon: const Icon(Icons.home_outlined),
       selectedIcon: const Icon(Icons.home),
