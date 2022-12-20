@@ -1,19 +1,9 @@
+import 'package:aibas/model/data/class.dart';
 import 'package:aibas/view/routes/create_pj.dart';
 import 'package:aibas/view/util/transition.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-class Destination {
-  Destination({
-    required this.icon,
-    required this.selectedIcon,
-    required this.label,
-  });
-  Icon icon;
-  Icon selectedIcon;
-  String label;
-}
 
 class NavBar {
   NavBar({
@@ -25,24 +15,24 @@ class NavBar {
   Orientation orientation;
 
   static List<Destination> dest = [
-    Destination(
-      icon: const Icon(Icons.home_outlined),
-      selectedIcon: const Icon(Icons.home),
+    const Destination(
+      icon: Icon(Icons.home_outlined),
+      selectedIcon: Icon(Icons.home),
       label: 'ホーム',
     ),
-    Destination(
-      icon: const Icon(Icons.rocket_launch_outlined),
-      selectedIcon: const Icon(Icons.rocket_launch),
+    const Destination(
+      icon: Icon(Icons.rocket_launch_outlined),
+      selectedIcon: Icon(Icons.rocket_launch),
       label: 'プロジェクト',
     ),
-    Destination(
-      icon: const Icon(Icons.settings_outlined),
-      selectedIcon: const Icon(Icons.settings),
+    const Destination(
+      icon: Icon(Icons.settings_outlined),
+      selectedIcon: Icon(Icons.settings),
       label: '設定',
     ),
-    Destination(
-      icon: const Icon(Icons.bug_report_outlined),
-      selectedIcon: const Icon(Icons.bug_report),
+    const Destination(
+      icon: Icon(Icons.bug_report_outlined),
+      selectedIcon: Icon(Icons.bug_report),
       label: 'デバッグ',
     ),
   ];

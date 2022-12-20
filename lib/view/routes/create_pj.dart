@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:aibas/model/data/class.dart';
 import 'package:aibas/model/state.dart';
 import 'package:aibas/view/components/create_pj/set_ignore_files.dart';
 import 'package:aibas/view/components/create_pj/set_pj_config.dart';

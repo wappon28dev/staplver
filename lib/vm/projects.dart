@@ -1,23 +1,10 @@
 import 'dart:io';
 
+import 'package:aibas/model/data/class.dart';
 import 'package:aibas/model/state.dart';
 import 'package:aibas/vm/svn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-class Project {
-  Project({
-    required this.name,
-    required this.workingDir,
-    required this.backupDir,
-    required this.backupMin,
-  });
-
-  String name;
-  Directory workingDir;
-  Directory backupDir;
-  int backupMin;
-}
 
 final projectsProvider = StateNotifierProvider<ProjectsNotifier, ProjectsState>(
   ProjectsNotifier.new,

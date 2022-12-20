@@ -1,13 +1,13 @@
 include: package:pedantic_mono/analysis_options.yaml
 
 linter:
-    rules:
+  rules:
 
 analyzer:
-    exclude:
-        - "lib/model/state.freezed.dart"
-        - "lib/model/state.*.dart"
+  exclude:
+    - "lib/**/*.freezed.dart"
+    - "lib/**/*.g.dart"
 
-    errors:
-        always_put_control_body_on_new_line: ignore
-        avoid_slow_async_io: ignore
+  errors:
+    always_put_control_body_on_new_line: ignore
+    avoid_slow_async_io: ignore
