@@ -174,9 +174,7 @@ class PageCreatePj extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pageState = ref.watch(pageProvider);
-
     final index = pageState.createPjIndex;
-
     final comps = CompCreatePjHelper().comps;
 
     return Scaffold(

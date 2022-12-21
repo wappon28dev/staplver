@@ -1,9 +1,10 @@
 import 'package:aibas/model/data/class.dart';
-import 'package:aibas/view/routes/create_pj.dart';
+import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:aibas/view/util/transition.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class NavBar {
   NavBar({
@@ -37,20 +38,56 @@ class NavBar {
     ),
   ];
 
-  FloatingActionButton fab(BuildContext context, {bool fromRails = false}) =>
-      FloatingActionButton(
-        tooltip: '新規プロジェクトを作成',
-        onPressed: () {
-          RouteController(ref).home2fab();
-          RouteController.runPush(
-            context: context,
-            page: const PageCreatePj(),
-            isReplace: false,
-          );
-        },
-        elevation: fromRails ? 0 : null,
-        child: const Icon(Icons.add),
-      );
+  Widget fab(BuildContext context, {bool fromRails = false}) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return SpeedDial(
+      icon: Icons.add,
+      activeIcon: Icons.close,
+      elevation: fromRails ? 0 : 4,
+      direction: fromRails ? SpeedDialDirection.down : SpeedDialDirection.up,
+      switchLabelPosition: fromRails,
+      foregroundColor: colorScheme.onPrimary,
+      backgroundColor: colorScheme.primary,
+      activeForegroundColor: colorScheme.onSurfaceVariant,
+      activeBackgroundColor: colorScheme.surfaceVariant,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      spaceBetweenChildren: 13,
+      children: [
+        SpeedDialChild(
+          child: const Icon(Icons.rocket_launch),
+          label: '新規プロジェクト作成',
+          onTap: () {
+            RouteController(ref).home2fab();
+            RouteController.runPush(
+              context: context,
+              page: const PageCreatePj(),
+              isReplace: false,
+            );
+          },
+          foregroundColor: colorScheme.onPrimary,
+          backgroundColor: colorScheme.primary,
+          labelBackgroundColor: colorScheme.primary,
+          labelStyle: TextStyle(color: colorScheme.onPrimary),
+          shape: const CircleBorder(),
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.drive_file_move),
+          label: '作業フォルダーからプロジェクトをインポート',
+          onTap: () => null,
+          shape: const CircleBorder(),
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.folder_copy),
+          label: 'バックアップフォルダーから作業コピーを取る',
+          onTap: () => null,
+          shape: const CircleBorder(),
+        ),
+      ],
+    );
+  }
 
   Widget getBottomNavbar() {
     final pageState = ref.watch(pageProvider);

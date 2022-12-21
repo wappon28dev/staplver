@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aibas/model/data/class.dart';
 import 'package:aibas/model/state.dart';
+import 'package:aibas/vm/page.dart';
 import 'package:aibas/vm/svn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,6 +39,7 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
 
   Future<void> initProject() async {
     final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
+    final pageNotifier = ref.read(pageProvider.notifier);
 
     final queue = [
       () async => cmdSVNNotifier.runCreate(),
@@ -49,11 +51,11 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
     ];
 
     debugPrint('-- init project --');
-    cmdSVNNotifier.updateProgress(0);
+    pageNotifier.updateProgress(0);
 
     for (var i = 0; i < queue.length; i++) {
       await queue[i]();
-      cmdSVNNotifier.updateProgress(i / queue.length);
+      pageNotifier.updateProgress(i / queue.length);
     }
     debugPrint('-- end --');
   }
