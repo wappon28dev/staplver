@@ -1,4 +1,3 @@
-import 'package:aibas/model/state.dart';
 import 'package:aibas/vm/contents.dart';
 
 import 'package:flutter/material.dart';

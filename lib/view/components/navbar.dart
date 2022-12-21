@@ -1,5 +1,7 @@
 import 'package:aibas/model/data/class.dart';
+import 'package:aibas/view/routes/fab/checkout.dart';
 import 'package:aibas/view/routes/fab/create_pj.dart';
+import 'package:aibas/view/routes/fab/import_pj.dart';
 import 'package:aibas/view/util/transition.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
@@ -60,11 +62,10 @@ class NavBar {
           child: const Icon(Icons.rocket_launch),
           label: '新規プロジェクト作成',
           onTap: () {
-            RouteController(ref).home2fab();
+            RouteController(ref).home2createPj();
             RouteController.runPush(
               context: context,
               page: const PageCreatePj(),
-              isReplace: false,
             );
           },
           foregroundColor: colorScheme.onPrimary,
@@ -76,13 +77,25 @@ class NavBar {
         SpeedDialChild(
           child: const Icon(Icons.drive_file_move),
           label: '作業フォルダーからプロジェクトをインポート',
-          onTap: () => null,
+          onTap: () {
+            RouteController(ref).home2importPj();
+            RouteController.runPush(
+              context: context,
+              page: const PageImportPj(),
+            );
+          },
           shape: const CircleBorder(),
         ),
         SpeedDialChild(
           child: const Icon(Icons.folder_copy),
           label: 'バックアップフォルダーから作業コピーを取る',
-          onTap: () => null,
+          onTap: () {
+            RouteController(ref).home2checkout();
+            RouteController.runPush(
+              context: context,
+              page: const PageCheckout(),
+            );
+          },
           shape: const CircleBorder(),
         ),
       ],

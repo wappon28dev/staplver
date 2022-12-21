@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aibas/model/data/class.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'state.freezed.dart';
@@ -12,7 +13,7 @@ part 'state.freezed.dart';
 class PageState with _$PageState {
   const factory PageState({
     @Default(0) int navbarIndex,
-    @Default(0) int createPjIndex,
+    @Default(0) int wizardIndex,
     @Default(false) bool askWhenQuit,
     @Default(0) double progress,
     @Default(false) bool isVisibleProgressBar,
@@ -27,13 +28,11 @@ class ThemeState with _$ThemeState {
   }) = _ThemeState;
 }
 
-enum DirectoryKinds { defaultWorking, working, backup, none }
-
 @freezed
 class ContentsState with _$ContentsState {
   const factory ContentsState({
     Directory? defaultBackupDir,
-    @Default(DirectoryKinds.none) DirectoryKinds dragAndDropSendTo,
+    StateNotifier<Directory?>? dragAndDropSendTo,
   }) = _ContentsState;
 }
 

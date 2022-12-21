@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:aibas/model/state.dart';
-import 'package:aibas/view/routes/fab/create_pj.dart';
-import 'package:aibas/vm/svn.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,9 +24,9 @@ class ContentsNotifier extends StateNotifier<ContentsState> {
     state = state.copyWith(defaultBackupDir: newDefaultBackupDir);
   }
 
-  void updateDragAndDropSendTo(DirectoryKinds newDragAndDropSendTo) {
-    debugPrint('newDragAndDropSendTo => $newDragAndDropSendTo');
-    state = state.copyWith(dragAndDropSendTo: newDragAndDropSendTo);
+  void updateDragAndDropSendTo(StateNotifier<Directory?>? newStateNotifier) {
+    debugPrint('newStateNotifier => $newStateNotifier');
+    state = state.copyWith(dragAndDropSendTo: newStateNotifier);
   }
 
   Future<Directory> getSingleDirectory(List<String> paths) async {
@@ -47,22 +45,8 @@ class ContentsNotifier extends StateNotifier<ContentsState> {
   }
 
   Future<void> handleDragAndDrop(List<String> paths) async {
-    final dir = await getSingleDirectory(paths);
-    switch (state.dragAndDropSendTo) {
-      case DirectoryKinds.none:
-        return;
+    if (state.dragAndDropSendTo == null) return;
 
-      case DirectoryKinds.defaultWorking:
-        updateDefaultBackupDir(dir);
-        break;
-
-      case DirectoryKinds.backup:
-        ref.read(backupDirProvider.notifier).state = dir;
-        break;
-
-      case DirectoryKinds.working:
-        ref.read(workingDirProvider.notifier).state = dir;
-        ref.read(pjNameProvider.notifier).state = dir.name;
-    }
+    state.dragAndDropSendTo?.state = await getSingleDirectory(paths);
   }
 }

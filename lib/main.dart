@@ -1,11 +1,9 @@
 import 'package:aibas/view/root.dart';
-import 'package:aibas/view/util/window.dart';
 import 'package:aibas/vm/theme.dart';
 import 'package:drag_and_drop_windows/drag_and_drop_windows.dart';
 
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:window_manager/window_manager.dart';

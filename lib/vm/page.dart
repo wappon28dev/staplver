@@ -38,8 +38,8 @@ class PageNotifier extends StateNotifier<PageState> {
     state = state.copyWith(askWhenQuit: newAskWhenQuit);
   }
 
-  void updateCreatePjIndex(int newCreatePjIndex) {
-    debugPrint('newCreatePjIndex => $newCreatePjIndex');
-    state = state.copyWith(createPjIndex: newCreatePjIndex);
+  void updateWizardIndex(int newWizardIndex) {
+    debugPrint('newWizardIndex => $newWizardIndex');
+    state = state.copyWith(wizardIndex: newWizardIndex);
   }
 }
