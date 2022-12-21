@@ -17,10 +17,10 @@ class CompSetPjDetails extends ConsumerWidget {
     });
 
     return CompCreatePjHelper().wrap(
-      context,
-      ref,
-      ref.watch(elapsedProvider) == 5,
-      Column(
+      context: context,
+      ref: ref,
+      isValidContents: ref.watch(elapsedProvider) == 5,
+      mainContents: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Card(

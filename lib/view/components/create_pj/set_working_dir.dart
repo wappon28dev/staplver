@@ -11,9 +11,10 @@ class CompSetWorkingDir extends ConsumerWidget {
   const CompSetWorkingDir({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pjNameNotifier = ref.read(pjNameProvider.notifier);
-    final workingDirState = ref.watch(workingDirProvider);
-    final workingDirNotifier = ref.read(workingDirProvider.notifier);
+    final pjNameNotifier = ref.read(CompCreatePjHelper.pjNameProvider.notifier);
+    final workingDirState = ref.watch(CompCreatePjHelper.workingDirProvider);
+    final workingDirNotifier =
+        ref.read(CompCreatePjHelper.workingDirProvider.notifier);
 
     final layout = CompCreatePjHelper();
     final textController = TextEditingController(text: workingDirState?.path);
@@ -91,10 +92,10 @@ class CompSetWorkingDir extends ConsumerWidget {
     );
 
     return layout.wrap(
-      context,
-      ref,
-      isValidContents(),
-      Column(
+      context: context,
+      ref: ref,
+      isValidContents: isValidContents(),
+      mainContents: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(

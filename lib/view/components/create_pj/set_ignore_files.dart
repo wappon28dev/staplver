@@ -73,10 +73,10 @@ class _CompSetIgnoreFilesState extends ConsumerState<CompSetIgnoreFiles> {
     );
 
     return layout.wrap(
-      context,
-      ref,
-      true,
-      GestureDetector(
+      context: context,
+      ref: ref,
+      isValidContents: true,
+      mainContents: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },

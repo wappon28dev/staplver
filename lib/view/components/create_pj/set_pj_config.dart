@@ -14,11 +14,12 @@ class CompSetPjConfig extends ConsumerWidget {
     final contentsState = ref.watch(contentsProvider);
 
     // local ref
-    final pjNameState = ref.watch(pjNameProvider);
-    final pjNameNotifier = ref.read(pjNameProvider.notifier);
-    final workingDirState = ref.watch(workingDirProvider);
-    final backupDirState = ref.watch(backupDirProvider);
-    final backupDirNotifier = ref.read(backupDirProvider.notifier);
+    final pjNameState = ref.watch(CompCreatePjHelper.pjNameProvider);
+    final pjNameNotifier = ref.read(CompCreatePjHelper.pjNameProvider.notifier);
+    final workingDirState = ref.watch(CompCreatePjHelper.workingDirProvider);
+    final backupDirState = ref.watch(CompCreatePjHelper.backupDirProvider);
+    final backupDirNotifier =
+        ref.read(CompCreatePjHelper.backupDirProvider.notifier);
 
     final textController = TextEditingController(text: backupDirState?.path);
 
@@ -175,10 +176,10 @@ class CompSetPjConfig extends ConsumerWidget {
     );
 
     return CompCreatePjHelper().wrap(
-      context,
-      ref,
-      isValidContents(),
-      Column(
+      context: context,
+      ref: ref,
+      isValidContents: isValidContents(),
+      mainContents: Column(
         children: [
           const SizedBox(height: 20),
           Padding(
