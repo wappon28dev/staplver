@@ -85,6 +85,24 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
               )
             ],
           ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(10),
+            child: AnimatedOpacity(
+              opacity: pageState.isVisibleProgressBar ? 1 : 0,
+              duration: const Duration(milliseconds: 600),
+              child: TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                tween: Tween<double>(
+                  begin: 0,
+                  end: pageState.progress,
+                ),
+                builder: (context, value, _) => LinearProgressIndicator(
+                  value: pageState.progress != -1 ? value : null,
+                ),
+              ),
+            ),
+          ),
           actions: [
             Padding(
               padding: const EdgeInsets.all(10),

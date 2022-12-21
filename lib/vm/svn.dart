@@ -22,11 +22,6 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
   final Ref ref;
 
-  void updateProgress(double newProgress) {
-    debugPrint('newProgress => $newProgress');
-    state = state.copyWith(progress: newProgress);
-  }
-
   Future<bool> _directoryExist(ContentsState contentsState) async {
     final currentPj = ref.watch(projectsProvider).currentPj;
 

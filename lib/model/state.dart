@@ -14,6 +14,8 @@ class PageState with _$PageState {
     @Default(0) int navbarIndex,
     @Default(0) int createPjIndex,
     @Default(false) bool askWhenQuit,
+    @Default(0) double progress,
+    @Default(false) bool isVisibleProgressBar,
   }) = _PageState;
 }
 
@@ -39,7 +41,6 @@ class ContentsState with _$ContentsState {
 class CmdSVNState with _$CmdSVNState {
   const factory CmdSVNState({
     @Default('') String stdout,
-    @Default(0) double progress,
   }) = _CmdSVNState;
 }
 

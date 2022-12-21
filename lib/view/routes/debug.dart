@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aibas/vm/contents.dart';
+import 'package:aibas/vm/page.dart';
 import 'package:aibas/vm/projects.dart';
 import 'package:aibas/vm/svn.dart';
 import 'package:aibas/vm/theme.dart';
@@ -43,6 +44,23 @@ class PageDebug extends ConsumerWidget {
             ElevatedButton(
               onPressed: cmdSVNNotifier.runCreate,
               child: const Text('svn create'),
+            ),
+            const SizedBox(width: 20),
+            ElevatedButton(
+              onPressed: () async {
+                final pageNotifier = ref.read(pageProvider.notifier)
+                  ..updateProgress(0)
+                  ..updateIsVisibleProgressBar(true);
+
+                for (var i = 0; i <= 5; i++) {
+                  pageNotifier.updateProgress(0.2 * i);
+                  await Future<void>.delayed(const Duration(milliseconds: 300));
+                }
+                await Future<void>.delayed(const Duration(milliseconds: 600));
+                // pageNotifier.updateProgress(-1);
+                await pageNotifier.resetProgress();
+              },
+              child: const Text('progress'),
             ),
           ],
         ),

@@ -15,6 +15,23 @@ class PageNotifier extends StateNotifier<PageState> {
     state = state.copyWith(navbarIndex: newNavbarIndex);
   }
 
+  void updateProgress(double newProgress) {
+    // debugPrint('newProgress => $newProgress');
+    state = state.copyWith(progress: newProgress);
+  }
+
+  // ignore: avoid_positional_boolean_parameters
+  void updateIsVisibleProgressBar(bool newIsVisibleProgressBar) {
+    debugPrint('newIsVisibleProgressBar => $newIsVisibleProgressBar');
+    state = state.copyWith(isVisibleProgressBar: newIsVisibleProgressBar);
+  }
+
+  Future<void> resetProgress() async {
+    updateIsVisibleProgressBar(false);
+    await Future<void>.delayed(const Duration(milliseconds: 600));
+    updateProgress(0);
+  }
+
   // ignore: avoid_positional_boolean_parameters
   void updateAskWhenClose(bool newAskWhenQuit) {
     debugPrint('newAskWhenQuit => $newAskWhenQuit');
