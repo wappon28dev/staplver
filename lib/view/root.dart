@@ -1,20 +1,52 @@
+import 'dart:async';
+
 import 'package:aibas/view/components/navbar.dart';
 import 'package:aibas/view/routes/debug.dart';
 import 'package:aibas/view/routes/home.dart';
 import 'package:aibas/view/routes/projects.dart';
 import 'package:aibas/view/routes/settings.dart';
+import 'package:aibas/view/util/window.dart';
 import 'package:aibas/vm/now.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:window_manager/window_manager.dart';
 
-class AppRoot extends ConsumerWidget {
+class AppRoot extends ConsumerStatefulWidget {
   const AppRoot({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppRoot> createState() => _AppRootState();
+}
+
+class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
+  @override
+  void initState() {
+    windowManager.addListener(this);
+    init();
+    super.initState();
+  }
+
+  void init() {
+    windowManager
+      ..setPreventClose(true)
+      ..setMinimumSize(const Size(750, 770));
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> onWindowClose() async =>
+      WindowController(context: context, ref: ref).onWindowClose();
+
+  @override
+  Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
     final navbar = NavBar(ref: ref, orientation: orientation);
     final isPortrait = orientation == Orientation.portrait;

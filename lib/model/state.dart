@@ -12,7 +12,8 @@ part 'state.freezed.dart';
 class PageState with _$PageState {
   const factory PageState({
     @Default(0) int navbarIndex,
-    @Default(-1) int createPjIndex,
+    @Default(0) int createPjIndex,
+    @Default(false) bool askWhenQuit,
   }) = _PageState;
 }
 

@@ -63,15 +63,12 @@ class CompCreatePjHelper {
     await projectsNotifier.initProject();
   }
 
-  Future<void> runDispose(BuildContext context, WidgetRef ref) async {
+  void runDispose(BuildContext context, WidgetRef ref) {
     Navigator.pop(context);
 
-    final contentsNotifier = ref.read(contentsProvider.notifier);
-    final pageNotifier = ref.read(pageProvider.notifier);
-
-    contentsNotifier.updateDragAndDropSendTo(DirectoryKinds.none);
-    await Future<void>.delayed(const Duration(milliseconds: 300));
-    pageNotifier.updateCreatePjIndex(-1);
+    ref
+        .read(contentsProvider.notifier)
+        .updateDragAndDropSendTo(DirectoryKinds.none);
   }
 
   Widget wrap(
@@ -124,7 +121,7 @@ class CompCreatePjHelper {
                 ? () async {
                     await runCreateProject(ref);
                     // ignore: use_build_context_synchronously
-                    await runDispose(context, ref);
+                    runDispose(context, ref);
                   }
                 : null,
             style: ElevatedButton.styleFrom(

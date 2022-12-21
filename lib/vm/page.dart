@@ -15,6 +15,12 @@ class PageNotifier extends StateNotifier<PageState> {
     state = state.copyWith(navbarIndex: newNavbarIndex);
   }
 
+  // ignore: avoid_positional_boolean_parameters
+  void updateAskWhenClose(bool newAskWhenQuit) {
+    debugPrint('newAskWhenQuit => $newAskWhenQuit');
+    state = state.copyWith(askWhenQuit: newAskWhenQuit);
+  }
+
   void updateCreatePjIndex(int newCreatePjIndex) {
     debugPrint('newCreatePjIndex => $newCreatePjIndex');
     state = state.copyWith(createPjIndex: newCreatePjIndex);
