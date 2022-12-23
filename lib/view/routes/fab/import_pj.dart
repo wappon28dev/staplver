@@ -9,115 +9,63 @@ import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class CompImportPjHelper {
-  CompImportPjHelper();
-
+class PageImportPj extends ConsumerWidget {
+  const PageImportPj({super.key});
   static final workingDirProvider = StateProvider<Directory?>((ref) => null);
   static final importedPjProvider = StateProvider<Project?>((ref) => null);
 
-  static const components = [
-    CompSetWorkingDir(),
-    CompPjSummary(),
-  ];
-
-  void runInit(WidgetRef ref, int compIndex) {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final contentsNotifier = ref.read(contentsProvider.notifier);
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
 
-    final init = [
-      () => contentsNotifier.updateDragAndDropSendTo(workingDirNotifier),
-      () => contentsNotifier.updateDragAndDropSendTo(null)
+    final components = <WizardComponents>[
+      WizardComponents(
+        title: '作業フォルダーの選択',
+        runInit: () =>
+            contentsNotifier.updateDragAndDropSendTo(workingDirNotifier),
+        icon: Icons.folder_copy,
+        screen: const CompSetWorkingDir(),
+      ),
+      WizardComponents(
+        title: 'プロジェクト設定の確認',
+        runInit: () => contentsNotifier.updateDragAndDropSendTo(null),
+        icon: Icons.settings,
+        screen: const CompPjSummary(),
+      ),
     ];
 
-    init[compIndex]();
-  }
+    void runNextPage(WidgetRef ref) {
+      final pageState = ref.watch(pageProvider);
+      final pageNotifier = ref.read(pageProvider.notifier);
+      final index = pageState.wizardIndex;
 
-  void runNextPage(WidgetRef ref) {
-    final pageState = ref.watch(pageProvider);
-    final pageNotifier = ref.read(pageProvider.notifier);
-    final index = pageState.wizardIndex;
+      pageNotifier.updateWizardIndex(index + 1);
+      components[index + 1].runInit();
+    }
 
-    pageNotifier.updateWizardIndex(index + 1);
-    runInit(ref, index + 1);
-  }
+    void runPreviousPage(WidgetRef ref) {
+      final pageState = ref.watch(pageProvider);
+      final pageNotifier = ref.read(pageProvider.notifier);
+      final index = pageState.wizardIndex;
 
-  void runPreviousPage(WidgetRef ref) {
-    final pageState = ref.watch(pageProvider);
-    final pageNotifier = ref.read(pageProvider.notifier);
-    final index = pageState.wizardIndex;
+      pageNotifier.updateWizardIndex(index - 1);
+      components[index - 1].runInit();
+    }
 
-    pageNotifier.updateWizardIndex(index - 1);
-    runInit(ref, index - 1);
-  }
+    void runDispose(BuildContext context, WidgetRef ref) {
+      Navigator.pop(context);
+      ref.read(contentsProvider.notifier).updateDragAndDropSendTo(null);
+    }
 
-  void runDispose(BuildContext context, WidgetRef ref) {
-    Navigator.pop(context);
-    ref.read(contentsProvider.notifier).updateDragAndDropSendTo(null);
-  }
-
-  Widget wrap({
-    required BuildContext context,
-    required WidgetRef ref,
-    // ignore: avoid_positional_boolean_parameters
-    required bool isValidContents,
-    required Widget mainContents,
-  }) {
     return CompWizard(
+      wizardText: '作業フォルダーからプロジェクトをインポート',
       finishText: '作成',
       runNextPage: () => runNextPage(ref),
       runPreviousPage: () => runPreviousPage(ref),
       components: components,
       onFinished: () => runDispose(context, ref),
-    ).wrap(
-      context: context,
-      ref: ref,
-      isValidContents: isValidContents,
-      mainContents: mainContents,
-    );
-  }
-}
-
-class PageImportPj extends ConsumerWidget {
-  const PageImportPj({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final pageState = ref.watch(pageProvider);
-    final index = pageState.wizardIndex;
-    const comps = CompImportPjHelper.components;
-
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          SizedBox(
-            width: 60,
-            child: IconButton(
-              onPressed: () => CompImportPjHelper().runDispose(context, ref),
-              icon: const Icon(Icons.close),
-            ),
-          ),
-        ],
-        leading: const SizedBox(),
-        title: Text(
-          '作業フォルダーからプロジェクトをインポート (${index + 1}/${comps.length})',
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(6),
-          child: TweenAnimationBuilder<double>(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            tween: Tween<double>(
-              begin: 0,
-              end: (index + 1) / comps.length,
-            ),
-            builder: (context, value, _) =>
-                LinearProgressIndicator(value: value),
-          ),
-        ),
-      ),
-      body: comps[index],
-    );
+      onCanceled: () => runDispose(context, ref),
+    ).parentWrap(context: context, ref: ref);
   }
 }

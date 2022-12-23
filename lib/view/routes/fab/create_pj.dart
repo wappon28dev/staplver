@@ -12,88 +12,99 @@ import 'package:aibas/vm/projects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CompCreatePjHelper {
+class PageCreatePj extends ConsumerWidget {
+  const PageCreatePj({super.key});
+
   static final pjNameProvider = StateProvider<String>((ref) => '');
   static final workingDirProvider = StateProvider<Directory?>((ref) => null);
   static final backupDirProvider = StateProvider<Directory?>((ref) => null);
+  static final ignoreFilesProvider =
+      StateProvider<List<FileSystemEntity>>((ref) => []);
 
-  static final components = [
-    const CompSetWorkingDir(),
-    const CompSetIgnoreFiles(),
-    const CompSetPjConfig(),
-    CompSetPjDetails(),
-  ];
-
-  void runInit(WidgetRef ref, int compIndex) {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final contentsNotifier = ref.read(contentsProvider.notifier);
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
     final backupDirNotifier = ref.read(backupDirProvider.notifier);
 
-    final init = [
-      () => contentsNotifier.updateDragAndDropSendTo(workingDirNotifier),
-      () => contentsNotifier.updateDragAndDropSendTo(null),
-      () => contentsNotifier.updateDragAndDropSendTo(backupDirNotifier),
-      () => contentsNotifier.updateDragAndDropSendTo(null),
+    final components = [
+      WizardComponents(
+        title: '作業フォルダーの選択',
+        runInit: () =>
+            contentsNotifier.updateDragAndDropSendTo(workingDirNotifier),
+        icon: Icons.drive_file_move,
+        screen: const CompSetWorkingDir(),
+      ),
+      WizardComponents(
+        title: 'バージョン管理外のファイルを選択',
+        runInit: () => contentsNotifier.updateDragAndDropSendTo(null),
+        icon: Icons.folder_off,
+        screen: const CompSetIgnoreFiles(),
+      ),
+      WizardComponents(
+        title: 'プロジェクトの設定',
+        runInit: () =>
+            contentsNotifier.updateDragAndDropSendTo(backupDirNotifier),
+        icon: Icons.settings,
+        screen: const CompSetPjConfig(),
+      ),
+      WizardComponents(
+        title: 'プロジェクトの詳細',
+        runInit: () => contentsNotifier.updateDragAndDropSendTo(null),
+        icon: Icons.settings_suggest,
+        screen: CompSetPjDetails(),
+      ),
     ];
 
-    init[compIndex]();
-  }
+    void runNextPage(WidgetRef ref) {
+      final pageState = ref.watch(pageProvider);
+      final pageNotifier = ref.read(pageProvider.notifier);
+      final index = pageState.wizardIndex;
 
-  void runNextPage(WidgetRef ref) {
-    final pageState = ref.watch(pageProvider);
-    final pageNotifier = ref.read(pageProvider.notifier);
-    final index = pageState.wizardIndex;
-
-    pageNotifier.updateWizardIndex(index + 1);
-    runInit(ref, index + 1);
-  }
-
-  void runPreviousPage(WidgetRef ref) {
-    final pageState = ref.watch(pageProvider);
-    final pageNotifier = ref.read(pageProvider.notifier);
-    final index = pageState.wizardIndex;
-
-    pageNotifier.updateWizardIndex(index - 1);
-    runInit(ref, index - 1);
-  }
-
-  Future<void> runCreateProject(WidgetRef ref) async {
-    final projectsNotifier = ref.watch(projectsProvider.notifier);
-
-    final pjNameState = ref.watch(pjNameProvider);
-    final workingDirState = ref.watch(workingDirProvider);
-    final backupDirState = ref.watch(backupDirProvider);
-
-    if (workingDirState == null || backupDirState == null) {
-      throw Exception('newProject contains null!');
+      pageNotifier.updateWizardIndex(index + 1);
+      components[index + 1].runInit();
     }
 
-    final newProject = Project(
-      name: pjNameState,
-      workingDir: workingDirState,
-      backupDir: backupDirState,
-      backupMin: 20,
-    );
+    void runPreviousPage(WidgetRef ref) {
+      final pageState = ref.watch(pageProvider);
+      final pageNotifier = ref.read(pageProvider.notifier);
+      final index = pageState.wizardIndex;
 
-    projectsNotifier
-      ..updateSavedProject([newProject])
-      ..updateCurrentPjIndex(0);
-    await projectsNotifier.initProject();
-  }
+      pageNotifier.updateWizardIndex(index - 1);
+      components[index - 1].runInit();
+    }
 
-  void runDispose(BuildContext context, WidgetRef ref) {
-    Navigator.pop(context);
-    ref.read(contentsProvider.notifier).updateDragAndDropSendTo(null);
-  }
+    Future<void> runCreateProject(WidgetRef ref) async {
+      final projectsNotifier = ref.watch(projectsProvider.notifier);
 
-  Widget wrap({
-    required BuildContext context,
-    required WidgetRef ref,
-    // ignore: avoid_positional_boolean_parameters
-    required bool isValidContents,
-    required Widget mainContents,
-  }) {
+      final pjNameState = ref.watch(pjNameProvider);
+      final workingDirState = ref.watch(workingDirProvider);
+      final backupDirState = ref.watch(backupDirProvider);
+
+      if (workingDirState == null || backupDirState == null) {
+        throw Exception('newProject contains null!');
+      }
+
+      final newProject = Project(
+        name: pjNameState,
+        workingDir: workingDirState,
+        backupDir: backupDirState,
+        backupMin: 20,
+      );
+
+      projectsNotifier
+        ..updateSavedProject([newProject])
+        ..updateCurrentPjIndex(0);
+      await projectsNotifier.initProject();
+    }
+
+    void runDispose(BuildContext context, WidgetRef ref) {
+      Navigator.pop(context);
+      ref.read(contentsProvider.notifier).updateDragAndDropSendTo(null);
+    }
+
     return CompWizard(
+      wizardText: '新規プロジェクトの作成',
       finishText: '作成',
       runNextPage: () => runNextPage(ref),
       runPreviousPage: () => runPreviousPage(ref),
@@ -103,56 +114,7 @@ class CompCreatePjHelper {
         // ignore: use_build_context_synchronously
         runDispose(context, ref);
       },
-    ).wrap(
-      context: context,
-      ref: ref,
-      isValidContents: isValidContents,
-      mainContents: mainContents,
-    );
-  }
-}
-
-class PageCreatePj extends ConsumerWidget {
-  const PageCreatePj({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final pageState = ref.watch(pageProvider);
-    final index = pageState.wizardIndex;
-    final comps = CompCreatePjHelper.components;
-
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          SizedBox(
-            width: 60,
-            child: IconButton(
-              onPressed: () => CompCreatePjHelper().runDispose(context, ref),
-              icon: const Icon(Icons.close),
-            ),
-          ),
-        ],
-        leading: const SizedBox(),
-        title: Text(
-          '新規プロジェクトの作成 (${index + 1}/${comps.length})',
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(6),
-          child: TweenAnimationBuilder<double>(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            tween: Tween<double>(
-              begin: 0,
-              end: (index + 1) / comps.length,
-            ),
-            builder: (context, value, _) =>
-                LinearProgressIndicator(value: value),
-          ),
-        ),
-      ),
-      body: comps[index],
-    );
+      onCanceled: () => runDispose(context, ref),
+    ).parentWrap(context: context, ref: ref);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:aibas/view/components/wizard.dart';
 import 'package:aibas/view/routes/fab/checkout.dart';
 import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:aibas/view/routes/fab/import_pj.dart';
@@ -30,39 +31,44 @@ class RouteController {
     }
   }
 
+  void _home2fabInit() {
+    ref.read(pageProvider.notifier).updateWizardIndex(0);
+    ref.read(CompWizard.isValidContentsProvider.notifier).state = false;
+  }
+
   void home2createPj() {
-    final pageNotifier = ref.read(pageProvider.notifier);
     final contentsState = ref.watch(contentsProvider);
     final contentsNotifier = ref.read(contentsProvider.notifier);
 
     // local
-    final pjNameNotifier = ref.read(CompCreatePjHelper.pjNameProvider.notifier);
+    final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);
     final workingDirNotifier =
-        ref.read(CompCreatePjHelper.workingDirProvider.notifier);
-    final backupDirNotifier =
-        ref.read(CompCreatePjHelper.backupDirProvider.notifier);
+        ref.read(PageCreatePj.workingDirProvider.notifier);
+    final backupDirNotifier = ref.read(PageCreatePj.backupDirProvider.notifier);
+    final ignoreFilesNotifier =
+        ref.read(PageCreatePj.ignoreFilesProvider.notifier);
 
     debugPrint('-- init (home -> createPj) --');
-    pageNotifier.updateWizardIndex(0);
+    _home2fabInit();
     pjNameNotifier.state = '';
     workingDirNotifier.state = null;
     backupDirNotifier.state = contentsState.defaultBackupDir;
+    ignoreFilesNotifier.state = [];
     contentsNotifier.updateDragAndDropSendTo(workingDirNotifier);
     debugPrint('-- end --');
   }
 
   void home2importPj() {
-    final pageNotifier = ref.read(pageProvider.notifier);
     final contentsNotifier = ref.read(contentsProvider.notifier);
 
     // local
     final workingDirNotifier =
-        ref.read(CompImportPjHelper.workingDirProvider.notifier);
+        ref.read(PageImportPj.workingDirProvider.notifier);
     final importedPjNotifier =
-        ref.read(CompImportPjHelper.importedPjProvider.notifier);
+        ref.read(PageImportPj.importedPjProvider.notifier);
 
     debugPrint('-- init (home -> importPj) --');
-    pageNotifier.updateWizardIndex(0);
+    _home2fabInit();
     workingDirNotifier.state = null;
     importedPjNotifier.state = null;
     contentsNotifier.updateDragAndDropSendTo(workingDirNotifier);
@@ -70,20 +76,19 @@ class RouteController {
   }
 
   void home2checkout() {
-    final pageNotifier = ref.read(pageProvider.notifier);
     final contentsNotifier = ref.read(contentsProvider.notifier);
 
     // local
+    final backupDirNotifier = ref.read(PageCheckout.backupDirProvider.notifier);
     final workingDirNotifier =
-        ref.read(CompCheckoutHelper.workingDirProvider.notifier);
-    final newPjDataNotifier =
-        ref.read(CompCheckoutHelper.newPjDataProvider.notifier);
+        ref.read(PageCheckout.workingDirProvider.notifier);
+    final newPjDataNotifier = ref.read(PageCheckout.newPjDataProvider.notifier);
 
     debugPrint('-- init (home -> createPj) --');
-    pageNotifier.updateWizardIndex(0);
+    _home2fabInit();
     workingDirNotifier.state = null;
     newPjDataNotifier.state = null;
-    contentsNotifier.updateDragAndDropSendTo(workingDirNotifier);
+    contentsNotifier.updateDragAndDropSendTo(backupDirNotifier);
     debugPrint('-- end --');
   }
 }
