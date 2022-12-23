@@ -85,6 +85,8 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
               )
             ],
           ),
+          leading: const SizedBox(),
+          leadingWidth: 0,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(10),
             child: AnimatedOpacity(
@@ -130,7 +132,6 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
               ),
             ),
           ],
-          leadingWidth: 0,
         ),
         SliverToBoxAdapter(
           child: pages[pageState.navbarIndex],

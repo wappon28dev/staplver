@@ -23,3 +23,13 @@ class Destination with _$Destination {
     required String label,
   }) = _Destination;
 }
+
+@freezed
+class WizardComponents with _$WizardComponents {
+  const factory WizardComponents({
+    required String title,
+    required VoidCallback runInit,
+    required IconData icon,
+    required Widget screen,
+  }) = _WizardComponents;
+}

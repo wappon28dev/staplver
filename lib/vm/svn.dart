@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:aibas/model/constant.dart';
 import 'package:aibas/model/state.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/projects.dart';
@@ -10,12 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final cmdSVNProvider =
     StateNotifierProvider<CmdSVNNotifier, CmdSVNState>(CmdSVNNotifier.new);
-
-extension FileExtension on Directory {
-  String get name {
-    return path.split('\\').last;
-  }
-}
 
 class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   CmdSVNNotifier(this.ref) : super(const CmdSVNState());

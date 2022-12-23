@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:aibas/model/constant.dart';
+import 'package:aibas/view/components/wizard.dart';
 import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/svn.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,13 +14,15 @@ class CompSetPjConfig extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final contentsState = ref.watch(contentsProvider);
 
+    final isValidContentsNotifier =
+        ref.read(CompWizard.isValidContentsProvider.notifier);
+
     // local ref
-    final pjNameState = ref.watch(CompCreatePjHelper.pjNameProvider);
-    final pjNameNotifier = ref.read(CompCreatePjHelper.pjNameProvider.notifier);
-    final workingDirState = ref.watch(CompCreatePjHelper.workingDirProvider);
-    final backupDirState = ref.watch(CompCreatePjHelper.backupDirProvider);
-    final backupDirNotifier =
-        ref.read(CompCreatePjHelper.backupDirProvider.notifier);
+    final pjNameState = ref.watch(PageCreatePj.pjNameProvider);
+    final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);
+    final workingDirState = ref.watch(PageCreatePj.workingDirProvider);
+    final backupDirState = ref.watch(PageCreatePj.backupDirProvider);
+    final backupDirNotifier = ref.read(PageCreatePj.backupDirProvider.notifier);
 
     final textController = TextEditingController(text: backupDirState?.path);
 
@@ -29,6 +32,11 @@ class CompSetPjConfig extends ConsumerWidget {
 
       return workingDirState.existsSync() && backupDirState.existsSync();
     }
+
+    ref.listen(
+      PageCreatePj.workingDirProvider,
+      (_, next) => isValidContentsNotifier.state = isValidContents(),
+    );
 
     String getWorkingDirStr() {
       if (workingDirState != null) {
@@ -175,41 +183,36 @@ class CompSetPjConfig extends ConsumerWidget {
       ],
     );
 
-    return CompCreatePjHelper().wrap(
-      context: context,
-      ref: ref,
-      isValidContents: isValidContents(),
-      mainContents: Column(
-        children: [
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(height: 40),
-                pjNameField,
-                const SizedBox(height: 40),
-                workingDirField,
-                const SizedBox(height: 40),
-                backupDirField,
-              ],
-            ),
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const SizedBox(height: 40),
+              pjNameField,
+              const SizedBox(height: 40),
+              workingDirField,
+              const SizedBox(height: 40),
+              backupDirField,
+            ],
           ),
-          SizedBox(
-            height: 40,
-            child: TextButton.icon(
-              label: const Text('リセット'),
-              icon: const Icon(Icons.restart_alt),
-              onPressed: () => textController.text =
-                  contentsState.defaultBackupDir?.path ??
-                      backupDirState?.path ??
-                      '',
-            ),
+        ),
+        SizedBox(
+          height: 40,
+          child: TextButton.icon(
+            label: const Text('リセット'),
+            icon: const Icon(Icons.restart_alt),
+            onPressed: () => textController.text =
+                contentsState.defaultBackupDir?.path ??
+                    backupDirState?.path ??
+                    '',
           ),
-          const SizedBox(height: 20),
-        ],
-      ),
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }

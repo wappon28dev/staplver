@@ -1,27 +1,39 @@
 import 'dart:io';
 
+import 'package:aibas/model/constant.dart';
+import 'package:aibas/view/components/wizard.dart';
 import 'package:aibas/view/routes/fab/create_pj.dart';
-import 'package:aibas/vm/svn.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class CompSetWorkingDir extends ConsumerWidget {
+class CompSetWorkingDir extends HookConsumerWidget {
   const CompSetWorkingDir({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pjNameNotifier = ref.read(CompCreatePjHelper.pjNameProvider.notifier);
-    final workingDirState = ref.watch(CompCreatePjHelper.workingDirProvider);
-    final workingDirNotifier =
-        ref.read(CompCreatePjHelper.workingDirProvider.notifier);
+    // wizard ref
+    final isValidContentsNotifier =
+        ref.read(CompWizard.isValidContentsProvider.notifier);
 
-    final layout = CompCreatePjHelper();
+    // local ref
+    final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);
+    final workingDirState = ref.watch(PageCreatePj.workingDirProvider);
+    final workingDirNotifier =
+        ref.read(PageCreatePj.workingDirProvider.notifier);
+
     final textController = TextEditingController(text: workingDirState?.path);
 
     bool isValidContents() {
       return workingDirState != null;
     }
+
+    // state callback
+    ref.listen(
+      PageCreatePj.workingDirProvider,
+      (_, next) => isValidContentsNotifier.state = isValidContents(),
+    );
 
     Future<void> handleClick() async {
       final selectedDirectory = await FilePicker.platform.getDirectoryPath();
@@ -91,57 +103,50 @@ class CompSetWorkingDir extends ConsumerWidget {
       ],
     );
 
-    return layout.wrap(
-      context: context,
-      ref: ref,
-      isValidContents: isValidContents(),
-      mainContents: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: handleClick,
-            child: DottedBorder(
-              color: Theme.of(context).colorScheme.tertiary,
-              dashPattern: const [15, 6],
-              strokeWidth: 3,
-              child: Container(
-                height: 400,
-                width: 400,
-                color: Theme.of(context).colorScheme.tertiaryContainer,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const [
-                    Text(
-                      'バージョン管理をするフォルダーを\nドラッグ & ドロップ',
-                      style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                    Icon(Icons.create_new_folder, size: 100),
-                    Text(
-                      'または, クリックしてフォルダーを選択',
-                      style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                    ),
-                  ],
-                ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: handleClick,
+          child: DottedBorder(
+            color: Theme.of(context).colorScheme.tertiary,
+            dashPattern: const [15, 6],
+            strokeWidth: 3,
+            child: Container(
+              height: 400,
+              width: 400,
+              color: Theme.of(context).colorScheme.tertiaryContainer,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: const [
+                  Text(
+                    'バージョン管理をするフォルダーを\nドラッグ & ドロップ',
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                  Icon(Icons.create_new_folder, size: 100),
+                  Text(
+                    'または, クリックしてフォルダーを選択',
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 40),
-          workingDirField,
-          SizedBox(
-            height: 40,
-            child: TextButton.icon(
-              label: const Text('リセット'),
-              icon: const Icon(Icons.restart_alt),
-              onPressed: isValidContents()
-                  ? () => workingDirNotifier.state = null
-                  : null,
-            ),
+        ),
+        const SizedBox(height: 40),
+        workingDirField,
+        SizedBox(
+          height: 40,
+          child: TextButton.icon(
+            label: const Text('リセット'),
+            icon: const Icon(Icons.restart_alt),
+            onPressed: isValidContents()
+                ? () => workingDirNotifier.state = null
+                : null,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
