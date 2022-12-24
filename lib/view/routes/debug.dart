@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aibas/repository/config.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:aibas/vm/projects.dart';
@@ -13,7 +14,6 @@ class PageDebug extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeState = ref.watch(themeProvider);
     final contentsState = ref.watch(contentsProvider);
     final cmdSVNState = ref.watch(cmdSVNProvider);
     final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
@@ -96,6 +96,27 @@ class PageDebug extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => ConfigController().loadAppConfig(ref),
+              child: const Text('load config'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: ConfigController().createEmptyAppConfig,
+              child: const Text('create empty config'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async => ConfigController().saveAppConfig(ref),
+              child: const Text('save config'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
         SizedBox(
           width: 200,
           child: TextField(
@@ -111,8 +132,6 @@ class PageDebug extends ConsumerWidget {
     ${projectsState.savedProjects.toString()}
   currentPjIndex:
     ${projectsState.currentPjIndex.toString()}
-  currentPj:
-    ${projectsState.currentPj.toString()}
   defaultWorkingDir:
     ${contentsState.defaultBackupDir?.path}
   

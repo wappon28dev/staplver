@@ -14,6 +14,12 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     state = state.copyWith(themeMode: newThemeMode);
   }
 
+  // ignore: avoid_positional_boolean_parameters
+  void updateUseDynamicColor(bool newUseDynamicColor) {
+    debugPrint('newUseDynamicColor => $newUseDynamicColor');
+    state = state.copyWith(useDynamicColor: newUseDynamicColor);
+  }
+
   ThemeData getLightTheme(ColorScheme? lightColorScheme, BuildContext context) {
     var scheme = ColorScheme.fromSeed(
       seedColor: Colors.green,

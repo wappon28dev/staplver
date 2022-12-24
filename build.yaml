@@ -6,12 +6,14 @@ targets:
           include:
             - lib/model/state.dart
             - lib/model/data/class.dart
+            - lib/model/data/config.dart
 
       json_serializable:
         generate_for:
           include:
             - lib/model/state.dart
             - lib/model/data/class.dart
+            - lib/model/data/config.dart
 
         options:
           any_map: true
