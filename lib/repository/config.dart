@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:aibas/model/constant.dart';
 import 'package:aibas/model/data/class.dart';
 import 'package:aibas/model/data/config.dart';
 import 'package:aibas/vm/contents.dart';
@@ -14,7 +15,7 @@ import 'package:path_provider/path_provider.dart';
 class ConfigController {
   Future<File> get appConfigPath async {
     final appConfigDir = await getApplicationSupportDirectory();
-    return File('${appConfigDir.path}/config.json');
+    return Future.value(File('${appConfigDir.path}/config.json'));
   }
 
   PjConfig project2PjConfig(Project project) => PjConfig(
@@ -38,11 +39,13 @@ class ConfigController {
       return Future.error('backupMin is invalid');
     }
 
-    return Project(
-      name: pjConfig.name,
-      workingDir: Directory(pjConfig.workingDirStr),
-      backupDir: Directory(pjConfig.backupDirStr),
-      backupMin: pjConfig.backupMin,
+    return Future.value(
+      Project(
+        name: pjConfig.name,
+        workingDir: Directory(pjConfig.workingDirStr),
+        backupDir: Directory(pjConfig.backupDirStr),
+        backupMin: pjConfig.backupMin,
+      ),
     );
   }
 
@@ -72,11 +75,14 @@ class ConfigController {
   }
 
   Future<List<Project>> appConfig2Projects(AppConfig appConfig) async {
+    debugPrint('-- appConfig2Projects --');
+
     final savedProjectPath = <Directory, Directory>{};
 
-    if (appConfig.savedProjectPath.isEmpty) return <Project>[];
+    if (appConfig.savedProjectPath.isEmpty) return Future.value(<Project>[]);
 
-    appConfig.savedProjectPath.forEach((backupDir, workingDir) async {
+    await appConfig.savedProjectPath
+        .forEachAsync((backupDir, workingDir) async {
       if (!await Directory(backupDir).exists()) {
         return Future.error('backupDir not found');
       }
@@ -85,25 +91,24 @@ class ConfigController {
         return Future.error('workingDir not found');
       }
 
-      savedProjectPath.addAll(
-        {Directory(backupDir): Directory(workingDir)},
-      );
+      savedProjectPath.addAll({Directory(backupDir): Directory(workingDir)});
     });
-
     final savedProject = <Project>[];
 
-    savedProjectPath.forEach((backupDir, workingDir) async {
+    await savedProjectPath.forEachAsync((backupDir, workingDir) async {
       final pjConfig = await loadPjConfig(backupDir);
-      if (pjConfig == null) return;
-      savedProject.add(await pjConfig2Project(pjConfig));
-    });
 
-    return savedProject;
+      if (pjConfig == null) return Future.error('pjConfig is null!');
+
+      final project = await pjConfig2Project(pjConfig);
+      savedProject.add(project);
+    });
+    debugPrint('-- end --');
+    return Future.value(savedProject);
   }
 
   Future<void> loadAppConfig(WidgetRef ref) async {
     debugPrint('-- load appConfig --');
-
     final projectsNotifier = ref.read(projectsProvider.notifier);
     final contentsNotifier = ref.read(contentsProvider.notifier);
     final themeNotifier = ref.read(themeProvider.notifier);
@@ -112,7 +117,7 @@ class ConfigController {
 
     try {
       final appConfigJson =
-          json.decode((await appConfigPath).readAsStringSync())
+          json.decode(await (await appConfigPath).readAsString())
               as Map<String, dynamic>;
       appConfig = AppConfig.fromJson(appConfigJson);
       // ignore: avoid_catches_without_on_clauses
@@ -137,7 +142,7 @@ class ConfigController {
       ..updateUseDynamicColor(appConfig.useDynamicColor);
 
     debugPrint('config: $appConfig');
-    debugPrint('-- loaded --');
+    debugPrint('-- loaded appConfig --');
   }
 
   Future<void> saveAppConfig(WidgetRef ref) async {
@@ -148,7 +153,7 @@ class ConfigController {
     await (await appConfigPath).writeAsString(appConfigStr);
 
     debugPrint(appConfigStr);
-    debugPrint('-- saved --');
+    debugPrint('-- saved appConfig --');
   }
 
   Future<PjConfig?> loadPjConfig(Directory backupDir) async {
@@ -172,8 +177,8 @@ class ConfigController {
     }
     debugPrint('target: ${backupDir.path}/aibas/pj_config');
     debugPrint('config: $pjConfig');
-    debugPrint('-- loaded -- ');
-    return pjConfig;
+    debugPrint('-- loaded pjConfig -- ');
+    return Future.value(pjConfig);
   }
 
   Future<void> createPjConfig(Project project) async {
@@ -189,7 +194,7 @@ class ConfigController {
     final pjConfigStr = json.encode(project2PjConfig(project).toJson());
     await pjConfigPath.writeAsString(pjConfigStr);
 
-    debugPrint('$pjConfigStr\n-- created --');
+    debugPrint('$pjConfigStr\n-- created pjConfig --');
   }
 
   Future<void> createEmptyAppConfig() async {
@@ -203,6 +208,6 @@ class ConfigController {
     final appConfigStr = json.encode(emptyAppConfig.toJson());
     await (await appConfigPath).writeAsString(appConfigStr);
     debugPrint(appConfigStr);
-    debugPrint('-- created --');
+    debugPrint('-- created emptyConfig --');
   }
 }
