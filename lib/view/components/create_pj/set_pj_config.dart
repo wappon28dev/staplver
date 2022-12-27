@@ -19,14 +19,14 @@ class CompSetPjConfig extends ConsumerWidget {
 
     // local ref
     final pjNameState = ref.watch(PageCreatePj.pjNameProvider);
+    final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);
     final workingDirState = ref.watch(PageCreatePj.workingDirProvider);
     final backupDirState = ref.watch(PageCreatePj.backupDirProvider);
     final backupDirNotifier = ref.read(PageCreatePj.backupDirProvider.notifier);
 
-    final pjNameFormController =
-        TextEditingController(text: workingDirState?.name);
+    final pjNameFormController = TextEditingController(text: pjNameState);
     final backupDirFormController =
-        TextEditingController(text: backupDirState?.path);
+        TextEditingController(text: backupDirState?.path ?? '');
 
     bool isValidContents() {
       // null check
@@ -89,7 +89,7 @@ class CompSetPjConfig extends ConsumerWidget {
     }
 
     void updateValidState() {
-      final isPjNameValid = pjNameValidator(pjNameFormController.text) == null;
+      final isPjNameValid = pjNameValidator(pjNameState) == null;
       final isWorkingDirValid =
           backupDirValidator(backupDirFormController.text) == null;
       isValidContentsNotifier.state = isPjNameValid && isWorkingDirValid;
@@ -126,13 +126,16 @@ class CompSetPjConfig extends ConsumerWidget {
                 labelText: '重複しないプロジェクト名を入力',
                 border: const OutlineInputBorder(),
               ),
-              onChanged: (_) => updateValidState(),
+              onChanged: (_) {
+                updateValidState();
+              },
             ),
             onFocusChange: (hasFocus) {
               if (!hasFocus) {
-                if (backupDirValidator(backupDirFormController.text) == null) {
-                  backupDirNotifier.state =
-                      Directory(backupDirFormController.text);
+                if (pjNameValidator(pjNameFormController.text) == null) {
+                  pjNameNotifier.state = pjNameFormController.text;
+                } else {
+                  pjNameNotifier.state = '';
                 }
               }
             },
@@ -248,10 +251,13 @@ class CompSetPjConfig extends ConsumerWidget {
           child: TextButton.icon(
             label: const Text('リセット'),
             icon: const Icon(Icons.restart_alt),
-            onPressed: () => backupDirFormController.text =
-                contentsState.defaultBackupDir?.path ??
-                    backupDirState?.path ??
-                    '',
+            onPressed: () {
+              pjNameFormController.text = workingDirState?.name ?? '';
+              backupDirFormController.text =
+                  contentsState.defaultBackupDir?.path ??
+                      backupDirState?.path ??
+                      '';
+            },
           ),
         ),
         const SizedBox(height: 20),

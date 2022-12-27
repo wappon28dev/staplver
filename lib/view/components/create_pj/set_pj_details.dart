@@ -1,19 +1,15 @@
+import 'package:aibas/view/components/wizard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CompSetPjDetails extends ConsumerWidget {
-  CompSetPjDetails({super.key});
-  final elapsedProvider = StateProvider<int>((ref) => 0);
+  const CompSetPjDetails({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const delaySec = 5;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (ref.read(elapsedProvider) >= delaySec) return;
-      await Future<void>.delayed(const Duration(seconds: 1))
-          .then((value) => ref.read(elapsedProvider.notifier).state++);
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => ref.read(CompWizard.isValidContentsProvider.notifier).state = true,
+    );
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -48,9 +44,6 @@ class CompSetPjDetails extends ConsumerWidget {
             ),
           ),
         ),
-        ref.watch(elapsedProvider) < delaySec
-            ? Text((delaySec - ref.watch(elapsedProvider)).toString())
-            : const Text('')
       ],
     );
   }

@@ -6,7 +6,6 @@ import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class CompSetWorkingDir extends HookConsumerWidget {

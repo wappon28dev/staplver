@@ -32,7 +32,7 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
   }
 
   void windowInit() {
-    windowManager..setPreventClose(true);
+    windowManager.setPreventClose(true);
   }
 
   @override
@@ -56,6 +56,7 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
     final dateStr =
         DateFormat.yMMMMEEEEd('ja').format(nowState.value ?? DateTime.now());
     final timeStr = DateFormat.Hms().format(nowState.value ?? DateTime.now());
+    final dest = NavBar(ref: ref, orientation: orientation).getDest();
 
     const pages = [
       PageHome(),
@@ -80,7 +81,7 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
                 ),
               ),
               Text(
-                ' / ${NavBar.dest[pageState.navbarIndex].label}',
+                ' / ${dest[pageState.navbarIndex].label}',
                 style: const TextStyle(fontSize: 20),
               )
             ],

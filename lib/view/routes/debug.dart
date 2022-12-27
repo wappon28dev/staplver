@@ -5,7 +5,6 @@ import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:aibas/vm/projects.dart';
 import 'package:aibas/vm/svn.dart';
-import 'package:aibas/vm/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -52,7 +51,8 @@ class PageDebug extends ConsumerWidget {
                   for (var i = 0; i <= 5; i++) {
                     pageNotifier.updateProgress(0.2 * i);
                     await Future<void>.delayed(
-                        const Duration(milliseconds: 300));
+                      const Duration(milliseconds: 300),
+                    );
                   }
                   await Future<void>.delayed(const Duration(milliseconds: 600));
                   // pageNotifier.updateProgress(-1);
