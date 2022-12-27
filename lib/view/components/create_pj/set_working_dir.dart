@@ -25,14 +25,12 @@ class CompSetWorkingDir extends HookConsumerWidget {
 
     final textController = TextEditingController(text: workingDirState?.path);
 
-    bool isValidContents() {
-      return workingDirState != null;
-    }
+    bool isValidContents() =>
+        workingDirState != null && workingDirState.existsSync();
 
     // state callback
-    ref.listen(
-      PageCreatePj.workingDirProvider,
-      (_, next) => isValidContentsNotifier.state = isValidContents(),
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => isValidContentsNotifier.state = isValidContents(),
     );
 
     Future<void> handleClick() async {
@@ -84,6 +82,8 @@ class CompSetWorkingDir extends HookConsumerWidget {
                 hintText: '(ドラッグアンドドロップでも指定可)',
                 border: OutlineInputBorder(),
               ),
+              onChanged: (_) => isValidContentsNotifier.state =
+                  validator(textController.text) == null,
             ),
             onFocusChange: (hasFocus) {
               if (!hasFocus) {

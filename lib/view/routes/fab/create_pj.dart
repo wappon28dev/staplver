@@ -36,10 +36,10 @@ class PageCreatePj extends ConsumerWidget {
         screen: const CompSetWorkingDir(),
       ),
       WizardComponents(
-        title: 'バージョン管理外のファイルを選択',
+        title: 'バージョンの管理外にする ファイル/フォルダー を選択',
         runInit: () => contentsNotifier.updateDragAndDropSendTo(null),
         icon: Icons.folder_off,
-        screen: const CompSetIgnoreFiles(),
+        screen: CompSetIgnoreFiles(),
       ),
       WizardComponents(
         title: 'プロジェクトの設定',
