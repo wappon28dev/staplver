@@ -12,6 +12,19 @@ import 'vm/contents.dart';
 
 void main() async {
   await initializeDateFormatting('ja_JP');
+  WidgetsFlutterBinding.ensureInitialized();
+  // Must add this line.
+  await windowManager.ensureInitialized();
+
+  const windowOptions = WindowOptions(
+    minimumSize: Size(750, 770),
+    title: 'AIBAS',
+  );
+  await windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   runApp(const ProviderScope(child: AIBAS()));
 }
 

@@ -5,6 +5,7 @@ import 'package:aibas/view/routes/debug.dart';
 import 'package:aibas/view/routes/home.dart';
 import 'package:aibas/view/routes/projects.dart';
 import 'package:aibas/view/routes/settings.dart';
+import 'package:aibas/view/util/transition.dart';
 import 'package:aibas/view/util/window.dart';
 import 'package:aibas/vm/now.dart';
 import 'package:aibas/vm/page.dart';
@@ -25,14 +26,13 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
   @override
   void initState() {
     windowManager.addListener(this);
-    init();
+    windowInit();
+    RouteController(ref).appInit();
     super.initState();
   }
 
-  void init() {
-    windowManager
-      ..setPreventClose(true)
-      ..setMinimumSize(const Size(750, 770));
+  void windowInit() {
+    windowManager..setPreventClose(true);
   }
 
   @override

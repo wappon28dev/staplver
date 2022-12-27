@@ -1,3 +1,4 @@
+import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/wizard.dart';
 import 'package:aibas/view/routes/fab/checkout.dart';
 import 'package:aibas/view/routes/fab/create_pj.dart';
@@ -29,6 +30,10 @@ class RouteController {
         (_) => false,
       );
     }
+  }
+
+  void appInit() {
+    ConfigController().loadAppConfig(ref);
   }
 
   void _home2fabInit() {

@@ -19,23 +19,27 @@ class CompSetPjConfig extends ConsumerWidget {
 
     // local ref
     final pjNameState = ref.watch(PageCreatePj.pjNameProvider);
-    final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);
     final workingDirState = ref.watch(PageCreatePj.workingDirProvider);
     final backupDirState = ref.watch(PageCreatePj.backupDirProvider);
     final backupDirNotifier = ref.read(PageCreatePj.backupDirProvider.notifier);
 
-    final textController = TextEditingController(text: backupDirState?.path);
+    final pjNameFormController =
+        TextEditingController(text: workingDirState?.name);
+    final backupDirFormController =
+        TextEditingController(text: backupDirState?.path);
 
     bool isValidContents() {
       // null check
       if (workingDirState == null || backupDirState == null) return false;
 
-      return workingDirState.existsSync() && backupDirState.existsSync();
+      return pjNameState.isNotEmpty &&
+          workingDirState.existsSync() &&
+          backupDirState.existsSync();
     }
 
-    ref.listen(
-      PageCreatePj.workingDirProvider,
-      (_, next) => isValidContentsNotifier.state = isValidContents(),
+    // state callback
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => isValidContentsNotifier.state = isValidContents(),
     );
 
     String getWorkingDirStr() {
@@ -60,7 +64,14 @@ class CompSetPjConfig extends ConsumerWidget {
       return null;
     }
 
-    String? validator(String? newVal) {
+    String? pjNameValidator(String? newVal) {
+      if (newVal == null || newVal.isEmpty) {
+        return 'プロジェクト名を入力してください';
+      }
+      return null;
+    }
+
+    String? backupDirValidator(String? newVal) {
       if (newVal == null || newVal.isEmpty) {
         return 'バックアップフォルダーのパスを入力してください';
       }
@@ -77,6 +88,13 @@ class CompSetPjConfig extends ConsumerWidget {
       return null;
     }
 
+    void updateValidState() {
+      final isPjNameValid = pjNameValidator(pjNameFormController.text) == null;
+      final isWorkingDirValid =
+          backupDirValidator(backupDirFormController.text) == null;
+      isValidContentsNotifier.state = isPjNameValid && isWorkingDirValid;
+    }
+
     final pjNameField = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -91,27 +109,33 @@ class CompSetPjConfig extends ConsumerWidget {
         ),
         Expanded(
           flex: 12,
-          child: TextFormField(
-            autofocus: true,
-            initialValue: workingDirState?.name ?? '',
-            autovalidateMode: AutovalidateMode.always,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'プロジェクト名を入力してください';
-              }
-              return null;
-            },
-            onChanged: (newVal) => pjNameNotifier.state = newVal,
-            decoration: InputDecoration(
-              errorStyle: TextStyle(color: Theme.of(context).colorScheme.error),
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.error,
+          child: Focus(
+            child: TextFormField(
+              autofocus: true,
+              controller: pjNameFormController,
+              autovalidateMode: AutovalidateMode.always,
+              validator: pjNameValidator,
+              decoration: InputDecoration(
+                errorStyle:
+                    TextStyle(color: Theme.of(context).colorScheme.error),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                 ),
+                labelText: '重複しないプロジェクト名を入力',
+                border: const OutlineInputBorder(),
               ),
-              labelText: '重複しないプロジェクト名を入力',
-              border: const OutlineInputBorder(),
+              onChanged: (_) => updateValidState(),
             ),
+            onFocusChange: (hasFocus) {
+              if (!hasFocus) {
+                if (backupDirValidator(backupDirFormController.text) == null) {
+                  backupDirNotifier.state =
+                      Directory(backupDirFormController.text);
+                }
+              }
+            },
           ),
         ),
         Expanded(
@@ -138,7 +162,7 @@ class CompSetPjConfig extends ConsumerWidget {
           ),
         ),
         Expanded(
-          flex: 13,
+          flex: 12,
           child: TextFormField(
             decoration: InputDecoration(
               hintText: getWorkingDirStr(),
@@ -146,6 +170,14 @@ class CompSetPjConfig extends ConsumerWidget {
               border: const OutlineInputBorder(),
             ),
           ),
+        ),
+        Expanded(
+          child: workingDirState?.existsSync() ?? false
+              ? const Icon(Icons.check)
+              : Icon(
+                  Icons.error_outline,
+                  color: Theme.of(context).colorScheme.error,
+                ),
         ),
       ],
     );
@@ -164,14 +196,25 @@ class CompSetPjConfig extends ConsumerWidget {
         ),
         Expanded(
           flex: 12,
-          child: TextFormField(
-            controller: textController,
-            autovalidateMode: AutovalidateMode.always,
-            validator: validator,
-            decoration: InputDecoration(
-              hintText: getBackupDirStr() ?? '(ドラッグアンドドロップでも指定可)',
-              border: const OutlineInputBorder(),
+          child: Focus(
+            child: TextFormField(
+              controller: backupDirFormController,
+              autovalidateMode: AutovalidateMode.always,
+              validator: backupDirValidator,
+              onChanged: (_) => updateValidState(),
+              decoration: InputDecoration(
+                hintText: getBackupDirStr() ?? '(ドラッグアンドドロップでも指定可)',
+                border: const OutlineInputBorder(),
+              ),
             ),
+            onFocusChange: (hasFocus) {
+              if (!hasFocus) {
+                if (backupDirValidator(backupDirFormController.text) == null) {
+                  backupDirNotifier.state =
+                      Directory(backupDirFormController.text);
+                }
+              }
+            },
           ),
         ),
         Expanded(
@@ -205,7 +248,7 @@ class CompSetPjConfig extends ConsumerWidget {
           child: TextButton.icon(
             label: const Text('リセット'),
             icon: const Icon(Icons.restart_alt),
-            onPressed: () => textController.text =
+            onPressed: () => backupDirFormController.text =
                 contentsState.defaultBackupDir?.path ??
                     backupDirState?.path ??
                     '',

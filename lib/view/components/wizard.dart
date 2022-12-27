@@ -102,7 +102,14 @@ class CompWizard {
               components[index].title,
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
-            leading: const SizedBox(),
+            leading: Padding(
+              padding: const EdgeInsets.only(top: 7),
+              child: Icon(
+                components[index].icon,
+                size: 28,
+              ),
+            ),
+            // leadingWidth: 50,
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(6),
               child: TweenAnimationBuilder<double>(
@@ -132,7 +139,6 @@ class CompWizard {
                 ),
               ),
             ],
-            leadingWidth: 0,
           ),
         ],
         body: Padding(

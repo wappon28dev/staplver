@@ -19,130 +19,113 @@ class PageDebug extends ConsumerWidget {
     final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
     final projectsState = ref.watch(projectsProvider);
 
-    return Column(
-      children: <Widget>[
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: cmdSVNNotifier.runStatus,
-              child: const Text('svn status'),
-            ),
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: cmdSVNNotifier.runInfo,
-              child: const Text('svn info'),
-            ),
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: cmdSVNNotifier.runLog,
-              child: const Text('svn log'),
-            ),
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: cmdSVNNotifier.runCreate,
-              child: const Text('svn create'),
-            ),
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final pageNotifier = ref.read(pageProvider.notifier)
-                  ..updateProgress(0)
-                  ..updateIsVisibleProgressBar(true);
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        children: <Widget>[
+          Wrap(
+            spacing: 40,
+            runSpacing: 20,
+            children: [
+              ElevatedButton(
+                onPressed: cmdSVNNotifier.runStatus,
+                child: const Text('svn status'),
+              ),
+              ElevatedButton(
+                onPressed: cmdSVNNotifier.runInfo,
+                child: const Text('svn info'),
+              ),
+              ElevatedButton(
+                onPressed: cmdSVNNotifier.runLog,
+                child: const Text('svn log'),
+              ),
+              ElevatedButton(
+                onPressed: cmdSVNNotifier.runCreate,
+                child: const Text('svn create'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final pageNotifier = ref.read(pageProvider.notifier)
+                    ..updateProgress(0)
+                    ..updateIsVisibleProgressBar(true);
 
-                for (var i = 0; i <= 5; i++) {
-                  pageNotifier.updateProgress(0.2 * i);
-                  await Future<void>.delayed(const Duration(milliseconds: 300));
-                }
-                await Future<void>.delayed(const Duration(milliseconds: 600));
-                // pageNotifier.updateProgress(-1);
-                await pageNotifier.resetProgress();
-              },
-              child: const Text('progress'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: cmdSVNNotifier.runImport,
-              child: const Text('svn import'),
-            ),
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: cmdSVNNotifier.runRename,
-              child: const Text('run rename'),
-            ),
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: cmdSVNNotifier.runCheckout,
-              child: const Text('svn checkout'),
-            ),
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: cmdSVNNotifier.runStaging,
-              child: const Text('svn add .'),
-            ),
-            const SizedBox(width: 20),
-            ElevatedButton(
-              onPressed: cmdSVNNotifier.update,
-              child: const Text('svn update'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => ConfigController().loadAppConfig(ref),
-              child: const Text('load config'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: ConfigController().createEmptyAppConfig,
-              child: const Text('create empty config'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async => ConfigController().saveAppConfig(ref),
-              child: const Text('save config'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        SizedBox(
-          width: 200,
-          child: TextField(
-            onSubmitted: cmdSVNNotifier.runCommit,
-            decoration: const InputDecoration(
-              labelText: 'commit message',
+                  for (var i = 0; i <= 5; i++) {
+                    pageNotifier.updateProgress(0.2 * i);
+                    await Future<void>.delayed(
+                        const Duration(milliseconds: 300));
+                  }
+                  await Future<void>.delayed(const Duration(milliseconds: 600));
+                  // pageNotifier.updateProgress(-1);
+                  await pageNotifier.resetProgress();
+                },
+                child: const Text('progress'),
+              ),
+              ElevatedButton(
+                onPressed: cmdSVNNotifier.runImport,
+                child: const Text('svn import'),
+              ),
+              ElevatedButton(
+                onPressed: cmdSVNNotifier.runRename,
+                child: const Text('run rename'),
+              ),
+              ElevatedButton(
+                onPressed: cmdSVNNotifier.runCheckout,
+                child: const Text('svn checkout'),
+              ),
+              ElevatedButton(
+                onPressed: cmdSVNNotifier.runStaging,
+                child: const Text('svn add .'),
+              ),
+              ElevatedButton(
+                onPressed: cmdSVNNotifier.update,
+                child: const Text('svn update'),
+              ),
+              ElevatedButton(
+                onPressed: () => ConfigController().loadAppConfig(ref),
+                child: const Text('load config'),
+              ),
+              ElevatedButton(
+                onPressed: ConfigController().createEmptyAppConfig,
+                child: const Text('create empty config'),
+              ),
+              ElevatedButton(
+                onPressed: () async => ConfigController().saveAppConfig(ref),
+                child: const Text('save config'),
+              ),
+            ],
+          ),
+          SizedBox(
+            width: 200,
+            child: TextField(
+              onSubmitted: cmdSVNNotifier.runCommit,
+              decoration: const InputDecoration(
+                labelText: 'commit message',
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 20),
-        Text('''
-  savedProjects:
-    ${projectsState.savedProjects.toString()}
-  currentPjIndex:
-    ${projectsState.currentPjIndex.toString()}
-  defaultWorkingDir:
-    ${contentsState.defaultBackupDir?.path}
-  
-'''),
-        Text(
-          'log:\n ${cmdSVNState.stdout}',
-          style: const TextStyle(
-            fontFeatures: [FontFeature.tabularFigures()],
+          SingleChildScrollView(
+            child: Text(
+              '''
+            savedProjects:
+              ${projectsState.savedProjects.toString()}
+            currentPjIndex:
+              ${projectsState.currentPjIndex.toString()}
+            currentPj:
+              ${projectsState.currentPj.toString()}
+            defaultWorkingDir:
+              ${contentsState.defaultBackupDir?.path}
+            
+          ''',
+            ),
           ),
-        ),
-      ],
+          Text(
+            'log:\n ${cmdSVNState.stdout}',
+            style: const TextStyle(
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
