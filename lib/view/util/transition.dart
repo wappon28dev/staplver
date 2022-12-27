@@ -59,7 +59,9 @@ class RouteController {
     workingDirNotifier.state = null;
     backupDirNotifier.state = contentsState.defaultBackupDir;
     ignoreFilesNotifier.state = [];
-    contentsNotifier.updateDragAndDropSendTo(workingDirNotifier);
+    contentsNotifier.updateDragAndDropCallback(
+      (newDir) => workingDirNotifier.state = newDir,
+    );
     debugPrint('-- end --');
   }
 
@@ -76,7 +78,9 @@ class RouteController {
     _home2fabInit();
     workingDirNotifier.state = null;
     importedPjNotifier.state = null;
-    contentsNotifier.updateDragAndDropSendTo(workingDirNotifier);
+    contentsNotifier.updateDragAndDropCallback(
+      (newDir) => workingDirNotifier.state = newDir,
+    );
     debugPrint('-- end --');
   }
 
@@ -93,7 +97,9 @@ class RouteController {
     _home2fabInit();
     workingDirNotifier.state = null;
     newPjDataNotifier.state = null;
-    contentsNotifier.updateDragAndDropSendTo(backupDirNotifier);
+    contentsNotifier.updateDragAndDropCallback(
+      (newDir) => backupDirNotifier.state = newDir,
+    );
     debugPrint('-- end --');
   }
 }

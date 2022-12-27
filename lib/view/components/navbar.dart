@@ -1,8 +1,10 @@
 import 'package:aibas/model/data/class.dart';
+import 'package:aibas/model/state.dart';
 import 'package:aibas/view/routes/fab/checkout.dart';
 import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:aibas/view/routes/fab/import_pj.dart';
 import 'package:aibas/view/util/transition.dart';
+import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,28 +19,39 @@ class NavBar {
   WidgetRef ref;
   Orientation orientation;
 
-  static List<Destination> dest = [
-    const Destination(
-      icon: Icon(Icons.home_outlined),
-      selectedIcon: Icon(Icons.home),
-      label: 'ホーム',
-    ),
-    const Destination(
-      icon: Icon(Icons.rocket_launch_outlined),
-      selectedIcon: Icon(Icons.rocket_launch),
-      label: 'プロジェクト',
-    ),
-    const Destination(
-      icon: Icon(Icons.settings_outlined),
-      selectedIcon: Icon(Icons.settings),
-      label: '設定',
-    ),
-    const Destination(
-      icon: Icon(Icons.bug_report_outlined),
-      selectedIcon: Icon(Icons.bug_report),
-      label: 'デバッグ',
-    ),
-  ];
+  List<Destination> getDest() {
+    final contentsState = ref.read(contentsProvider);
+    final contentsNotifier = ref.read(contentsProvider.notifier);
+
+    return <Destination>[
+      Destination(
+        icon: const Icon(Icons.home_outlined),
+        selectedIcon: const Icon(Icons.home),
+        label: 'ホーム',
+        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
+      ),
+      Destination(
+        icon: const Icon(Icons.rocket_launch_outlined),
+        selectedIcon: const Icon(Icons.rocket_launch),
+        label: 'プロジェクト',
+        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
+      ),
+      Destination(
+        icon: const Icon(Icons.settings_outlined),
+        selectedIcon: const Icon(Icons.settings),
+        label: '設定',
+        runInit: () => contentsNotifier.updateDragAndDropCallback(
+          contentsNotifier.updateDefaultBackupDir,
+        ),
+      ),
+      Destination(
+        icon: const Icon(Icons.bug_report_outlined),
+        selectedIcon: const Icon(Icons.bug_report),
+        label: 'デバッグ',
+        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
+      ),
+    ];
+  }
 
   Widget fab(BuildContext context, {bool fromRails = false}) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -107,7 +120,7 @@ class NavBar {
     final pageNotifier = ref.read(pageProvider.notifier);
 
     final bottomDest = <NavigationDestination>[];
-    for (final element in dest) {
+    for (final element in getDest()) {
       bottomDest.add(
         NavigationDestination(
           icon: element.icon,
@@ -120,7 +133,10 @@ class NavBar {
     return orientation == Orientation.portrait
         ? NavigationBar(
             selectedIndex: pageState.navbarIndex,
-            onDestinationSelected: pageNotifier.updateNavbarIndex,
+            onDestinationSelected: (newIndex) {
+              getDest()[newIndex].runInit();
+              pageNotifier.updateNavbarIndex(newIndex);
+            },
             destinations: bottomDest,
           )
         : const SizedBox();
@@ -134,7 +150,7 @@ class NavBar {
     final pageNotifier = ref.read(pageProvider.notifier);
 
     final railDest = <NavigationRailDestination>[];
-    for (final element in dest) {
+    for (final element in getDest()) {
       railDest.add(
         NavigationRailDestination(
           icon: element.icon,

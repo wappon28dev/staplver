@@ -31,7 +31,7 @@ class ThemeState with _$ThemeState {
 class ContentsState with _$ContentsState {
   const factory ContentsState({
     Directory? defaultBackupDir,
-    StateNotifier<Directory?>? dragAndDropSendTo,
+    void Function(Directory)? dragAndDropCallback,
   }) = _ContentsState;
 }
 

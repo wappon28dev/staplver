@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aibas/model/constant.dart';
 import 'package:aibas/model/data/class.dart';
 import 'package:aibas/view/components/create_pj/set_ignore_files.dart';
 import 'package:aibas/view/components/create_pj/set_pj_config.dart';
@@ -26,33 +27,39 @@ class PageCreatePj extends ConsumerWidget {
     final contentsNotifier = ref.read(contentsProvider.notifier);
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
     final backupDirNotifier = ref.read(backupDirProvider.notifier);
+    final pjNameNotifier = ref.read(pjNameProvider.notifier);
 
     final components = [
       WizardComponents(
         title: '作業フォルダーの選択',
-        runInit: () =>
-            contentsNotifier.updateDragAndDropSendTo(workingDirNotifier),
+        runInit: () => contentsNotifier.updateDragAndDropCallback(
+          (newDir) => workingDirNotifier.state = newDir,
+        ),
         icon: Icons.drive_file_move,
         screen: const CompSetWorkingDir(),
       ),
       WizardComponents(
         title: 'バージョンの管理外にする ファイル/フォルダー を選択',
-        runInit: () => contentsNotifier.updateDragAndDropSendTo(null),
+        runInit: () {
+          pjNameNotifier.state = workingDirNotifier.state?.name ?? '';
+          contentsNotifier.updateDragAndDropCallback(null);
+        },
         icon: Icons.folder_off,
         screen: CompSetIgnoreFiles(),
       ),
       WizardComponents(
         title: 'プロジェクトの設定',
-        runInit: () =>
-            contentsNotifier.updateDragAndDropSendTo(backupDirNotifier),
+        runInit: () => contentsNotifier.updateDragAndDropCallback(
+          (newDir) => backupDirNotifier.state = newDir,
+        ),
         icon: Icons.settings,
         screen: const CompSetPjConfig(),
       ),
       WizardComponents(
         title: 'プロジェクトの詳細',
-        runInit: () => contentsNotifier.updateDragAndDropSendTo(null),
+        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
         icon: Icons.settings_suggest,
-        screen: CompSetPjDetails(),
+        screen: const CompSetPjDetails(),
       ),
     ];
 
@@ -100,7 +107,7 @@ class PageCreatePj extends ConsumerWidget {
 
     void runDispose(BuildContext context, WidgetRef ref) {
       Navigator.pop(context);
-      ref.read(contentsProvider.notifier).updateDragAndDropSendTo(null);
+      ref.read(contentsProvider.notifier).updateDragAndDropCallback(null);
     }
 
     return CompWizard(

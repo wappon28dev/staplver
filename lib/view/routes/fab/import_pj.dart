@@ -22,14 +22,15 @@ class PageImportPj extends ConsumerWidget {
     final components = <WizardComponents>[
       WizardComponents(
         title: '作業フォルダーの選択',
-        runInit: () =>
-            contentsNotifier.updateDragAndDropSendTo(workingDirNotifier),
+        runInit: () => contentsNotifier.updateDragAndDropCallback(
+          (newDir) => workingDirNotifier.state = newDir,
+        ),
         icon: Icons.folder_copy,
         screen: const CompSetWorkingDir(),
       ),
       WizardComponents(
         title: 'プロジェクト設定の確認',
-        runInit: () => contentsNotifier.updateDragAndDropSendTo(null),
+        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
         icon: Icons.settings,
         screen: const CompPjSummary(),
       ),
@@ -55,7 +56,7 @@ class PageImportPj extends ConsumerWidget {
 
     void runDispose(BuildContext context, WidgetRef ref) {
       Navigator.pop(context);
-      ref.read(contentsProvider.notifier).updateDragAndDropSendTo(null);
+      ref.read(contentsProvider.notifier).updateDragAndDropCallback(null);
     }
 
     return CompWizard(

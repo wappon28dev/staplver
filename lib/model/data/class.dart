@@ -21,6 +21,7 @@ class Destination with _$Destination {
     required Icon icon,
     required Icon selectedIcon,
     required String label,
+    required VoidCallback runInit,
   }) = _Destination;
 }
 

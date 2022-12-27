@@ -24,9 +24,11 @@ class ContentsNotifier extends StateNotifier<ContentsState> {
     state = state.copyWith(defaultBackupDir: newDefaultBackupDir);
   }
 
-  void updateDragAndDropSendTo(StateNotifier<Directory?>? newStateNotifier) {
-    debugPrint('newStateNotifier => $newStateNotifier');
-    state = state.copyWith(dragAndDropSendTo: newStateNotifier);
+  void updateDragAndDropCallback(
+    void Function(Directory)? newDragAndDropCallback,
+  ) {
+    debugPrint('newDragAndDropCallback => $newDragAndDropCallback');
+    state = state.copyWith(dragAndDropCallback: newDragAndDropCallback);
   }
 
   Future<Directory> getSingleDirectory(List<String> paths) async {
@@ -45,8 +47,8 @@ class ContentsNotifier extends StateNotifier<ContentsState> {
   }
 
   Future<void> handleDragAndDrop(List<String> paths) async {
-    if (state.dragAndDropSendTo == null) return;
+    if (state.dragAndDropCallback == null) return;
 
-    state.dragAndDropSendTo?.state = await getSingleDirectory(paths);
+    state.dragAndDropCallback!(await getSingleDirectory(paths));
   }
 }
