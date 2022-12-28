@@ -33,6 +33,10 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       useMaterial3: true,
       colorScheme: scheme,
       fontFamily: 'M PLUS 1',
+      snackBarTheme: SnackBarThemeData(
+        contentTextStyle: const TextStyle(fontFamily: 'M PLUS 1'),
+        backgroundColor: Theme.of(context).colorScheme.inverseSurface,
+      ),
     );
   }
 
@@ -51,6 +55,10 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       colorScheme: scheme,
       brightness: Brightness.dark,
       fontFamily: 'M PLUS 1',
+      snackBarTheme: SnackBarThemeData(
+        contentTextStyle: const TextStyle(fontFamily: 'M PLUS 1'),
+        backgroundColor: Theme.of(context).colorScheme.inverseSurface,
+      ),
     );
   }
 }

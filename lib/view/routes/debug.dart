@@ -44,9 +44,8 @@ class PageDebug extends ConsumerWidget {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  final pageNotifier = ref.read(pageProvider.notifier)
-                    ..updateProgress(0)
-                    ..updateIsVisibleProgressBar(true);
+                  final pageNotifier = ref.read(pageProvider.notifier);
+                  await pageNotifier.resetProgress();
 
                   for (var i = 0; i <= 5; i++) {
                     pageNotifier.updateProgress(0.2 * i);
@@ -54,9 +53,8 @@ class PageDebug extends ConsumerWidget {
                       const Duration(milliseconds: 300),
                     );
                   }
-                  await Future<void>.delayed(const Duration(milliseconds: 600));
-                  // pageNotifier.updateProgress(-1);
-                  await pageNotifier.resetProgress();
+
+                  await pageNotifier.completeProgress();
                 },
                 child: const Text('progress'),
               ),

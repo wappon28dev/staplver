@@ -1,5 +1,4 @@
 import 'package:aibas/model/data/class.dart';
-import 'package:aibas/model/state.dart';
 import 'package:aibas/view/routes/fab/checkout.dart';
 import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:aibas/view/routes/fab/import_pj.dart';
@@ -20,7 +19,6 @@ class NavBar {
   Orientation orientation;
 
   List<Destination> getDest() {
-    final contentsState = ref.read(contentsProvider);
     final contentsNotifier = ref.read(contentsProvider.notifier);
 
     return <Destination>[

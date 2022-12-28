@@ -28,8 +28,15 @@ class PageNotifier extends StateNotifier<PageState> {
 
   Future<void> resetProgress() async {
     updateIsVisibleProgressBar(false);
-    await Future<void>.delayed(const Duration(milliseconds: 600));
     updateProgress(0);
+    await Future<void>.delayed(const Duration(milliseconds: 600));
+    updateIsVisibleProgressBar(true);
+  }
+
+  Future<void> completeProgress() async {
+    updateProgress(1);
+    await Future<void>.delayed(const Duration(milliseconds: 1200));
+    updateIsVisibleProgressBar(false);
   }
 
   // ignore: avoid_positional_boolean_parameters

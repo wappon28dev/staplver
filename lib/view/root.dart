@@ -27,7 +27,7 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
   void initState() {
     windowManager.addListener(this);
     windowInit();
-    RouteController(ref).appInit();
+    RouteController(ref).appInit(context, ref);
     super.initState();
   }
 
