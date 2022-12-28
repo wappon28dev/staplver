@@ -53,13 +53,9 @@ class ConfigController {
     final contentsState = ref.read(contentsProvider);
     final themeState = ref.read(themeProvider);
 
-    if (projectsState.savedProjects == null) {
-      throw Exception('savedProject is null !');
-    }
-
     final savedProjectPath = <String, String>{};
 
-    for (final element in projectsState.savedProjects!) {
+    for (final element in projectsState.savedProjects) {
       savedProjectPath.addAll(
         {element.backupDir.path: element.workingDir.path},
       );
@@ -94,7 +90,7 @@ class ConfigController {
     });
     final savedProject = <Project>[];
 
-    await savedProjectPath.forEachAsync((backupDir, workingDir) async {
+    await savedProjectPath.forEachAsync((backupDir, _) async {
       final pjConfig = await loadPjConfig(backupDir);
 
       if (pjConfig == null) return Future.error('pjConfig is null!');
@@ -124,7 +120,7 @@ class ConfigController {
       debugPrint(e.toString());
     }
 
-    if (appConfig == null) return;
+    if (appConfig == null) return Future.error('config not found');
     final savedProjects = await appConfig2Projects(appConfig);
 
     Directory? defaultBackupDir;

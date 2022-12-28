@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aibas/view/components/wizard.dart';
 import 'package:aibas/view/routes/fab/import_pj.dart';
+import 'package:aibas/vm/svn.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,11 @@ class CompSetWorkingDir extends ConsumerWidget {
   const CompSetWorkingDir({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // global ref
+    final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
+
     // wizard ref
+    final isValidContentsState = ref.watch(CompWizard.isValidContentsProvider);
     final isValidContentsNotifier =
         ref.read(CompWizard.isValidContentsProvider.notifier);
 
@@ -22,14 +27,27 @@ class CompSetWorkingDir extends ConsumerWidget {
 
     final textController = TextEditingController(text: workingDirState?.path);
 
-    // callback
-    ref.listen(PageImportPj.workingDirProvider, (_, next) {
-      isValidContentsNotifier.state = next != null;
-    });
+    Future<bool> isValidContents() async {
+      if (workingDirState == null || !workingDirState.existsSync()) {
+        return Future.value(false);
+      }
 
-    bool isValidContents() {
-      return workingDirState != null;
+      try {
+        final workingDir = workingDirState;
+        await cmdSVNNotifier.getBackupDir(workingDir);
+        // ignore: avoid_catches_without_on_clauses
+      } catch (err, __) {
+        debugPrint(err.toString());
+        return Future.value(false);
+      }
+
+      return Future.value(true);
     }
+
+    // state callback
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async => isValidContentsNotifier.state = await isValidContents(),
+    );
 
     Future<void> handleClick() async {
       final selectedDirectory = await FilePicker.platform.getDirectoryPath();
@@ -79,6 +97,8 @@ class CompSetWorkingDir extends ConsumerWidget {
                 hintText: '(ドラッグアンドドロップでも指定可)',
                 border: OutlineInputBorder(),
               ),
+              onChanged: (_) => isValidContentsNotifier.state =
+                  validator(textController.text) == null,
             ),
             onFocusChange: (hasFocus) {
               if (!hasFocus) {
@@ -136,7 +156,7 @@ class CompSetWorkingDir extends ConsumerWidget {
           child: TextButton.icon(
             label: const Text('リセット'),
             icon: const Icon(Icons.restart_alt),
-            onPressed: isValidContents()
+            onPressed: isValidContentsState
                 ? () => workingDirNotifier.state = null
                 : null,
           ),

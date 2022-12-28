@@ -63,6 +63,25 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     await Process.run(baseCommand.name, args).then(_updateStdout);
   }
 
+  Future<Directory> getBackupDir(Directory workingDir) async {
+    await _runCommand(
+      currentDirectory: workingDir,
+      baseCommand: BaseCommand.svn,
+      args: ['info'],
+    );
+
+    final reg = RegExp(r'(?<=URL: )(.*)');
+    final uriStr = reg.firstMatch(state.stdout)?.group(0);
+
+    if (uriStr == null) return Future.error('uri not found');
+    final backupDir = Uri.parse(uriStr).toFilePath();
+    if (!await Directory(backupDir).exists()) {
+      return Future.error('backupDir not found');
+    }
+
+    return Directory(backupDir);
+  }
+
   Future<void> runStatus() async {
     debugPrint('>> runStatus << ');
     await _runCommand(

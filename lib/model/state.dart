@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:aibas/model/data/class.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'state.freezed.dart';
@@ -45,10 +44,13 @@ class CmdSVNState with _$CmdSVNState {
 @freezed
 class ProjectsState with _$ProjectsState {
   const factory ProjectsState({
-    List<Project>? savedProjects,
+    @Default(<Project>[]) List<Project> savedProjects,
     @Default(0) int currentPjIndex,
   }) = _ProjectsState;
   const ProjectsState._();
 
-  Project? get currentPj => savedProjects?[currentPjIndex];
+  Project? get currentPj {
+    if (savedProjects.isEmpty) return null;
+    return savedProjects[currentPjIndex];
+  }
 }

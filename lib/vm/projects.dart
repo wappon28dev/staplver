@@ -17,10 +17,7 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
 
   void addSavedProject(Project newProject) {
     debugPrint('newProject => $newProject');
-    final savedProjectsClone = state.savedProjects?.toList();
-
-    if (savedProjectsClone == null) return;
-    savedProjectsClone.add(newProject);
+    final savedProjectsClone = state.savedProjects.toList()..add(newProject);
 
     state = state.copyWith(savedProjects: savedProjectsClone);
   }
@@ -31,9 +28,8 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
   }
 
   void updateCurrentPjIndex(int newCurrentPjIndex) {
-    if (state.savedProjects == null) throw Exception('savedProjects is null!');
     debugPrint('newCurrentPjIndex => $newCurrentPjIndex');
-    assert((state.savedProjects?.length ?? 99) >= newCurrentPjIndex);
+    assert((state.savedProjects.length) >= newCurrentPjIndex);
   }
 
   Future<void> initProject() async {
