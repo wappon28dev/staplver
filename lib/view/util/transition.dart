@@ -1,3 +1,4 @@
+import 'package:aibas/model/helper/snackbar.dart';
 import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/wizard.dart';
 import 'package:aibas/view/routes/fab/checkout.dart';
@@ -32,8 +33,20 @@ class RouteController {
     }
   }
 
-  void appInit() {
-    ConfigController().loadAppConfig(ref);
+  Future<void> appInit(BuildContext context, WidgetRef ref) async {
+    final pageNotifier = ref.read(pageProvider.notifier);
+    final snackBar = SnackBarController(context);
+
+    await ConfigController().loadAppConfig(ref).then(
+      (_) async {
+        await pageNotifier.resetProgress();
+        pageNotifier.updateProgress(0.3);
+        snackBar.pushSnackBar('全てのプロジェクトが正しく読み込まれました');
+        await pageNotifier.completeProgress();
+      },
+    ).catchError(
+      (dynamic err) => snackBar.pushSnackBar(err.toString()),
+    );
   }
 
   void _home2fabInit() {

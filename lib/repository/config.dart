@@ -26,16 +26,16 @@ class ConfigController {
 
   Future<Project> pjConfig2Project(PjConfig pjConfig) async {
     if (!await Directory(pjConfig.workingDirStr).exists()) {
-      return Future.error('workingDir not found');
+      return Future.error('作業フォルダーが見つかりません');
     }
     if (!await Directory(pjConfig.backupDirStr).exists()) {
-      return Future.error('backupDir not found');
+      return Future.error('バックアップフォルダーが見つかりません');
     }
     if (pjConfig.name.isEmpty) {
-      return Future.error('name is empty');
+      return Future.error('プロジェクト名が不正です');
     }
     if (pjConfig.backupMin != -1 && pjConfig.backupMin < 0) {
-      return Future.error('backupMin is invalid');
+      return Future.error('バックアップ頻度が不正です');
     }
 
     return Future.value(
@@ -78,12 +78,11 @@ class ConfigController {
 
     await appConfig.savedProjectPath
         .forEachAsync((backupDir, workingDir) async {
-      if (!await Directory(backupDir).exists()) {
-        return Future.error('backupDir not found');
-      }
-
       if (!await Directory(workingDir).exists()) {
-        return Future.error('workingDir not found');
+        return Future.error('作業フォルダーが見つかりません');
+      }
+      if (!await Directory(backupDir).exists()) {
+        return Future.error('バックアップフォルダーが見つかりません');
       }
 
       savedProjectPath.addAll({Directory(backupDir): Directory(workingDir)});
@@ -151,11 +150,14 @@ class ConfigController {
     debugPrint('-- saved appConfig --');
   }
 
+  Future<bool> getIsPjDir(Directory backupDir) async =>
+      Directory('${backupDir.path}/aibas').exists();
+
   Future<PjConfig?> loadPjConfig(Directory backupDir) async {
     debugPrint('-- load pjConfig --');
 
-    if (!await Directory('${backupDir.path}/aibas').exists()) {
-      return Future.error('pj directory no exists');
+    if (!await getIsPjDir(backupDir)) {
+      return Future.error('バックアップフォルダーはSVNリポジトリですが, AIBASプロジェクトではありません');
     }
 
     PjConfig? pjConfig;
@@ -180,7 +182,7 @@ class ConfigController {
     debugPrint('-- create pjConfig --');
 
     if (await Directory('${project.backupDir.path}/aibas').exists()) {
-      return Future.error('pj already exists');
+      return Future.error('AIBASプロジェクトは既に存在します');
     } else {
       await Directory('${project.backupDir.path}/aibas').create();
     }

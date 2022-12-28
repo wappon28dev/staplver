@@ -73,10 +73,10 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final reg = RegExp(r'(?<=URL: )(.*)');
     final uriStr = reg.firstMatch(state.stdout)?.group(0);
 
-    if (uriStr == null) return Future.error('uri not found');
+    if (uriStr == null) return Future.error('SVNリポジトリではありません');
     final backupDir = Uri.parse(uriStr).toFilePath();
     if (!await Directory(backupDir).exists()) {
-      return Future.error('backupDir not found');
+      return Future.error('バックアップフォルダーが見つかりません');
     }
 
     return Directory(backupDir);

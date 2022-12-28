@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:aibas/model/helper/snackbar.dart';
+import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/wizard.dart';
 import 'package:aibas/view/routes/fab/import_pj.dart';
 import 'package:aibas/vm/svn.dart';
@@ -16,7 +18,6 @@ class CompSetWorkingDir extends ConsumerWidget {
     final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
 
     // wizard ref
-    final isValidContentsState = ref.watch(CompWizard.isValidContentsProvider);
     final isValidContentsNotifier =
         ref.read(CompWizard.isValidContentsProvider.notifier);
 
@@ -26,28 +27,29 @@ class CompSetWorkingDir extends ConsumerWidget {
         ref.read(PageImportPj.workingDirProvider.notifier);
 
     final textController = TextEditingController(text: workingDirState?.path);
+    final snackBar = SnackBarController(context);
 
-    Future<bool> isValidContents() async {
-      if (workingDirState == null || !workingDirState.existsSync()) {
-        return Future.value(false);
-      }
-
-      try {
-        final workingDir = workingDirState;
-        await cmdSVNNotifier.getBackupDir(workingDir);
-        // ignore: avoid_catches_without_on_clauses
-      } catch (err, __) {
-        debugPrint(err.toString());
-        return Future.value(false);
-      }
-
-      return Future.value(true);
-    }
+    bool isValidContents() =>
+        workingDirState != null && workingDirState.existsSync();
 
     // state callback
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) async => isValidContentsNotifier.state = await isValidContents(),
+      (_) => isValidContentsNotifier.state = isValidContents(),
     );
+
+    ref.listen(PageImportPj.workingDirProvider, (_, workingDir) async {
+      if (workingDir == null) return;
+      try {
+        final backupDir = await cmdSVNNotifier.getBackupDir(workingDir);
+        await ConfigController().loadPjConfig(backupDir).then(
+              (_) => snackBar.pushSnackBar('プロジェクトは正しく読み込まれました'),
+            );
+        // ignore: avoid_catches_without_on_clauses
+      } catch (err, __) {
+        isValidContentsNotifier.state = false;
+        SnackBarController(context).pushSnackBar(err.toString());
+      }
+    });
 
     Future<void> handleClick() async {
       final selectedDirectory = await FilePicker.platform.getDirectoryPath();
@@ -135,7 +137,7 @@ class CompSetWorkingDir extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: const [
                   Text(
-                    '作業フォルダーを\nドラッグ & ドロップ',
+                    'バージョン管理をするフォルダーを\nドラッグ & ドロップ',
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
@@ -156,7 +158,7 @@ class CompSetWorkingDir extends ConsumerWidget {
           child: TextButton.icon(
             label: const Text('リセット'),
             icon: const Icon(Icons.restart_alt),
-            onPressed: isValidContentsState
+            onPressed: isValidContents()
                 ? () => workingDirNotifier.state = null
                 : null,
           ),
