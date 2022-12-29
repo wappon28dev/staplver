@@ -13,8 +13,8 @@ class PageState with _$PageState {
     @Default(0) int navbarIndex,
     @Default(0) int wizardIndex,
     @Default(false) bool askWhenQuit,
-    @Default(0) double progress,
-    @Default(false) bool isVisibleProgressBar,
+    @Default(0.3) double progress,
+    @Default(true) bool isVisibleProgressBar,
   }) = _PageState;
 }
 

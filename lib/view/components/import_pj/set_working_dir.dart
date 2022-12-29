@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aibas/model/error/exception.dart';
 import 'package:aibas/model/helper/snackbar.dart';
 import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/wizard.dart';
@@ -27,7 +28,7 @@ class CompSetWorkingDir extends ConsumerWidget {
         ref.read(PageImportPj.workingDirProvider.notifier);
 
     final textController = TextEditingController(text: workingDirState?.path);
-    final snackBar = SnackBarController(context);
+    final snackBar = SnackBarController(context, ref);
 
     bool isValidContents() =>
         workingDirState != null && workingDirState.existsSync();
@@ -41,15 +42,24 @@ class CompSetWorkingDir extends ConsumerWidget {
       if (workingDir == null) return;
       try {
         final backupDir = await cmdSVNNotifier.getBackupDir(workingDir);
-        await ConfigController().loadPjConfig(backupDir).then(
-              (pjConfig) => snackBar.pushSnackBarSuccess(
-                content: 'プロジェクト “${pjConfig?.name}” は正しく読み込めます',
-              ),
-            );
+        final importedPjNotifier =
+            ref.read(PageImportPj.importedPjProvider.notifier);
+
+        final pjConfig = await ConfigController().loadPjConfig(backupDir);
+        if (pjConfig == null) throw AIBASException.pjConfigIsNull;
+        final importedPj = await ConfigController().pjConfig2Project(pjConfig);
+
+        importedPjNotifier.state = importedPj;
+        snackBar.pushSnackBarSuccess(
+          content: 'プロジェクト “${pjConfig.name}” は正しく読み込めます',
+        );
+      } on AIBASException catch (err) {
+        isValidContentsNotifier.state = false;
+        SnackBarController(context, ref).errHandlerBanner(err);
         // ignore: avoid_catches_without_on_clauses
       } catch (err, __) {
         isValidContentsNotifier.state = false;
-        SnackBarController(context).pushSnackBarErr(content: err.toString());
+        SnackBarController(context, ref).errHandlerBanner(err.toString());
       }
     });
 

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aibas/repository/config.dart';
+import 'package:aibas/view/util/transition.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:aibas/vm/projects.dart';
@@ -79,8 +80,8 @@ class PageDebug extends ConsumerWidget {
                 child: const Text('svn update'),
               ),
               ElevatedButton(
-                onPressed: () => ConfigController().loadAppConfig(ref),
-                child: const Text('load config'),
+                onPressed: () => RouteController(ref).appInit(context),
+                child: const Text('appInit'),
               ),
               ElevatedButton(
                 onPressed: ConfigController().createEmptyAppConfig,

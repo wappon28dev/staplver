@@ -1,11 +1,15 @@
 import 'dart:io';
 
 import 'package:aibas/model/data/class.dart';
+import 'package:aibas/model/error/exception.dart';
+import 'package:aibas/model/helper/snackbar.dart';
+import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/import_pj/pj_summary.dart';
 import 'package:aibas/view/components/import_pj/set_working_dir.dart';
 import 'package:aibas/view/components/wizard.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
+import 'package:aibas/vm/projects.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -54,6 +58,19 @@ class PageImportPj extends ConsumerWidget {
       components[index - 1].runInit();
     }
 
+    Future<void> runImportPj(BuildContext context, WidgetRef ref) async {
+      final importedPjState = ref.read(importedPjProvider);
+      final projectsNotifier = ref.read(projectsProvider.notifier);
+
+      if (importedPjState == null) {
+        throw AIBASException.importedPjIsNull;
+      }
+      projectsNotifier.addSavedProject(importedPjState);
+      await ConfigController()
+          .saveAppConfig(ref)
+          .catchError(SnackBarController(context, ref).errHandlerBanner);
+    }
+
     void runDispose(BuildContext context, WidgetRef ref) {
       Navigator.pop(context);
       ref.read(contentsProvider.notifier).updateDragAndDropCallback(null);
@@ -65,7 +82,11 @@ class PageImportPj extends ConsumerWidget {
       runNextPage: () => runNextPage(ref),
       runPreviousPage: () => runPreviousPage(ref),
       components: components,
-      onFinished: () => runDispose(context, ref),
+      onFinished: () async {
+        await runImportPj(context, ref);
+        // ignore: use_build_context_synchronously
+        runDispose(context, ref);
+      },
       onCanceled: () => runDispose(context, ref),
     ).parentWrap(context: context, ref: ref);
   }
