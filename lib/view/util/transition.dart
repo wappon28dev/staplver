@@ -38,15 +38,22 @@ class RouteController {
     final snackBar = SnackBarController(context);
 
     await ConfigController().loadAppConfig(ref).then(
-      (_) async {
+      (appConfig) async {
         await pageNotifier.resetProgress();
         pageNotifier.updateProgress(0.3);
-        snackBar.pushSnackBar('全てのプロジェクトが正しく読み込まれました');
+
+        if (appConfig.savedProjectPath.isEmpty) {
+          snackBar.pushSnackBarSuccess(content: '設定ファイルが正しく読み込まれました');
+        } else {
+          snackBar.pushSnackBarSuccess(
+            content:
+                '${appConfig.savedProjectPath.length} 件のプロジェクトが正しく読み込まれました',
+          );
+        }
+
         await pageNotifier.completeProgress();
       },
-    ).catchError(
-      (dynamic err) => snackBar.pushSnackBar(err.toString()),
-    );
+    ).catchError(SnackBarController(context).errHandlerBanner);
   }
 
   void _home2fabInit() {

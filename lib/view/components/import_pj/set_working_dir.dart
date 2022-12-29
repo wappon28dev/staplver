@@ -42,12 +42,14 @@ class CompSetWorkingDir extends ConsumerWidget {
       try {
         final backupDir = await cmdSVNNotifier.getBackupDir(workingDir);
         await ConfigController().loadPjConfig(backupDir).then(
-              (_) => snackBar.pushSnackBar('プロジェクトは正しく読み込まれました'),
+              (pjConfig) => snackBar.pushSnackBarSuccess(
+                content: 'プロジェクト “${pjConfig?.name}” は正しく読み込めます',
+              ),
             );
         // ignore: avoid_catches_without_on_clauses
       } catch (err, __) {
         isValidContentsNotifier.state = false;
-        SnackBarController(context).pushSnackBar(err.toString());
+        SnackBarController(context).pushSnackBarErr(content: err.toString());
       }
     });
 

@@ -29,7 +29,7 @@ class PageImportPj extends ConsumerWidget {
         screen: const CompSetWorkingDir(),
       ),
       WizardComponents(
-        title: 'プロジェクト設定の確認',
+        title: 'インポートするプロジェクトの確認',
         runInit: () => contentsNotifier.updateDragAndDropCallback(null),
         icon: Icons.settings,
         screen: const CompPjSummary(),
