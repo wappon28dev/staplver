@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:aibas/model/constant.dart';
 import 'package:aibas/model/data/class.dart';
+import 'package:aibas/model/error/exception.dart';
 import 'package:aibas/model/state.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/projects.dart';
@@ -31,10 +32,10 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> _directoryExist(Project? currentPjSnapshot) async {
     await Future.wait(
       <Future<bool>>[
-        currentPjSnapshot?.workingDir.exists() ??
-            Future.error('作業フォルダーが見つかりません'),
         currentPjSnapshot?.backupDir.exists() ??
-            Future.error('バックアップフォルダーが見つかりません'),
+            Future.error(AIBASException.backupDirNotFound),
+        currentPjSnapshot?.workingDir.exists() ??
+            Future.error(AIBASException.workingDirNotFound),
       ],
     ).catchError((dynamic err) {
       debugPrint(err.toString());
@@ -73,10 +74,10 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final reg = RegExp(r'(?<=URL: )(.*)');
     final uriStr = reg.firstMatch(state.stdout)?.group(0);
 
-    if (uriStr == null) return Future.error('SVNリポジトリではありません');
+    if (uriStr == null) return Future.error(AIBASException.dirNotSVNRepo);
     final backupDir = Uri.parse(uriStr).toFilePath();
     if (!await Directory(backupDir).exists()) {
-      return Future.error('バックアップフォルダーが見つかりません');
+      return Future.error(AIBASException.backupDirNotFound);
     }
 
     return Directory(backupDir);

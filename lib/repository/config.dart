@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:aibas/model/constant.dart';
 import 'package:aibas/model/data/class.dart';
 import 'package:aibas/model/data/config.dart';
+import 'package:aibas/model/error/exception.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/projects.dart';
 import 'package:aibas/vm/theme.dart';
@@ -26,16 +27,24 @@ class ConfigController {
 
   Future<Project> pjConfig2Project(PjConfig pjConfig) async {
     if (!await Directory(pjConfig.workingDirStr).exists()) {
-      return Future.error('作業フォルダーが見つかりません');
+      return Future.error(
+        AIBASException.workingDirNotFound,
+      );
     }
     if (!await Directory(pjConfig.backupDirStr).exists()) {
-      return Future.error('バックアップフォルダーが見つかりません');
+      return Future.error(
+        AIBASException.backupDirNotFound,
+      );
     }
     if (pjConfig.name.isEmpty) {
-      return Future.error('プロジェクト名が不正です');
+      return Future.error(
+        AIBASException.pjNameIsInvalid,
+      );
     }
     if (pjConfig.backupMin != -1 && pjConfig.backupMin < 0) {
-      return Future.error('バックアップ頻度が不正です');
+      return Future.error(
+        AIBASException.backupMinIsInvalid,
+      );
     }
 
     return Future.value(
@@ -78,11 +87,15 @@ class ConfigController {
 
     await appConfig.savedProjectPath
         .forEachAsync((backupDir, workingDir) async {
-      if (!await Directory(workingDir).exists()) {
-        return Future.error('作業フォルダーが見つかりません');
-      }
       if (!await Directory(backupDir).exists()) {
-        return Future.error('バックアップフォルダーが見つかりません');
+        return Future.error(
+          AIBASException.backupDirNotFoundOnLoad(backupDir, workingDir),
+        );
+      }
+      if (!await Directory(workingDir).exists()) {
+        return Future.error(
+          AIBASException.workingDirNotFoundOnLoad(backupDir, workingDir),
+        );
       }
 
       savedProjectPath.addAll({Directory(backupDir): Directory(workingDir)});
@@ -92,7 +105,7 @@ class ConfigController {
     await savedProjectPath.forEachAsync((backupDir, _) async {
       final pjConfig = await loadPjConfig(backupDir);
 
-      if (pjConfig == null) return Future.error('pjConfig is null!');
+      if (pjConfig == null) throw AIBASException.pjConfigIsNull;
 
       final project = await pjConfig2Project(pjConfig);
       savedProject.add(project);
@@ -101,11 +114,8 @@ class ConfigController {
     return Future.value(savedProject);
   }
 
-  Future<void> loadAppConfig(WidgetRef ref) async {
+  Future<AppConfig> loadAppConfig() async {
     debugPrint('-- load appConfig --');
-    final projectsNotifier = ref.read(projectsProvider.notifier);
-    final contentsNotifier = ref.read(contentsProvider.notifier);
-    final themeNotifier = ref.read(themeProvider.notifier);
 
     AppConfig? appConfig;
 
@@ -114,29 +124,37 @@ class ConfigController {
           json.decode(await (await appConfigPath).readAsString())
               as Map<String, dynamic>;
       appConfig = AppConfig.fromJson(appConfigJson);
+
+      // ignore: avoid_catching_errors
+    } on TypeError {
+      return Future.error(
+        AIBASException.appConfigIsInvalid,
+      );
+    } on FormatException {
+      return Future.error(
+        AIBASException.appConfigIsInvalid,
+      );
+    } on FileSystemException catch (err) {
+      if (err.osError?.errorCode == 2) {
+        return Future.error(AIBASException.appConfigNotFound);
+      }
+      return Future.error(
+        AIBASException.appConfigCannotLoaded(err.osError?.message),
+      );
+    }
+
+    try {
+      ThemeMode.values[appConfig.themeMode].name;
       // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      debugPrint(e.toString());
+    } catch (_, __) {
+      return Future.error(
+        AIBASException.pjConfigThemeModeIsInvalid,
+      );
     }
-
-    if (appConfig == null) return Future.error('config not found');
-    final savedProjects = await appConfig2Projects(appConfig);
-
-    Directory? defaultBackupDir;
-
-    if (appConfig.defaultBackupDir?.isNotEmpty ?? false) {
-      defaultBackupDir = Directory(appConfig.defaultBackupDir ?? '');
-    }
-
-    // state notifier
-    projectsNotifier.updateSavedProject(savedProjects);
-    contentsNotifier.updateDefaultBackupDir(defaultBackupDir);
-    themeNotifier
-      ..updateThemeMode(ThemeMode.values[appConfig.themeMode])
-      ..updateUseDynamicColor(appConfig.useDynamicColor);
 
     debugPrint('config: $appConfig');
     debugPrint('-- loaded appConfig --');
+    return Future.value(appConfig);
   }
 
   Future<void> saveAppConfig(WidgetRef ref) async {
@@ -150,6 +168,20 @@ class ConfigController {
     debugPrint('-- saved appConfig --');
   }
 
+  Future<void> removeSavedProject(
+    String backupDirStr,
+  ) async {
+    final appConfig = await loadAppConfig();
+    final savedProjectsPath = {...appConfig.savedProjectPath}
+      ..remove(backupDirStr);
+
+    final appConfigModded =
+        appConfig.copyWith(savedProjectPath: savedProjectsPath);
+
+    final appConfigStr = json.encode(appConfigModded.toJson());
+    await (await appConfigPath).writeAsString(appConfigStr);
+  }
+
   Future<bool> getIsPjDir(Directory backupDir) async =>
       Directory('${backupDir.path}/aibas').exists();
 
@@ -157,7 +189,7 @@ class ConfigController {
     debugPrint('-- load pjConfig --');
 
     if (!await getIsPjDir(backupDir)) {
-      return Future.error('バックアップフォルダーはSVNリポジトリですが, AIBASプロジェクトではありません');
+      return Future.error(AIBASException.pjNotFound);
     }
 
     PjConfig? pjConfig;
@@ -182,7 +214,7 @@ class ConfigController {
     debugPrint('-- create pjConfig --');
 
     if (await Directory('${project.backupDir.path}/aibas').exists()) {
-      return Future.error('AIBASプロジェクトは既に存在します');
+      return Future.error(AIBASException.pjAlreadyExists);
     } else {
       await Directory('${project.backupDir.path}/aibas').create();
     }

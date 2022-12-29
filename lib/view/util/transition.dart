@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:aibas/model/error/exception.dart';
 import 'package:aibas/model/helper/snackbar.dart';
 import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/wizard.dart';
@@ -6,6 +9,8 @@ import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:aibas/view/routes/fab/import_pj.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
+import 'package:aibas/vm/projects.dart';
+import 'package:aibas/vm/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,27 +38,43 @@ class RouteController {
     }
   }
 
-  Future<void> appInit(BuildContext context, WidgetRef ref) async {
+  Future<void> appInit(BuildContext context) async {
     final pageNotifier = ref.read(pageProvider.notifier);
-    final snackBar = SnackBarController(context);
+    final projectsNotifier = ref.read(projectsProvider.notifier);
+    final contentsNotifier = ref.read(contentsProvider.notifier);
+    final themeNotifier = ref.read(themeProvider.notifier);
+    final snackBar = SnackBarController(context, ref);
 
-    await ConfigController().loadAppConfig(ref).then(
-      (appConfig) async {
-        await pageNotifier.resetProgress();
-        pageNotifier.updateProgress(0.3);
+    try {
+      final appConfig = await ConfigController().loadAppConfig();
+      final savedProjects =
+          await ConfigController().appConfig2Projects(appConfig);
 
-        if (appConfig.savedProjectPath.isEmpty) {
-          snackBar.pushSnackBarSuccess(content: '設定ファイルが正しく読み込まれました');
-        } else {
-          snackBar.pushSnackBarSuccess(
-            content:
-                '${appConfig.savedProjectPath.length} 件のプロジェクトが正しく読み込まれました',
-          );
-        }
+      Directory? defaultBackupDir;
 
-        await pageNotifier.completeProgress();
-      },
-    ).catchError(SnackBarController(context).errHandlerBanner);
+      if (appConfig.defaultBackupDir?.isNotEmpty ?? false) {
+        defaultBackupDir = Directory(appConfig.defaultBackupDir ?? '');
+      }
+
+      // state notifier
+      projectsNotifier.updateSavedProject(savedProjects);
+      contentsNotifier.updateDefaultBackupDir(defaultBackupDir);
+      themeNotifier
+        ..updateThemeMode(ThemeMode.values[appConfig.themeMode])
+        ..updateUseDynamicColor(appConfig.useDynamicColor);
+
+      if (appConfig.savedProjectPath.isEmpty) {
+        snackBar.pushSnackBarSuccess(content: '設定ファイルが正しく読み込まれました');
+      } else {
+        snackBar.pushSnackBarSuccess(
+          content: '${appConfig.savedProjectPath.length} 件のプロジェクトが正しく読み込まれました',
+        );
+      }
+      await pageNotifier.completeProgress();
+    } on AIBASException catch (err, stack) {
+      print(stack);
+      snackBar.errHandlerBanner(err);
+    }
   }
 
   void _home2fabInit() {
