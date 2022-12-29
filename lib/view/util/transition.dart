@@ -74,6 +74,9 @@ class RouteController {
     } on AIBASException catch (err, stack) {
       print(stack);
       snackBar.errHandlerBanner(err);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (err, _) {
+      snackBar.errHandlerBanner(err);
     }
   }
 

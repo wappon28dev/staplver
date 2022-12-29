@@ -103,7 +103,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     debugPrint('>> runLog << ');
     await _runCommand(
       baseCommand: BaseCommand.svn,
-      args: ['log', 'diff'],
+      args: ['log', '--diff'],
     );
   }
 

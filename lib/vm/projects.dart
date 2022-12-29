@@ -30,11 +30,14 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
   void updateCurrentPjIndex(int newCurrentPjIndex) {
     debugPrint('newCurrentPjIndex => $newCurrentPjIndex');
     assert((state.savedProjects.length) >= newCurrentPjIndex);
+    state = state.copyWith(currentPjIndex: newCurrentPjIndex);
   }
 
   Future<void> initProject() async {
     final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
     final pageNotifier = ref.read(pageProvider.notifier);
+
+    updateCurrentPjIndex(state.savedProjects.length - 1);
 
     final queue = [
       () async => cmdSVNNotifier.runCreate(),

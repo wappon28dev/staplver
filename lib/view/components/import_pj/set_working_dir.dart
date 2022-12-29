@@ -59,7 +59,7 @@ class CompSetWorkingDir extends ConsumerWidget {
         // ignore: avoid_catches_without_on_clauses
       } catch (err, __) {
         isValidContentsNotifier.state = false;
-        SnackBarController(context, ref).errHandlerBanner(err.toString());
+        SnackBarController(context, ref).errHandlerBanner(err);
       }
     });
 
