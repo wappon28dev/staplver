@@ -1,121 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:aibas/model/constant.dart';
-import 'package:aibas/model/data/class.dart';
 import 'package:aibas/model/data/config.dart';
 import 'package:aibas/model/error/exception.dart';
-import 'package:aibas/model/helper/snackbar.dart';
-import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/projects.dart';
-import 'package:aibas/vm/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
-class ConfigController {
+class AppConfigRepository {
   Future<File> get appConfigPath async {
     final appConfigDir = await getApplicationSupportDirectory();
     return Future.value(File('${appConfigDir.path}/config.json'));
   }
 
-  PjConfig project2PjConfig(Project project) => PjConfig(
-        name: project.name,
-        workingDirStr: project.workingDir.path,
-        backupDirStr: project.backupDir.path,
-        backupMin: project.backupMin,
-      );
-
-  Future<Project> pjConfig2Project(PjConfig pjConfig) async {
-    if (!await Directory(pjConfig.workingDirStr).exists()) {
-      return Future.error(
-        AIBASException.workingDirNotFound,
-      );
-    }
-    if (!await Directory(pjConfig.backupDirStr).exists()) {
-      return Future.error(
-        AIBASException.backupDirNotFound,
-      );
-    }
-    if (pjConfig.name.isEmpty) {
-      return Future.error(
-        AIBASException.pjNameIsInvalid,
-      );
-    }
-    if (pjConfig.backupMin != -1 && pjConfig.backupMin < 0) {
-      return Future.error(
-        AIBASException.backupMinIsInvalid,
-      );
-    }
-
-    return Future.value(
-      Project(
-        name: pjConfig.name,
-        workingDir: Directory(pjConfig.workingDirStr),
-        backupDir: Directory(pjConfig.backupDirStr),
-        backupMin: pjConfig.backupMin,
-      ),
-    );
-  }
-
-  AppConfig getCurrentAppConfig(WidgetRef ref) {
-    final projectsState = ref.read(projectsProvider);
-    final contentsState = ref.read(contentsProvider);
-    final themeState = ref.read(themeProvider);
-
-    final savedProjectPath = <String, String>{};
-
-    for (final element in projectsState.savedProjects) {
-      savedProjectPath.addAll(
-        {element.backupDir.path: element.workingDir.path},
-      );
-    }
-
-    return AppConfig(
-      savedProjectPath: savedProjectPath,
-      defaultBackupDir: contentsState.defaultBackupDir?.path,
-      themeMode: themeState.themeMode.index,
-      useDynamicColor: themeState.useDynamicColor,
-    );
-  }
-
-  Future<List<Project>> appConfig2Projects(AppConfig appConfig) async {
-    debugPrint('-- appConfig2Projects --');
-
-    final savedProjectPath = <Directory, Directory>{};
-
-    if (appConfig.savedProjectPath.isEmpty) return Future.value(<Project>[]);
-
-    await appConfig.savedProjectPath
-        .forEachAsync((backupDir, workingDir) async {
-      if (!await Directory(backupDir).exists()) {
-        return Future.error(
-          AIBASException.backupDirNotFoundOnLoad(backupDir, workingDir),
-        );
-      }
-      if (!await Directory(workingDir).exists()) {
-        return Future.error(
-          AIBASException.workingDirNotFoundOnLoad(backupDir, workingDir),
-        );
-      }
-
-      savedProjectPath.addAll({Directory(backupDir): Directory(workingDir)});
-    });
-    final savedProject = <Project>[];
-
-    await savedProjectPath.forEachAsync((backupDir, _) async {
-      final pjConfig = await loadPjConfig(backupDir);
-
-      if (pjConfig == null) throw AIBASException.pjConfigIsNull;
-
-      final project = await pjConfig2Project(pjConfig);
-      savedProject.add(project);
-    });
-    debugPrint('-- end --');
-    return Future.value(savedProject);
-  }
-
-  Future<AppConfig> loadAppConfig() async {
+  Future<AppConfig> getAppConfig() async {
     debugPrint('-- load appConfig --');
 
     AppConfig? appConfig;
@@ -158,10 +55,9 @@ class ConfigController {
     return Future.value(appConfig);
   }
 
-  Future<void> saveAppConfig(WidgetRef ref) async {
+  Future<void> saveAppConfig(AppConfig appConfig) async {
     debugPrint('-- save appConfig --');
 
-    final appConfig = getCurrentAppConfig(ref);
     final appConfigStr = json.encode(appConfig.toJson());
     await (await appConfigPath).writeAsString(appConfigStr);
 
@@ -172,7 +68,7 @@ class ConfigController {
   Future<void> removeSavedProject(
     String backupDirStr,
   ) async {
-    final appConfig = await loadAppConfig();
+    final appConfig = await AppConfigRepository().getAppConfig();
     final savedProjectsPath = {...appConfig.savedProjectPath}
       ..remove(backupDirStr);
 
@@ -183,10 +79,26 @@ class ConfigController {
     await (await appConfigPath).writeAsString(appConfigStr);
   }
 
+  Future<void> writeEmptyAppConfig() async {
+    debugPrint('-- create emptyConfig --');
+    const emptyAppConfig = AppConfig(
+      savedProjectPath: {},
+      defaultBackupDir: '',
+      themeMode: 0,
+      useDynamicColor: false,
+    );
+    final appConfigStr = json.encode(emptyAppConfig.toJson());
+    await (await appConfigPath).writeAsString(appConfigStr);
+    debugPrint(appConfigStr);
+    debugPrint('-- created emptyConfig --');
+  }
+}
+
+class PjConfigRepository {
   Future<bool> getIsPjDir(Directory backupDir) async =>
       Directory('${backupDir.path}/aibas').exists();
 
-  Future<PjConfig?> loadPjConfig(Directory backupDir) async {
+  Future<PjConfig?> getPjConfigFromBackupDir(Directory backupDir) async {
     debugPrint('-- load pjConfig --');
 
     if (!await getIsPjDir(backupDir)) {
@@ -211,33 +123,35 @@ class ConfigController {
     return Future.value(pjConfig);
   }
 
-  Future<void> createPjConfig(Project project) async {
+  Future<void> createNewPjConfig(PjConfig pjConfig) async {
     debugPrint('-- create pjConfig --');
 
-    if (await Directory('${project.backupDir.path}/aibas').exists()) {
+    if (await Directory('${pjConfig.backupDirStr}/aibas').exists()) {
       return Future.error(AIBASException.pjAlreadyExists);
     } else {
-      await Directory('${project.backupDir.path}/aibas').create();
+      await Directory('${pjConfig.backupDirStr}/aibas').create();
     }
 
-    final pjConfigPath = File('${project.backupDir.path}/aibas/pj_config.json');
-    final pjConfigStr = json.encode(project2PjConfig(project).toJson());
+    final pjConfigPath = File('${pjConfig.backupDirStr}/aibas/pj_config.json');
+    final pjConfigStr = json.encode(pjConfig.toJson());
     await pjConfigPath.writeAsString(pjConfigStr);
 
     debugPrint('$pjConfigStr\n-- created pjConfig --');
   }
 
-  Future<void> createEmptyAppConfig() async {
-    debugPrint('-- create emptyConfig --');
-    const emptyAppConfig = AppConfig(
-      savedProjectPath: {},
-      defaultBackupDir: '',
-      themeMode: 0,
-      useDynamicColor: false,
-    );
-    final appConfigStr = json.encode(emptyAppConfig.toJson());
-    await (await appConfigPath).writeAsString(appConfigStr);
-    debugPrint(appConfigStr);
-    debugPrint('-- created emptyConfig --');
+  Future<void> updatePjConfig(PjConfig pjConfig) async {
+    debugPrint('-- update pjConfig --');
+
+    if (!await Directory('${pjConfig.backupDirStr}/aibas').exists()) {
+      return Future.error(AIBASException.pjNotFound);
+    } else {
+      await Directory('${pjConfig.backupDirStr}/aibas').create();
+    }
+
+    final pjConfigPath = File('${pjConfig.backupDirStr}/aibas/pj_config.json');
+    final pjConfigStr = json.encode(pjConfig.toJson());
+    await pjConfigPath.writeAsString(pjConfigStr);
+
+    debugPrint('$pjConfigStr\n-- update pjConfig --');
   }
 }

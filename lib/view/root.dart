@@ -5,7 +5,7 @@ import 'package:aibas/view/routes/debug.dart';
 import 'package:aibas/view/routes/home.dart';
 import 'package:aibas/view/routes/projects.dart';
 import 'package:aibas/view/routes/settings.dart';
-import 'package:aibas/view/util/transition.dart';
+import 'package:aibas/view/util/route.dart';
 import 'package:aibas/view/util/window.dart';
 import 'package:aibas/vm/now.dart';
 import 'package:aibas/vm/page.dart';

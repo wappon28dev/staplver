@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aibas/model/constant.dart';
 import 'package:aibas/model/data/class.dart';
+import 'package:aibas/model/helper/config.dart';
 import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/create_pj/set_ignore_files.dart';
 import 'package:aibas/view/components/create_pj/set_pj_config.dart';
@@ -102,7 +103,9 @@ class PageCreatePj extends ConsumerWidget {
 
       projectsNotifier.addSavedProject(newProject);
       await projectsNotifier.initProject();
-      await ConfigController().saveAppConfig(ref);
+
+      final appConfig = AppConfigHelper().getCurrentAppConfig(ref);
+      await AppConfigRepository().saveAppConfig(appConfig);
     }
 
     void runDispose(BuildContext context, WidgetRef ref) {

@@ -2,7 +2,7 @@ import 'package:aibas/model/data/class.dart';
 import 'package:aibas/view/routes/fab/checkout.dart';
 import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:aibas/view/routes/fab/import_pj.dart';
-import 'package:aibas/view/util/transition.dart';
+import 'package:aibas/view/util/route.dart';
 import 'package:aibas/vm/contents.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';

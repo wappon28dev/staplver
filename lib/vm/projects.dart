@@ -1,4 +1,5 @@
 import 'package:aibas/model/data/class.dart';
+import 'package:aibas/model/helper/config.dart';
 import 'package:aibas/model/state.dart';
 import 'package:aibas/repository/config.dart';
 import 'package:aibas/vm/page.dart';
@@ -46,7 +47,9 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
       () async => cmdSVNNotifier.runCheckout(),
       () async => cmdSVNNotifier.runStaging(),
       () async => cmdSVNNotifier.update(),
-      () async => ConfigController().createPjConfig(state.currentPj!),
+      () async => PjConfigRepository().createNewPjConfig(
+            PjConfigHelper().project2PjConfig(state.currentPj!),
+          )
     ];
 
     debugPrint('-- init project --');

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aibas/model/error/exception.dart';
+import 'package:aibas/model/helper/config.dart';
 import 'package:aibas/model/helper/snackbar.dart';
 import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/wizard.dart';
@@ -45,9 +46,10 @@ class CompSetWorkingDir extends ConsumerWidget {
         final importedPjNotifier =
             ref.read(PageImportPj.importedPjProvider.notifier);
 
-        final pjConfig = await ConfigController().loadPjConfig(backupDir);
+        final pjConfig =
+            await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
         if (pjConfig == null) throw AIBASException.pjConfigIsNull;
-        final importedPj = await ConfigController().pjConfig2Project(pjConfig);
+        final importedPj = await PjConfigHelper().pjConfig2Project(pjConfig);
 
         importedPjNotifier.state = importedPj;
         snackBar.pushSnackBarSuccess(

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aibas/model/data/class.dart';
 import 'package:aibas/model/error/exception.dart';
+import 'package:aibas/model/helper/config.dart';
 import 'package:aibas/model/helper/snackbar.dart';
 import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/import_pj/pj_summary.dart';
@@ -66,8 +67,9 @@ class PageImportPj extends ConsumerWidget {
         throw AIBASException.importedPjIsNull;
       }
       projectsNotifier.addSavedProject(importedPjState);
-      await ConfigController()
-          .saveAppConfig(ref)
+      final appConfig = AppConfigHelper().getCurrentAppConfig(ref);
+      await AppConfigRepository()
+          .saveAppConfig(appConfig)
           .catchError(SnackBarController(context, ref).errHandlerBanner);
     }
 

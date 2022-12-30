@@ -2,7 +2,7 @@
 
 import 'package:aibas/main.dart';
 import 'package:aibas/repository/config.dart';
-import 'package:aibas/view/util/transition.dart';
+import 'package:aibas/view/util/route.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,8 +43,14 @@ class AIBASException implements Exception {
 ''',
         approachIcon: Icons.delete_forever,
         approachLabel: '該当のプロジェクトをアプリの設定から削除する',
-        onClick: (BuildContext context, WidgetRef ref) {
-          ConfigController().removeSavedProject(backupDirStr);
+        onClick: (BuildContext context, WidgetRef ref) async {
+          final pageNotifier = ref.read(pageProvider.notifier);
+
+          await pageNotifier.resetProgress();
+          pageNotifier.updateProgress(0.3);
+          await AppConfigRepository().removeSavedProject(backupDirStr);
+          await pageNotifier.completeProgress();
+
           RouteController.runPush(
             context: context,
             page: const AIBAS(),
@@ -71,7 +77,7 @@ class AIBASException implements Exception {
 
           await pageNotifier.resetProgress();
           pageNotifier.updateProgress(0.3);
-          await ConfigController().removeSavedProject(backupDirStr);
+          await AppConfigRepository().removeSavedProject(backupDirStr);
           await pageNotifier.completeProgress();
 
           RouteController.runPush(
@@ -97,7 +103,7 @@ class AIBASException implements Exception {
     approachIcon: Icons.restart_alt,
     approachLabel: '空の設定ファイルで上書きする',
     onClick: (BuildContext context, WidgetRef ref) {
-      ConfigController().createEmptyAppConfig();
+      AppConfigRepository().writeEmptyAppConfig();
       RouteController.runPush(
         context: context,
         page: const AIBAS(),

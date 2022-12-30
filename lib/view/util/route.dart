@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aibas/model/error/exception.dart';
+import 'package:aibas/model/helper/config.dart';
 import 'package:aibas/model/helper/snackbar.dart';
 import 'package:aibas/repository/config.dart';
 import 'package:aibas/view/components/wizard.dart';
@@ -46,9 +47,9 @@ class RouteController {
     final snackBar = SnackBarController(context, ref);
 
     try {
-      final appConfig = await ConfigController().loadAppConfig();
+      final appConfig = await AppConfigRepository().getAppConfig();
       final savedProjects =
-          await ConfigController().appConfig2Projects(appConfig);
+          await AppConfigHelper().appConfig2Projects(appConfig);
 
       Directory? defaultBackupDir;
 
@@ -71,8 +72,7 @@ class RouteController {
         );
       }
       await pageNotifier.completeProgress();
-    } on AIBASException catch (err, stack) {
-      print(stack);
+    } on AIBASException catch (err, _) {
       snackBar.errHandlerBanner(err);
       // ignore: avoid_catches_without_on_clauses
     } catch (err, _) {
