@@ -1,18 +1,19 @@
 import 'dart:io';
 
-import 'package:aibas/model/data/class.dart';
-import 'package:aibas/model/error/exception.dart';
-import 'package:aibas/model/helper/config.dart';
-import 'package:aibas/model/helper/snackbar.dart';
-import 'package:aibas/repository/config.dart';
-import 'package:aibas/view/components/import_pj/pj_summary.dart';
-import 'package:aibas/view/components/import_pj/set_working_dir.dart';
-import 'package:aibas/view/components/wizard.dart';
-import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/page.dart';
-import 'package:aibas/vm/projects.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../../../model/data/class.dart';
+import '../../../model/error/exception.dart';
+import '../../../model/helper/config.dart';
+import '../../../model/helper/snackbar.dart';
+import '../../../repository/config.dart';
+import '../../../vm/contents.dart';
+import '../../../vm/page.dart';
+import '../../../vm/projects.dart';
+import '../../components/import_pj/pj_summary.dart';
+import '../../components/import_pj/set_working_dir.dart';
+import '../../components/wizard.dart';
 
 class PageImportPj extends ConsumerWidget {
   const PageImportPj({super.key});
@@ -70,7 +71,7 @@ class PageImportPj extends ConsumerWidget {
       final appConfig = AppConfigHelper().getCurrentAppConfig(ref);
       await AppConfigRepository()
           .saveAppConfig(appConfig)
-          .catchError(SnackBarController(context, ref).errHandlerBanner);
+          .catchError(AIBASErrHandler(context, ref).noticeErr);
     }
 
     void runDispose(BuildContext context, WidgetRef ref) {

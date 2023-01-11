@@ -1,16 +1,17 @@
 import 'dart:io';
 
-import 'package:aibas/model/error/exception.dart';
-import 'package:aibas/model/helper/config.dart';
-import 'package:aibas/model/helper/snackbar.dart';
-import 'package:aibas/repository/config.dart';
-import 'package:aibas/view/components/wizard.dart';
-import 'package:aibas/view/routes/fab/import_pj.dart';
-import 'package:aibas/vm/svn.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../model/error/exception.dart';
+import '../../../model/helper/config.dart';
+import '../../../model/helper/snackbar.dart';
+import '../../../repository/config.dart';
+import '../../../vm/svn.dart';
+import '../../routes/fab/import_pj.dart';
+import '../wizard.dart';
 
 class CompSetWorkingDir extends ConsumerWidget {
   const CompSetWorkingDir({super.key});
@@ -55,13 +56,14 @@ class CompSetWorkingDir extends ConsumerWidget {
         snackBar.pushSnackBarSuccess(
           content: 'プロジェクト “${pjConfig.name}” は正しく読み込めます',
         );
-      } on AIBASException catch (err) {
+      } on AIBASException catch (err, trace) {
         isValidContentsNotifier.state = false;
-        SnackBarController(context, ref).errHandlerBanner(err);
+        AIBASErrHandler(context, ref).noticeErr(err, trace);
         // ignore: avoid_catches_without_on_clauses
       } catch (err, __) {
         isValidContentsNotifier.state = false;
-        SnackBarController(context, ref).errHandlerBanner(err);
+        SnackBarController(context, ref)
+            .pushSnackBarErr(content: err.toString());
       }
     });
 

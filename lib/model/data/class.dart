@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'class.freezed.dart';
@@ -33,4 +34,14 @@ class WizardComponents with _$WizardComponents {
     required IconData icon,
     required Widget screen,
   }) = _WizardComponents;
+}
+
+@freezed
+class ExceptionAction with _$ExceptionAction {
+  const factory ExceptionAction({
+    required String title,
+    IconData? icon,
+    void Function(BuildContext context, WidgetRef ref)? onClick,
+    @Default(false) bool isPrimary,
+  }) = _ExceptionAction;
 }

@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:aibas/model/data/config.dart';
-import 'package:aibas/model/error/exception.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../model/data/config.dart';
+import '../model/error/exception.dart';
 
 class AppConfigRepository {
   Future<File> get appConfigPath async {
@@ -24,10 +25,6 @@ class AppConfigRepository {
       appConfig = AppConfig.fromJson(appConfigJson);
 
       // ignore: avoid_catching_errors
-    } on TypeError {
-      return Future.error(
-        AIBASException.appConfigIsInvalid,
-      );
     } on FormatException {
       return Future.error(
         AIBASException.appConfigIsInvalid,

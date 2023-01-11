@@ -1,19 +1,20 @@
 import 'dart:io';
 
-import 'package:aibas/model/error/exception.dart';
-import 'package:aibas/model/helper/config.dart';
-import 'package:aibas/model/helper/snackbar.dart';
-import 'package:aibas/repository/config.dart';
-import 'package:aibas/view/components/wizard.dart';
-import 'package:aibas/view/routes/fab/checkout.dart';
-import 'package:aibas/view/routes/fab/create_pj.dart';
-import 'package:aibas/view/routes/fab/import_pj.dart';
-import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/page.dart';
-import 'package:aibas/vm/projects.dart';
-import 'package:aibas/vm/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../model/error/exception.dart';
+import '../../model/helper/config.dart';
+import '../../model/helper/snackbar.dart';
+import '../../repository/config.dart';
+import '../../vm/contents.dart';
+import '../../vm/page.dart';
+import '../../vm/projects.dart';
+import '../../vm/theme.dart';
+import '../components/wizard.dart';
+import '../routes/fab/checkout.dart';
+import '../routes/fab/create_pj.dart';
+import '../routes/fab/import_pj.dart';
 
 class RouteController {
   RouteController(this.ref);
@@ -72,11 +73,11 @@ class RouteController {
         );
       }
       await pageNotifier.completeProgress();
-    } on AIBASException catch (err, _) {
-      snackBar.errHandlerBanner(err);
+    } on AIBASException catch (err, trace) {
+      AIBASErrHandler(context, ref).noticeErr(err, trace);
       // ignore: avoid_catches_without_on_clauses
-    } catch (err, _) {
-      snackBar.errHandlerBanner(err);
+    } catch (err, trace) {
+      AIBASErrHandler(context, ref).noticeErr(err, trace);
     }
   }
 
