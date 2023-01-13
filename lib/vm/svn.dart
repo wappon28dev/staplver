@@ -33,9 +33,9 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     await Future.wait(
       <Future<bool>>[
         currentPjSnapshot?.backupDir.exists() ??
-            Future.error(AIBASException.backupDirNotFound),
+            Future.error(AIBASExceptions().backupDirNotFound),
         currentPjSnapshot?.workingDir.exists() ??
-            Future.error(AIBASException.workingDirNotFound),
+            Future.error(AIBASExceptions().workingDirNotFound),
       ],
     ).catchError((dynamic err) {
       debugPrint(err.toString());
@@ -74,10 +74,10 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final reg = RegExp(r'(?<=URL: )(.*)');
     final uriStr = reg.firstMatch(state.stdout)?.group(0);
 
-    if (uriStr == null) return Future.error(AIBASException.dirNotSVNRepo);
+    if (uriStr == null) return Future.error(AIBASExceptions().dirNotSVNRepo);
     final backupDir = Uri.parse(uriStr).toFilePath();
     if (!await Directory(backupDir).exists()) {
-      return Future.error(AIBASException.backupDirNotFound);
+      return Future.error(AIBASExceptions().backupDirNotFound);
     }
 
     return Directory(backupDir);

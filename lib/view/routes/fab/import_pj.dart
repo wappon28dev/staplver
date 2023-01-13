@@ -5,8 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../model/data/class.dart';
 import '../../../model/error/exception.dart';
+import '../../../model/error/handler.dart';
 import '../../../model/helper/config.dart';
-import '../../../model/helper/snackbar.dart';
 import '../../../repository/config.dart';
 import '../../../vm/contents.dart';
 import '../../../vm/page.dart';
@@ -65,7 +65,7 @@ class PageImportPj extends ConsumerWidget {
       final projectsNotifier = ref.read(projectsProvider.notifier);
 
       if (importedPjState == null) {
-        throw AIBASException.importedPjIsNull;
+        throw AIBASExceptions().importedPjIsNull();
       }
       projectsNotifier.addSavedProject(importedPjState);
       final appConfig = AppConfigHelper().getCurrentAppConfig(ref);

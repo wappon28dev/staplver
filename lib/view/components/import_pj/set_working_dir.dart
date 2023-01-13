@@ -5,9 +5,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../model/data/class.dart';
 import '../../../model/error/exception.dart';
+import '../../../model/error/handler.dart';
 import '../../../model/helper/config.dart';
-import '../../../model/helper/snackbar.dart';
 import '../../../repository/config.dart';
 import '../../../vm/svn.dart';
 import '../../routes/fab/import_pj.dart';
@@ -49,7 +50,7 @@ class CompSetWorkingDir extends ConsumerWidget {
 
         final pjConfig =
             await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
-        if (pjConfig == null) throw AIBASException.pjConfigIsNull;
+        if (pjConfig == null) throw AIBASExceptions().pjConfigIsNull();
         final importedPj = await PjConfigHelper().pjConfig2Project(pjConfig);
 
         importedPjNotifier.state = importedPj;
@@ -60,10 +61,9 @@ class CompSetWorkingDir extends ConsumerWidget {
         isValidContentsNotifier.state = false;
         AIBASErrHandler(context, ref).noticeErr(err, trace);
         // ignore: avoid_catches_without_on_clauses
-      } catch (err, __) {
+      } catch (err, trace) {
         isValidContentsNotifier.state = false;
-        SnackBarController(context, ref)
-            .pushSnackBarErr(content: err.toString());
+        AIBASErrHandler(context, ref).noticeUnhandledErr(err, trace);
       }
     });
 

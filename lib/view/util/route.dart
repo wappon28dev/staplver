@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../model/error/exception.dart';
+import '../../model/data/class.dart';
+import '../../model/error/handler.dart';
 import '../../model/helper/config.dart';
-import '../../model/helper/snackbar.dart';
 import '../../repository/config.dart';
 import '../../vm/contents.dart';
 import '../../vm/page.dart';
@@ -77,7 +77,7 @@ class RouteController {
       AIBASErrHandler(context, ref).noticeErr(err, trace);
       // ignore: avoid_catches_without_on_clauses
     } catch (err, trace) {
-      AIBASErrHandler(context, ref).noticeErr(err, trace);
+      AIBASErrHandler(context, ref).noticeUnhandledErr(err, trace);
     }
   }
 

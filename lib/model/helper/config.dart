@@ -1,15 +1,16 @@
 import 'dart:io';
 
-import 'package:aibas/model/constant.dart';
-import 'package:aibas/model/data/class.dart';
-import 'package:aibas/model/data/config.dart';
-import 'package:aibas/model/error/exception.dart';
-import 'package:aibas/repository/config.dart';
-import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/projects.dart';
-import 'package:aibas/vm/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../repository/config.dart';
+import '../../vm/contents.dart';
+import '../../vm/projects.dart';
+import '../../vm/theme.dart';
+import '../constant.dart';
+import '../data/class.dart';
+import '../data/config.dart';
+import '../error/exception.dart';
 
 class AppConfigHelper {
   Future<List<Project>> appConfig2Projects(AppConfig appConfig) async {
@@ -23,12 +24,12 @@ class AppConfigHelper {
         .forEachAsync((backupDir, workingDir) async {
       if (!await Directory(backupDir).exists()) {
         return Future.error(
-          AIBASException.backupDirNotFoundOnLoad(backupDir, workingDir),
+          AIBASExceptions().backupDirNotFoundOnLoad(backupDir, workingDir),
         );
       }
       if (!await Directory(workingDir).exists()) {
         return Future.error(
-          AIBASException.workingDirNotFoundOnLoad(backupDir, workingDir),
+          AIBASExceptions().workingDirNotFoundOnLoad(backupDir, workingDir),
         );
       }
 
@@ -40,7 +41,7 @@ class AppConfigHelper {
       final pjConfig =
           await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
 
-      if (pjConfig == null) throw AIBASException.pjConfigIsNull;
+      if (pjConfig == null) throw AIBASExceptions().pjConfigIsNull();
 
       final project = await PjConfigHelper().pjConfig2Project(pjConfig);
       savedProject.add(project);
@@ -69,6 +70,11 @@ class AppConfigHelper {
       useDynamicColor: themeState.useDynamicColor,
     );
   }
+
+  Future<void> updateAppConfig(WidgetRef ref) async {
+    final appConfig = getCurrentAppConfig(ref);
+    await AppConfigRepository().saveAppConfig(appConfig);
+  }
 }
 
 class PjConfigHelper {
@@ -82,22 +88,22 @@ class PjConfigHelper {
   Future<Project> pjConfig2Project(PjConfig pjConfig) async {
     if (!await Directory(pjConfig.workingDirStr).exists()) {
       return Future.error(
-        AIBASException.workingDirNotFound,
+        AIBASExceptions().workingDirNotFound(),
       );
     }
     if (!await Directory(pjConfig.backupDirStr).exists()) {
       return Future.error(
-        AIBASException.backupDirNotFound,
+        AIBASExceptions().backupDirNotFound(),
       );
     }
     if (pjConfig.name.isEmpty) {
       return Future.error(
-        AIBASException.pjNameIsInvalid,
+        AIBASExceptions().pjNameIsInvalid(),
       );
     }
     if (pjConfig.backupMin != -1 && pjConfig.backupMin < 0) {
       return Future.error(
-        AIBASException.backupMinIsInvalid,
+        AIBASExceptions().backupMinIsInvalid(),
       );
     }
 

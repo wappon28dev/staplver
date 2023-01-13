@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/class.dart';
-import '../error/exception.dart';
 
 class AIBASErrHandler {
   AIBASErrHandler(this.context, this.ref);
@@ -61,14 +60,22 @@ class AIBASErrHandler {
                   ).copyWith(elevation: ButtonStyleButton.allOrNull(0)),
                   onPressed: () => action.onClick?.call(context, ref),
                 )
-              : TextButton.icon(
-                  icon: Icon(action.icon),
-                  label: Text(action.title),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.onError,
-                  ),
-                  onPressed: () => action.onClick?.call(context, ref),
-                ),
+              : action.icon != null
+                  ? TextButton.icon(
+                      icon: Icon(action.icon),
+                      label: Text(action.title),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.onError,
+                      ),
+                      onPressed: () => action.onClick?.call(context, ref),
+                    )
+                  : TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.onError,
+                      ),
+                      onPressed: () => action.onClick?.call(context, ref),
+                      child: Text(action.title),
+                    ),
         )
         .toList();
 
@@ -85,10 +92,11 @@ class AIBASErrHandler {
     );
   }
 
-  // ignore: prefer_void_to_null
-  FutureOr<Null> noticeErr(dynamic err, StackTrace trace) {
+  FutureOr<void> noticeErr(dynamic err, StackTrace trace) {
     debugPrint('=== Err Received ===\n$err\n$trace');
+    debugPrintStack();
     if (err is AIBASException) {
+      debugPrint(err.message);
       if (err.needShowAsBanner) {
         pushBanner(
           title: err.message,
@@ -112,10 +120,12 @@ class AIBASErrHandler {
     pushBanner(
       title: '開発者の想定していないエラーが発生しました\n$err',
       actions: [
-        const ExceptionAction(
+        ExceptionAction(
           title: '閉じる',
           icon: Icons.close,
           isPrimary: false,
+          onClick: (context, ref) =>
+              ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
         ),
       ],
     );

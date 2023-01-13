@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -44,4 +44,14 @@ class ExceptionAction with _$ExceptionAction {
     void Function(BuildContext context, WidgetRef ref)? onClick,
     @Default(false) bool isPrimary,
   }) = _ExceptionAction;
+}
+
+@freezed
+class AIBASException with _$AIBASException implements Exception {
+  const factory AIBASException({
+    required String message,
+    @Default(Icons.error_outline) IconData icon,
+    List<ExceptionAction>? actions,
+    @Default(false) bool needShowAsBanner,
+  }) = _AIBASException;
 }

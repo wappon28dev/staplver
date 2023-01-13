@@ -27,14 +27,14 @@ class AppConfigRepository {
       // ignore: avoid_catching_errors
     } on FormatException {
       return Future.error(
-        AIBASException.appConfigIsInvalid,
+        AIBASExceptions().appConfigIsInvalid(),
       );
     } on FileSystemException catch (err) {
       if (err.osError?.errorCode == 2) {
-        return Future.error(AIBASException.appConfigNotFound);
+        return Future.error(AIBASExceptions().appConfigNotFound());
       }
       return Future.error(
-        AIBASException.appConfigCannotLoaded(err.osError?.message),
+        AIBASExceptions().appConfigCannotLoaded(err.osError?.message),
       );
     }
 
@@ -43,7 +43,7 @@ class AppConfigRepository {
       // ignore: avoid_catches_without_on_clauses
     } catch (_, __) {
       return Future.error(
-        AIBASException.pjConfigThemeModeIsInvalid,
+        AIBASExceptions().pjConfigThemeModeIsInvalid(),
       );
     }
 
@@ -99,7 +99,7 @@ class PjConfigRepository {
     debugPrint('-- load pjConfig --');
 
     if (!await getIsPjDir(backupDir)) {
-      return Future.error(AIBASException.pjNotFound);
+      return Future.error(AIBASExceptions().pjNotFound());
     }
 
     PjConfig? pjConfig;
@@ -124,7 +124,7 @@ class PjConfigRepository {
     debugPrint('-- create pjConfig --');
 
     if (await Directory('${pjConfig.backupDirStr}/aibas').exists()) {
-      return Future.error(AIBASException.pjAlreadyExists);
+      return Future.error(AIBASExceptions().pjAlreadyExists);
     } else {
       await Directory('${pjConfig.backupDirStr}/aibas').create();
     }
@@ -140,7 +140,7 @@ class PjConfigRepository {
     debugPrint('-- update pjConfig --');
 
     if (!await Directory('${pjConfig.backupDirStr}/aibas').exists()) {
-      return Future.error(AIBASException.pjNotFound);
+      return Future.error(AIBASExceptions().pjNotFound);
     } else {
       await Directory('${pjConfig.backupDirStr}/aibas').create();
     }

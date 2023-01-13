@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:aibas/model/constant.dart';
-import 'package:aibas/model/data/class.dart';
-import 'package:aibas/model/helper/config.dart';
-import 'package:aibas/repository/config.dart';
-import 'package:aibas/view/components/create_pj/set_ignore_files.dart';
-import 'package:aibas/view/components/create_pj/set_pj_config.dart';
-import 'package:aibas/view/components/create_pj/set_pj_details.dart';
-import 'package:aibas/view/components/create_pj/set_working_dir.dart';
-import 'package:aibas/view/components/wizard.dart';
-import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/page.dart';
-import 'package:aibas/vm/projects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../model/constant.dart';
+import '../../../model/data/class.dart';
+import '../../../model/helper/config.dart';
+import '../../../vm/contents.dart';
+import '../../../vm/page.dart';
+import '../../../vm/projects.dart';
+import '../../components/create_pj/set_ignore_files.dart';
+import '../../components/create_pj/set_pj_config.dart';
+import '../../components/create_pj/set_pj_details.dart';
+import '../../components/create_pj/set_working_dir.dart';
+import '../../components/wizard.dart';
 
 class PageCreatePj extends ConsumerWidget {
   const PageCreatePj({super.key});
@@ -104,8 +104,7 @@ class PageCreatePj extends ConsumerWidget {
       projectsNotifier.addSavedProject(newProject);
       await projectsNotifier.initProject();
 
-      final appConfig = AppConfigHelper().getCurrentAppConfig(ref);
-      await AppConfigRepository().saveAppConfig(appConfig);
+      await AppConfigHelper().updateAppConfig(ref);
     }
 
     void runDispose(BuildContext context, WidgetRef ref) {
