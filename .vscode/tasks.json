@@ -11,9 +11,7 @@
                 "build",
                 "--delete-conflicting-outputs"
             ],
-            "problemMatcher": [
-                "$dart-build_runner"
-            ],
+            "problemMatcher": ["$dart-build_runner"],
             "group": "build",
             "label": "flutter: flutter pub run build_runner build",
             "detail": "",
@@ -22,6 +20,6 @@
                 "revealProblems": "onProblem",
                 "close": true
             }
-        },
+        }
     ]
 }
