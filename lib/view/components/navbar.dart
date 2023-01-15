@@ -1,13 +1,14 @@
-import 'package:aibas/model/data/class.dart';
-import 'package:aibas/view/routes/fab/checkout.dart';
-import 'package:aibas/view/routes/fab/create_pj.dart';
-import 'package:aibas/view/routes/fab/import_pj.dart';
-import 'package:aibas/view/util/route.dart';
-import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+
+import '../../model/data/class.dart';
+import '../../vm/contents.dart';
+import '../../vm/page.dart';
+import '../routes/fab/checkout.dart';
+import '../routes/fab/create_pj.dart';
+import '../routes/fab/import_pj.dart';
+import '../util/route.dart';
 
 class NavBar {
   NavBar({
@@ -110,6 +111,28 @@ class NavBar {
           shape: const CircleBorder(),
         ),
       ],
+    );
+  }
+
+  PreferredSize getProgressIndicator() {
+    final pageState = ref.watch(pageProvider);
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(10),
+      child: AnimatedOpacity(
+        opacity: pageState.isVisibleProgressBar ? 1 : 0,
+        duration: const Duration(milliseconds: 600),
+        child: TweenAnimationBuilder<double>(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          tween: Tween<double>(
+            begin: 0,
+            end: pageState.progress,
+          ),
+          builder: (context, value, _) => LinearProgressIndicator(
+            value: pageState.progress != -1 ? value : null,
+          ),
+        ),
+      ),
     );
   }
 

@@ -1,19 +1,20 @@
 import 'dart:async';
 
-import 'package:aibas/view/components/navbar.dart';
-import 'package:aibas/view/routes/debug.dart';
-import 'package:aibas/view/routes/home.dart';
-import 'package:aibas/view/routes/projects.dart';
-import 'package:aibas/view/routes/settings.dart';
-import 'package:aibas/view/util/route.dart';
-import 'package:aibas/view/util/window.dart';
-import 'package:aibas/vm/now.dart';
-import 'package:aibas/vm/page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:window_manager/window_manager.dart';
+
+import '../vm/now.dart';
+import '../vm/page.dart';
+import 'components/navbar.dart';
+import 'routes/debug.dart';
+import 'routes/home.dart';
+import 'routes/projects/projects.dart';
+import 'routes/settings.dart';
+import 'util/route.dart';
+import 'util/window.dart';
 
 class AppRoot extends ConsumerStatefulWidget {
   const AppRoot({super.key});
@@ -88,24 +89,8 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
           ),
           leading: const SizedBox(),
           leadingWidth: 0,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(10),
-            child: AnimatedOpacity(
-              opacity: pageState.isVisibleProgressBar ? 1 : 0,
-              duration: const Duration(milliseconds: 600),
-              child: TweenAnimationBuilder<double>(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                tween: Tween<double>(
-                  begin: 0,
-                  end: pageState.progress,
-                ),
-                builder: (context, value, _) => LinearProgressIndicator(
-                  value: pageState.progress != -1 ? value : null,
-                ),
-              ),
-            ),
-          ),
+          bottom:
+              NavBar(ref: ref, orientation: orientation).getProgressIndicator(),
           actions: [
             Padding(
               padding: const EdgeInsets.all(10),
@@ -134,9 +119,7 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
             ),
           ],
         ),
-        SliverToBoxAdapter(
-          child: pages[pageState.navbarIndex],
-        ),
+        pages[pageState.navbarIndex],
       ],
     );
 
