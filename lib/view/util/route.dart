@@ -24,11 +24,13 @@ class RouteController {
     required BuildContext context,
     required Widget page,
     bool isReplace = false,
+    bool isFullscreen = false,
   }) {
     if (!isReplace) {
       Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (BuildContext context) => page,
+          fullscreenDialog: isFullscreen,
         ),
       );
     } else {
@@ -48,7 +50,7 @@ class RouteController {
     final snackBar = SnackBarController(context, ref);
 
     try {
-      final appConfig = await AppConfigRepository().getAppConfig();
+      final appConfig = await RepositoryAppConfig().getAppConfig();
       final savedProjects =
           await AppConfigHelper().appConfig2Projects(appConfig);
 
@@ -146,5 +148,18 @@ class RouteController {
       (newDir) => backupDirNotifier.state = newDir,
     );
     debugPrint('-- end --');
+  }
+
+  Future<void> projects2details() async {
+    final pageNotifier = ref.read(pageProvider.notifier);
+
+    await pageNotifier.resetProgress();
+    pageNotifier.updateProgress(-1);
+  }
+
+  Future<void> details2projects() async {
+    final pageNotifier = ref.read(pageProvider.notifier);
+
+    await pageNotifier.resetProgress();
   }
 }

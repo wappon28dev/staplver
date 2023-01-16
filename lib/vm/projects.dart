@@ -1,11 +1,12 @@
-import 'package:aibas/model/data/class.dart';
-import 'package:aibas/model/helper/config.dart';
-import 'package:aibas/model/state.dart';
-import 'package:aibas/repository/config.dart';
-import 'package:aibas/vm/page.dart';
-import 'package:aibas/vm/svn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../model/data/class.dart';
+import '../model/helper/config.dart';
+import '../model/state.dart';
+import '../repository/config.dart';
+import 'page.dart';
+import 'svn.dart';
 
 final projectsProvider = StateNotifierProvider<ProjectsNotifier, ProjectsState>(
   ProjectsNotifier.new,
@@ -47,7 +48,7 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
       () async => cmdSVNNotifier.runCheckout(),
       () async => cmdSVNNotifier.runStaging(),
       () async => cmdSVNNotifier.update(),
-      () async => PjConfigRepository().createNewPjConfig(
+      () async => RepositoryPjConfig().createNewPjConfig(
             PjConfigHelper().project2PjConfig(state.currentPj!),
           )
     ];

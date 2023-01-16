@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import '../model/data/config.dart';
 import '../model/error/exception.dart';
 
-class AppConfigRepository {
+class RepositoryAppConfig {
   Future<File> get appConfigPath async {
     final appConfigDir = await getApplicationSupportDirectory();
     return Future.value(File('${appConfigDir.path}/config.json'));
@@ -65,7 +65,7 @@ class AppConfigRepository {
   Future<void> removeSavedProject(
     String backupDirStr,
   ) async {
-    final appConfig = await AppConfigRepository().getAppConfig();
+    final appConfig = await RepositoryAppConfig().getAppConfig();
     final savedProjectsPath = {...appConfig.savedProjectPath}
       ..remove(backupDirStr);
 
@@ -91,7 +91,7 @@ class AppConfigRepository {
   }
 }
 
-class PjConfigRepository {
+class RepositoryPjConfig {
   Future<bool> getIsPjDir(Directory backupDir) async =>
       Directory('${backupDir.path}/aibas').exists();
 

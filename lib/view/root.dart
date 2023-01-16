@@ -125,7 +125,7 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
 
     return Scaffold(
       bottomNavigationBar: navbar.getBottomNavbar(),
-      floatingActionButton: isPortrait ? navbar.fab(context) : null,
+      floatingActionButton: isPortrait ? navbar.getFab(context) : null,
       body: navbar.getRailsNavbar(context, content),
     );
   }

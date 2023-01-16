@@ -1,7 +1,7 @@
-import 'package:aibas/model/state.dart';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../model/state.dart';
 
 final pageProvider = StateNotifierProvider<PageNotifier, PageState>(
   (ref) => PageNotifier(),
