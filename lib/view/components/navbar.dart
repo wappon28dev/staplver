@@ -73,13 +73,10 @@ class NavBar {
         SpeedDialChild(
           child: const Icon(Icons.rocket_launch),
           label: '新規プロジェクト作成',
-          onTap: () {
-            RouteController(ref).home2createPj();
-            RouteController.runPush(
-              context: context,
-              page: const PageCreatePj(),
-            );
-          },
+          onTap: () => RouteController.runPush(
+            context: context,
+            page: const PageCreatePj(),
+          ),
           foregroundColor: colorScheme.onPrimary,
           backgroundColor: colorScheme.primary,
           labelBackgroundColor: colorScheme.primary,
@@ -89,25 +86,19 @@ class NavBar {
         SpeedDialChild(
           child: const Icon(Icons.drive_file_move),
           label: '作業フォルダーからプロジェクトをインポート',
-          onTap: () {
-            RouteController(ref).home2importPj();
-            RouteController.runPush(
-              context: context,
-              page: const PageImportPj(),
-            );
-          },
+          onTap: () => RouteController.runPush(
+            context: context,
+            page: const PageImportPj(),
+          ),
           shape: const CircleBorder(),
         ),
         SpeedDialChild(
           child: const Icon(Icons.folder_copy),
           label: 'バックアップフォルダーから作業コピーを取る',
-          onTap: () {
-            RouteController(ref).home2checkout();
-            RouteController.runPush(
-              context: context,
-              page: const PageCheckout(),
-            );
-          },
+          onTap: () => RouteController.runPush(
+            context: context,
+            page: const PageCheckout(),
+          ),
           shape: const CircleBorder(),
         ),
       ],

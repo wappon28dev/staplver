@@ -3,25 +3,22 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../model/constant.dart';
 import '../../../../model/error/handler.dart';
 import '../../../../repository/svn.dart';
 import '../../../../vm/page.dart';
 import '../../../../vm/projects.dart';
 import '../../../components/navbar.dart';
-import '../../../util/route.dart';
 
 class CompProjectsDetails extends HookConsumerWidget {
   const CompProjectsDetails({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // state
     final projectsState = ref.watch(projectsProvider);
     final pj = projectsState.currentPj;
 
-    final pageNotifier = ref.read(pageProvider.notifier);
-    final orientation = MediaQuery.of(context).orientation;
-
-    final isLaunching = useState(false);
-
+    // assert
     if (pj == null) {
       return const SliverToBoxAdapter(
         child: Center(
@@ -30,6 +27,12 @@ class CompProjectsDetails extends HookConsumerWidget {
       );
     }
 
+    // notifier
+    final pageNotifier = ref.read(pageProvider.notifier);
+    final orientation = MediaQuery.of(context).orientation;
+
+    // local
+    final isLaunching = useState(false);
     final revisionLength = useMemoized(
       () => RepositorySVN().getSVNInfo(
         pj.workingDir,
@@ -38,24 +41,31 @@ class CompProjectsDetails extends HookConsumerWidget {
     );
     final revisionLengthSnapshot = useFuture(revisionLength);
 
+    // init
+    void init() {
+      ref.read(pageProvider.notifier)
+        ..updateIsVisibleProgressBar(true)
+        ..updateProgress(-1);
+    }
+
+    useEffect(() => onMounted(init), []);
+
     useEffect(
-      () {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (revisionLengthSnapshot.hasData) {
-            pageNotifier.completeProgress();
-          } else if (revisionLengthSnapshot.hasError) {
-            // pageNotifier.completeProgress();
-            AIBASErrHandler(context, ref).noticeErr(
-              revisionLengthSnapshot.error,
-              revisionLengthSnapshot.stackTrace ?? StackTrace.empty,
-            );
-          }
-        });
-        return null;
-      },
+      () => onMountedAsync(() async {
+        if (revisionLengthSnapshot.hasData) {
+          await pageNotifier.completeProgress();
+        } else if (revisionLengthSnapshot.hasError) {
+          AIBASErrHandler(context, ref).noticeErr(
+            revisionLengthSnapshot.error,
+            revisionLengthSnapshot.stackTrace ?? StackTrace.empty,
+          );
+          await pageNotifier.completeProgress();
+        }
+      }),
       [revisionLengthSnapshot],
     );
 
+    // view
     final actionChips = [
       SizedBox(
         width: double.infinity,
@@ -211,10 +221,7 @@ class CompProjectsDetails extends HookConsumerWidget {
               SizedBox(
                 width: 60,
                 child: IconButton(
-                  onPressed: () {
-                    RouteController(ref).details2projects();
-                    Navigator.pop(context);
-                  },
+                  onPressed: () => Navigator.pop(context),
                   icon: const Icon(Icons.close),
                 ),
               ),

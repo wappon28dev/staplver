@@ -1,42 +1,44 @@
 import 'dart:io';
 
-import 'package:aibas/model/constant.dart';
-import 'package:aibas/view/components/wizard.dart';
-import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class CompSetIgnoreFiles extends HookConsumerWidget {
-  CompSetIgnoreFiles({super.key});
+import '../../../model/constant.dart';
+import '../../routes/fab/create_pj.dart';
+import '../wizard.dart';
 
-  final searchTextProvider = StateProvider<String>((ref) => '');
+class CompSetIgnoreFiles extends HookConsumerWidget {
+  const CompSetIgnoreFiles({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isValidContentsNotifier =
-        ref.read(CompWizard.isValidContentsProvider.notifier);
-
+    // local - state
     final workingDirState = ref.watch(PageCreatePj.workingDirProvider);
     final ignoreFilesState = ref.watch(PageCreatePj.ignoreFilesProvider);
+
+    // assert
+    if (workingDirState == null) throw Exception('workingDirState is null!');
+
+    // local - notifier
+    final isValidContentsNotifier =
+        ref.read(CompWizard.isValidContentsProvider.notifier);
     final ignoreFilesNotifier =
         ref.read(PageCreatePj.ignoreFilesProvider.notifier);
-    final searchTextState = ref.watch(searchTextProvider);
-    final searchTextNotifier = ref.read(searchTextProvider.notifier);
+
+    // local - hooks
+    final searchText = useState('');
     final dirList = useMemoized(
-      () => workingDirState?.list(recursive: true).toList(),
+      () => workingDirState.list(recursive: true).toList(),
     );
     final dirListSnapshot = useFuture(dirList);
 
-    if (workingDirState == null) throw Exception('workingDirState is null!');
-
-    // state callback
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => isValidContentsNotifier.state = true);
+    // init
+    useEffect(() => onMounted(() => isValidContentsNotifier.state = true), []);
 
     // ignore: avoid_positional_boolean_parameters
     void handleCheckBoxClicked(FileSystemEntity newFile, bool? newVal) {
-      if (newVal == null || dirList == null) return;
+      if (newVal == null) return;
       if (!dirListSnapshot.hasData) return;
 
       final copiedList = ignoreFilesState.toList();
@@ -58,7 +60,7 @@ class CompSetIgnoreFiles extends HookConsumerWidget {
 
       final filteredDirList = dirListSnapshot.data
           ?.where(
-            (element) => element.path.contains(searchTextState),
+            (element) => element.path.contains(searchText.value),
           )
           .toList();
 
@@ -102,7 +104,7 @@ class CompSetIgnoreFiles extends HookConsumerWidget {
                     border: const OutlineInputBorder(),
                   ),
                   onChanged: (newVal) {
-                    searchTextNotifier.state = newVal;
+                    searchText.value = newVal;
                   },
                 ),
               ),
@@ -117,7 +119,7 @@ class CompSetIgnoreFiles extends HookConsumerWidget {
                         final filteredDirList = dirListSnapshot.data!
                             .where(
                               (element) =>
-                                  element.path.contains(searchTextState),
+                                  element.path.contains(searchText.value),
                             )
                             .toList();
                         ignoreFilesNotifier.state = filteredDirList;

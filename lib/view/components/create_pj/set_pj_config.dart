@@ -1,35 +1,40 @@
 import 'dart:io';
 
-import 'package:aibas/model/constant.dart';
-import 'package:aibas/view/components/wizard.dart';
-import 'package:aibas/view/routes/fab/create_pj.dart';
-import 'package:aibas/vm/contents.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class CompSetPjConfig extends ConsumerWidget {
+import '../../../model/constant.dart';
+import '../../../vm/contents.dart';
+import '../../routes/fab/create_pj.dart';
+import '../wizard.dart';
+
+class CompSetPjConfig extends HookConsumerWidget {
   const CompSetPjConfig({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // state
     final contentsState = ref.watch(contentsProvider);
 
-    final isValidContentsNotifier =
-        ref.read(CompWizard.isValidContentsProvider.notifier);
-
-    // local ref
+    // local - state
     final pjNameState = ref.watch(PageCreatePj.pjNameProvider);
-    final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);
     final workingDirState = ref.watch(PageCreatePj.workingDirProvider);
     final backupDirState = ref.watch(PageCreatePj.backupDirProvider);
+
+    // local - notifier
+    final isValidContentsNotifier =
+        ref.read(CompWizard.isValidContentsProvider.notifier);
+    final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);
     final backupDirNotifier = ref.read(PageCreatePj.backupDirProvider.notifier);
 
+    // local - val
     final pjNameFormController = TextEditingController(text: pjNameState);
     final backupDirFormController =
         TextEditingController(text: backupDirState?.path ?? '');
 
+    // local - hooks
     bool isValidContents() {
-      // null check
       if (workingDirState == null || backupDirState == null) return false;
 
       return pjNameState.isNotEmpty &&
@@ -37,9 +42,8 @@ class CompSetPjConfig extends ConsumerWidget {
           backupDirState.existsSync();
     }
 
-    // state callback
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => isValidContentsNotifier.state = isValidContents(),
+    useEffect(
+      () => onMounted(() => isValidContentsNotifier.state = isValidContents()),
     );
 
     String getWorkingDirStr() {
@@ -95,6 +99,7 @@ class CompSetPjConfig extends ConsumerWidget {
       isValidContentsNotifier.state = isPjNameValid && isWorkingDirValid;
     }
 
+    // view
     final pjNameField = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

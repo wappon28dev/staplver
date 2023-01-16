@@ -12,9 +12,6 @@ import '../../vm/page.dart';
 import '../../vm/projects.dart';
 import '../../vm/theme.dart';
 import '../components/wizard.dart';
-import '../routes/fab/checkout.dart';
-import '../routes/fab/create_pj.dart';
-import '../routes/fab/import_pj.dart';
 
 class RouteController {
   RouteController(this.ref);
@@ -83,83 +80,8 @@ class RouteController {
     }
   }
 
-  void _home2fabInit() {
+  void home2fabInit() {
     ref.read(pageProvider.notifier).updateWizardIndex(0);
     ref.read(CompWizard.isValidContentsProvider.notifier).state = false;
-  }
-
-  void home2createPj() {
-    final contentsState = ref.watch(contentsProvider);
-    final contentsNotifier = ref.read(contentsProvider.notifier);
-
-    // local
-    final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);
-    final workingDirNotifier =
-        ref.read(PageCreatePj.workingDirProvider.notifier);
-    final backupDirNotifier = ref.read(PageCreatePj.backupDirProvider.notifier);
-    final ignoreFilesNotifier =
-        ref.read(PageCreatePj.ignoreFilesProvider.notifier);
-
-    debugPrint('-- init (home -> createPj) --');
-    _home2fabInit();
-    pjNameNotifier.state = '';
-    workingDirNotifier.state = null;
-    backupDirNotifier.state = contentsState.defaultBackupDir;
-    ignoreFilesNotifier.state = [];
-    contentsNotifier.updateDragAndDropCallback(
-      (newDir) => workingDirNotifier.state = newDir,
-    );
-    debugPrint('-- end --');
-  }
-
-  void home2importPj() {
-    final contentsNotifier = ref.read(contentsProvider.notifier);
-
-    // local
-    final workingDirNotifier =
-        ref.read(PageImportPj.workingDirProvider.notifier);
-    final importedPjNotifier =
-        ref.read(PageImportPj.importedPjProvider.notifier);
-
-    debugPrint('-- init (home -> importPj) --');
-    _home2fabInit();
-    workingDirNotifier.state = null;
-    importedPjNotifier.state = null;
-    contentsNotifier.updateDragAndDropCallback(
-      (newDir) => workingDirNotifier.state = newDir,
-    );
-    debugPrint('-- end --');
-  }
-
-  void home2checkout() {
-    final contentsNotifier = ref.read(contentsProvider.notifier);
-
-    // local
-    final backupDirNotifier = ref.read(PageCheckout.backupDirProvider.notifier);
-    final workingDirNotifier =
-        ref.read(PageCheckout.workingDirProvider.notifier);
-    final newPjDataNotifier = ref.read(PageCheckout.newPjDataProvider.notifier);
-
-    debugPrint('-- init (home -> createPj) --');
-    _home2fabInit();
-    workingDirNotifier.state = null;
-    newPjDataNotifier.state = null;
-    contentsNotifier.updateDragAndDropCallback(
-      (newDir) => backupDirNotifier.state = newDir,
-    );
-    debugPrint('-- end --');
-  }
-
-  Future<void> projects2details() async {
-    final pageNotifier = ref.read(pageProvider.notifier);
-
-    await pageNotifier.resetProgress();
-    pageNotifier.updateProgress(-1);
-  }
-
-  Future<void> details2projects() async {
-    final pageNotifier = ref.read(pageProvider.notifier);
-
-    await pageNotifier.resetProgress();
   }
 }

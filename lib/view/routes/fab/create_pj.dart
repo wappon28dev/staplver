@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../model/constant.dart';
 import '../../../model/data/class.dart';
@@ -14,8 +15,9 @@ import '../../components/create_pj/set_pj_config.dart';
 import '../../components/create_pj/set_pj_details.dart';
 import '../../components/create_pj/set_working_dir.dart';
 import '../../components/wizard.dart';
+import '../../util/route.dart';
 
-class PageCreatePj extends ConsumerWidget {
+class PageCreatePj extends HookConsumerWidget {
   const PageCreatePj({super.key});
 
   static final pjNameProvider = StateProvider<String>((ref) => '');
@@ -26,11 +28,35 @@ class PageCreatePj extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // state
+    final contentsState = ref.watch(contentsProvider);
+
+    // notifier
     final contentsNotifier = ref.read(contentsProvider.notifier);
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
     final backupDirNotifier = ref.read(backupDirProvider.notifier);
-    final pjNameNotifier = ref.read(pjNameProvider.notifier);
 
+    // local
+    final pjNameNotifier = ref.read(pjNameProvider.notifier);
+    final ignoreFilesNotifier = ref.read(ignoreFilesProvider.notifier);
+
+    // init
+    void init() {
+      debugPrint('-- init (home -> createPj) --');
+      RouteController(ref).home2fabInit();
+      pjNameNotifier.state = '';
+      workingDirNotifier.state = null;
+      backupDirNotifier.state = contentsState.defaultBackupDir;
+      ignoreFilesNotifier.state = [];
+      contentsNotifier.updateDragAndDropCallback(
+        (newDir) => workingDirNotifier.state = newDir,
+      );
+      debugPrint('-- end --');
+    }
+
+    useEffect(() => onMounted(init), []);
+
+    // view
     final components = [
       WizardComponents(
         title: '作業フォルダーの選択',
@@ -47,7 +73,7 @@ class PageCreatePj extends ConsumerWidget {
           contentsNotifier.updateDragAndDropCallback(null);
         },
         icon: Icons.folder_off,
-        screen: CompSetIgnoreFiles(),
+        screen: const CompSetIgnoreFiles(),
       ),
       WizardComponents(
         title: 'プロジェクトの設定',

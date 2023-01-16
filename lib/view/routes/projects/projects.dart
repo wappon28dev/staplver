@@ -6,6 +6,8 @@ import 'package:reorderables/reorderables.dart';
 
 import '../../../../model/helper/config.dart';
 import '../../../../vm/projects.dart';
+import '../../../model/constant.dart';
+import '../../../vm/page.dart';
 import '../../util/route.dart';
 import 'helper/details.dart';
 
@@ -14,11 +16,21 @@ class PageProjects extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // state
     final projectsState = ref.watch(projectsProvider);
-    final projects = projectsState.savedProjects;
-    final projectsNotifier = ref.read(projectsProvider.notifier);
-    final isLoadingIndex = useState(<int>[]);
 
+    // notifier
+    final projectsNotifier = ref.read(projectsProvider.notifier);
+    final pageNotifier = ref.read(pageProvider.notifier);
+
+    // local
+    final projects = projectsState.savedProjects;
+
+    // init
+    Future<void> init() async => pageNotifier.resetProgress();
+    useEffect(() => onMountedAsync(init), []);
+
+    // view
     List<Widget> getPjCards() {
       final cards = <Widget>[];
 
@@ -49,30 +61,14 @@ class PageProjects extends HookConsumerWidget {
                       Padding(
                         padding: const EdgeInsets.all(8),
                         child: ElevatedButton.icon(
-                          icon: isLoadingIndex.value.contains(index)
-                              ? const Padding(
-                                  padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                                  child: SizedBox.square(
-                                    dimension: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                )
-                              : const Icon(Icons.info_outline),
+                          icon: const Icon(Icons.info_outline),
                           label: const Text('詳細を見る'),
-                          onPressed: () async {
-                            isLoadingIndex.value.add(index);
+                          onPressed: () {
                             projectsNotifier.updateCurrentPjIndex(index);
-                            await RouteController(ref).projects2details();
-
-                            final clonedIsLoadingIndex =
-                                isLoadingIndex.value.toList()..remove(index);
                             RouteController.runPush(
                               context: context,
                               page: const CompProjectsDetails(),
                             );
-                            isLoadingIndex.value = clonedIsLoadingIndex;
                           },
                         ),
                       ),

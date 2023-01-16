@@ -1,16 +1,20 @@
 import 'dart:io';
 
-import 'package:aibas/model/data/class.dart';
-import 'package:aibas/view/components/checkout/pj_summary.dart';
-import 'package:aibas/view/components/checkout/set_backup_dir.dart';
-import 'package:aibas/view/components/checkout/set_working_dir.dart';
-import 'package:aibas/view/components/wizard.dart';
-import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PageCheckout extends ConsumerWidget {
+import '../../../model/constant.dart';
+import '../../../model/data/class.dart';
+import '../../../vm/contents.dart';
+import '../../../vm/page.dart';
+import '../../components/checkout/pj_summary.dart';
+import '../../components/checkout/set_backup_dir.dart';
+import '../../components/checkout/set_working_dir.dart';
+import '../../components/wizard.dart';
+import '../../util/route.dart';
+
+class PageCheckout extends HookConsumerWidget {
   const PageCheckout({super.key});
 
   static final workingDirProvider = StateProvider<Directory?>((ref) => null);
@@ -19,10 +23,29 @@ class PageCheckout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // notifier
     final contentsNotifier = ref.read(contentsProvider.notifier);
-    final workingDirNotifier = ref.read(workingDirProvider.notifier);
-    final backupDirNotifier = ref.read(backupDirProvider.notifier);
 
+    // local
+    final backupDirNotifier = ref.read(backupDirProvider.notifier);
+    final workingDirNotifier = ref.read(workingDirProvider.notifier);
+    final newPjDataNotifier = ref.read(PageCheckout.newPjDataProvider.notifier);
+
+    // init
+    void init() {
+      debugPrint('-- init (home -> createPj) --');
+      RouteController(ref).home2fabInit();
+      workingDirNotifier.state = null;
+      newPjDataNotifier.state = null;
+      contentsNotifier.updateDragAndDropCallback(
+        (newDir) => backupDirNotifier.state = newDir,
+      );
+      debugPrint('-- end --');
+    }
+
+    useEffect(() => onMounted(init), []);
+
+    // view
     final components = <WizardComponents>[
       WizardComponents(
         title: 'バックアップフォルダーの選択',

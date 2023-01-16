@@ -1,5 +1,9 @@
+// ignore_for_file: prefer_void_to_null
+
 import 'dart:async';
 import 'dart:io';
+
+import 'package:flutter/widgets.dart';
 
 extension FileExtension on FileSystemEntity {
   String get name {
@@ -15,4 +19,22 @@ extension AsyncMap<K, V> on Map<K, V> {
       await fun(k, v);
     }
   }
+}
+
+void widgetMounted(VoidCallback init) {
+  WidgetsBinding.instance.addPostFrameCallback((_) => init());
+}
+
+void widgetMountedAsync(FutureOr<void> Function() init) {
+  WidgetsBinding.instance.addPostFrameCallback((_) async => await init());
+}
+
+Null onMounted(VoidCallback init) {
+  widgetMounted(init);
+  return null;
+}
+
+Null onMountedAsync(FutureOr<void> Function() init) {
+  widgetMountedAsync(init);
+  return null;
 }

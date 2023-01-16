@@ -32,13 +32,18 @@ class AIBAS extends ConsumerWidget with WindowListener {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // state
     final themeState = ref.watch(themeProvider);
+
+    // notifier
     final contentsNotifier = ref.read(contentsProvider.notifier);
 
+    // local
     dropEventStream.listen((paths) async {
       await contentsNotifier.handleDragAndDrop(paths);
     });
 
+    // view
     return DynamicColorBuilder(
       builder: (ColorScheme? lightColorScheme, ColorScheme? darkColorScheme) {
         return MaterialApp(
