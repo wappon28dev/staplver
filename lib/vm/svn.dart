@@ -11,6 +11,8 @@ import 'package:aibas/vm/projects.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../repository/svn.dart';
+
 final cmdSVNProvider =
     StateNotifierProvider<CmdSVNNotifier, CmdSVNState>(CmdSVNNotifier.new);
 
@@ -56,7 +58,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
   Future<void> _runCommand({
     Directory? currentDirectory,
-    required BaseCommand baseCommand,
+    required SVNBaseCmd baseCommand,
     required List<String> args,
   }) async {
     currentDirectory ??= (await currentPj).workingDir;
@@ -67,7 +69,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<Directory> getBackupDir(Directory workingDir) async {
     await _runCommand(
       currentDirectory: workingDir,
-      baseCommand: BaseCommand.svn,
+      baseCommand: SVNBaseCmd.svn,
       args: ['info'],
     );
 
@@ -86,7 +88,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runStatus() async {
     debugPrint('>> runStatus << ');
     await _runCommand(
-      baseCommand: BaseCommand.svn,
+      baseCommand: SVNBaseCmd.svn,
       args: ['status'],
     );
   }
@@ -94,7 +96,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runInfo() async {
     debugPrint('>> runInfo << ');
     await _runCommand(
-      baseCommand: BaseCommand.svn,
+      baseCommand: SVNBaseCmd.svn,
       args: ['info'],
     );
   }
@@ -102,7 +104,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runLog() async {
     debugPrint('>> runLog << ');
     await _runCommand(
-      baseCommand: BaseCommand.svn,
+      baseCommand: SVNBaseCmd.svn,
       args: ['log', '--diff'],
     );
   }
@@ -110,7 +112,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runCreate() async {
     debugPrint('>> runCreate << ');
     await _runCommand(
-      baseCommand: BaseCommand.svnadmin,
+      baseCommand: SVNBaseCmd.svnadmin,
       args: ['create', (await currentPj).backupDir.path],
     );
   }
@@ -120,7 +122,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final backupUri = (await currentPj).backupDir.uri.toString();
 
     await _runCommand(
-      baseCommand: BaseCommand.svn,
+      baseCommand: SVNBaseCmd.svn,
       args: ['import', backupUri, '-m', '"import"'],
     );
   }
@@ -137,7 +139,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final backupUri = (await currentPj).backupDir.uri.toString();
     await _runCommand(
       currentDirectory: (await currentPj).workingDir.parent,
-      baseCommand: BaseCommand.svn,
+      baseCommand: SVNBaseCmd.svn,
       args: ['checkout', backupUri],
     );
   }
@@ -145,7 +147,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runStaging() async {
     debugPrint('>> runStaging << ');
     await _runCommand(
-      baseCommand: BaseCommand.svn,
+      baseCommand: SVNBaseCmd.svn,
       args: ['add', '.', '--force'],
     );
   }
@@ -153,7 +155,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runCommit(String commitMsg) async {
     debugPrint('>> runCommit << ');
     await _runCommand(
-      baseCommand: BaseCommand.svn,
+      baseCommand: SVNBaseCmd.svn,
       args: ['commit', '-m', '"$commitMsg"'],
     );
   }
@@ -161,7 +163,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> update() async {
     debugPrint('>> update << ');
     await _runCommand(
-      baseCommand: BaseCommand.svn,
+      baseCommand: SVNBaseCmd.svn,
       args: ['up'],
     );
   }

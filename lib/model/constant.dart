@@ -16,9 +16,3 @@ extension AsyncMap<K, V> on Map<K, V> {
     }
   }
 }
-
-enum BaseCommand {
-  svn,
-  svnadmin,
-  mkdir,
-}

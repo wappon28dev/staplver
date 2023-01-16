@@ -69,7 +69,7 @@ class PageImportPj extends ConsumerWidget {
       }
       projectsNotifier.addSavedProject(importedPjState);
       final appConfig = AppConfigHelper().getCurrentAppConfig(ref);
-      await AppConfigRepository()
+      await RepositoryAppConfig()
           .saveAppConfig(appConfig)
           .catchError(AIBASErrHandler(context, ref).noticeErr);
     }

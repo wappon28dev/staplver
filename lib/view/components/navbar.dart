@@ -52,7 +52,7 @@ class NavBar {
     ];
   }
 
-  Widget fab(BuildContext context, {bool fromRails = false}) {
+  Widget getFab(BuildContext context, {bool fromRails = false}) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return SpeedDial(
@@ -190,7 +190,7 @@ class NavBar {
           const Text('🐍', style: TextStyle(fontSize: 40)),
           Padding(
             padding: const EdgeInsets.all(8),
-            child: fab(context, fromRails: true),
+            child: getFab(context, fromRails: true),
           ),
         ],
       ),

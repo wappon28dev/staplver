@@ -106,14 +106,14 @@ class PageDebug extends ConsumerWidget {
                   child: const Text('appInit'),
                 ),
                 ElevatedButton(
-                  onPressed: AppConfigRepository().writeEmptyAppConfig,
+                  onPressed: RepositoryAppConfig().writeEmptyAppConfig,
                   child: const Text('create empty config'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
                     final appConfig =
                         AppConfigHelper().getCurrentAppConfig(ref);
-                    await AppConfigRepository().saveAppConfig(appConfig);
+                    await RepositoryAppConfig().saveAppConfig(appConfig);
                   },
                   child: const Text('save config'),
                 ),

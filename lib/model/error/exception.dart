@@ -49,7 +49,7 @@ class AIBASExceptions {
 
               await pageNotifier.resetProgress();
               pageNotifier.updateProgress(0.3);
-              await AppConfigRepository().removeSavedProject(backupDirStr);
+              await RepositoryAppConfig().removeSavedProject(backupDirStr);
               await pageNotifier.completeProgress();
 
               RouteController.runPush(
@@ -89,7 +89,7 @@ class AIBASExceptions {
 
               await pageNotifier.resetProgress();
               pageNotifier.updateProgress(0.3);
-              await AppConfigRepository().removeSavedProject(backupDirStr);
+              await RepositoryAppConfig().removeSavedProject(backupDirStr);
               await pageNotifier.completeProgress();
 
               RouteController.runPush(
@@ -120,7 +120,7 @@ class AIBASExceptions {
             title: '設定フォルダーを開く',
             icon: Icons.folder_open,
             onClick: (BuildContext context, WidgetRef ref) async {
-              final path = await AppConfigRepository().appConfigPath;
+              final path = await RepositoryAppConfig().appConfigPath;
               await launchUrl(path.parent.uri);
               exit(0);
             },
@@ -130,7 +130,7 @@ class AIBASExceptions {
             isPrimary: true,
             icon: Icons.restart_alt,
             onClick: (BuildContext context, WidgetRef ref) {
-              AppConfigRepository().writeEmptyAppConfig();
+              RepositoryAppConfig().writeEmptyAppConfig();
               RouteController.runPush(
                 context: context,
                 page: const AIBAS(),
@@ -196,5 +196,9 @@ class AIBASExceptions {
       );
   AIBASException importedPjIsNull() => const AIBASException(
         message: 'インポートしたプロジェクトに問題があるようです',
+      );
+
+  AIBASException svnInfoIsInvalid() => const AIBASException(
+        message: 'SVN情報が不正です',
       );
 }

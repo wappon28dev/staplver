@@ -14,13 +14,7 @@ class AIBASErrHandler {
   void pushSnackBar({
     IconData? icon,
     required String title,
-    required List<ExceptionAction> actions,
   }) {
-    assert(actions.isNotEmpty);
-    assert(actions.length == 1);
-
-    final action = actions.first;
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
@@ -30,10 +24,6 @@ class AIBASErrHandler {
             const SizedBox(width: 10),
             Expanded(
               child: Text(title),
-            ),
-            TextButton(
-              child: Text(action.title),
-              onPressed: () => action.onClick?.call(context, ref),
             ),
           ],
         ),
@@ -104,11 +94,7 @@ class AIBASErrHandler {
           actions: err.actions ?? [],
         );
       } else {
-        pushSnackBar(
-          title: err.message,
-          icon: err.icon,
-          actions: err.actions ?? [],
-        );
+        SnackBarController(context, ref).pushSnackBarErr(title: err.message);
       }
     } else {
       noticeUnhandledErr(err, trace);
@@ -161,18 +147,19 @@ class SnackBarController {
 
   void pushSnackBarErr({
     IconData icon = Icons.error_outline,
-    required String content,
+    required String title,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        duration: const Duration(seconds: 5),
         content: Row(
           children: [
             Icon(icon, color: colorScheme.onError),
             const SizedBox(width: 10),
             Text(
-              content,
+              title,
               style: TextStyle(color: colorScheme.onError),
             ),
           ],

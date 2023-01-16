@@ -4,6 +4,7 @@
         "autofocus",
         "autovalidate",
         "cupertino",
+        "fullscreen",
         "horiz",
         "LTRB",
         "MMMMEEE",
@@ -12,6 +13,7 @@
         "reorderables",
         "riverpod",
         "svnadmin",
-        "treeview"
+        "treeview",
+        "unawaited"
     ]
 }
