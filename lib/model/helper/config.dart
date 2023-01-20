@@ -7,9 +7,9 @@ import '../../repository/config.dart';
 import '../../vm/contents.dart';
 import '../../vm/projects.dart';
 import '../../vm/theme.dart';
+import '../class/app.dart';
+import '../class/config.dart';
 import '../constant.dart';
-import '../data/class.dart';
-import '../data/config.dart';
 import '../error/exception.dart';
 
 class AppConfigHelper {

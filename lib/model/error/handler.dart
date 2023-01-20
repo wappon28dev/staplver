@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/class.dart';
+import '../class/app.dart';
 
 class AIBASErrHandler {
   AIBASErrHandler(this.context, this.ref);

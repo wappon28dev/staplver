@@ -2,8 +2,8 @@
 
 import 'dart:io';
 
+import 'package:aibas/model/class/app.dart';
 import 'package:aibas/model/constant.dart';
-import 'package:aibas/model/data/class.dart';
 import 'package:aibas/model/error/exception.dart';
 import 'package:aibas/model/state.dart';
 import 'package:aibas/vm/contents.dart';
@@ -62,8 +62,11 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     required List<String> args,
   }) async {
     currentDirectory ??= (await currentPj).workingDir;
-    Directory.current = currentDirectory;
-    await Process.run(baseCommand.name, args).then(_updateStdout);
+    await Process.run(
+      baseCommand.name,
+      args,
+      workingDirectory: currentDirectory.path,
+    ).then(_updateStdout);
   }
 
   Future<Directory> getBackupDir(Directory workingDir) async {
@@ -105,7 +108,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     debugPrint('>> runLog << ');
     await _runCommand(
       baseCommand: SVNBaseCmd.svn,
-      args: ['log', '--diff'],
+      args: ['log', '-v', '--xml'],
     );
   }
 
@@ -123,7 +126,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
     await _runCommand(
       baseCommand: SVNBaseCmd.svn,
-      args: ['import', backupUri, '-m', '"import"'],
+      args: ['import', backupUri, '-m', 'import'],
     );
   }
 

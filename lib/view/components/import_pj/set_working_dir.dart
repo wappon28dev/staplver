@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../model/data/class.dart';
+import '../../../model/class/app.dart';
 import '../../../model/error/exception.dart';
 import '../../../model/error/handler.dart';
 import '../../../model/helper/config.dart';

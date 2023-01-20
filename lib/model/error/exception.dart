@@ -9,7 +9,7 @@ import '../../repository/config.dart';
 import '../../view/util/route.dart';
 import '../../vm/page.dart';
 import '../../vm/theme.dart';
-import '../data/class.dart';
+import '../class/app.dart';
 import '../helper/config.dart';
 
 class AIBASExceptions {

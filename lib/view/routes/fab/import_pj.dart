@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../model/class/app.dart';
 import '../../../model/constant.dart';
-import '../../../model/data/class.dart';
 import '../../../model/error/exception.dart';
 import '../../../model/error/handler.dart';
 import '../../../model/helper/config.dart';

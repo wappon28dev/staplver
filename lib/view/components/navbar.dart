@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-import '../../model/data/class.dart';
+import '../../model/class/app.dart';
 import '../../vm/contents.dart';
 import '../../vm/page.dart';
 import '../routes/fab/checkout.dart';

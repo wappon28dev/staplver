@@ -1,4 +1,4 @@
-import 'package:aibas/model/data/class.dart';
+import 'package:aibas/model/class/app.dart';
 import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
