@@ -198,7 +198,13 @@ class AIBASExceptions {
         message: 'インポートしたプロジェクトに問題があるようです',
       );
 
-  AIBASException svnInfoIsInvalid() => const AIBASException(
-        message: 'SVN情報が不正です',
+  AIBASException svnRepositoryInfoIsInvalid() => const AIBASException(
+        message: 'SVNリポジトリログのXMLが不正です',
+      );
+  AIBASException svnRevisionLogIsInvalid() => const AIBASException(
+        message: 'SVNログのXMLが不正です',
+      );
+  AIBASException svnStatusIsInvalid() => const AIBASException(
+        message: 'SVNステータスのXMLが不正です',
       );
 }

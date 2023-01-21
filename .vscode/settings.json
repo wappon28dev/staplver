@@ -1,19 +1,26 @@
 {
-    "cSpell.words": [
-        "aibas",
-        "autofocus",
-        "autovalidate",
-        "cupertino",
-        "fullscreen",
-        "horiz",
-        "LTRB",
-        "MMMMEEE",
-        "MVVM",
-        "reorderable",
-        "reorderables",
-        "riverpod",
-        "svnadmin",
-        "treeview",
-        "unawaited"
-    ]
+  "cSpell.words": [
+    "abspath",
+    "aibas",
+    "autofocus",
+    "autovalidate",
+    "cupertino",
+    "fullscreen",
+    "horiz",
+    "logentry",
+    "LTRB",
+    "MMMMEEE",
+    "MVVM",
+    "reorderable",
+    "reorderables",
+    "riverpod",
+    "svnadmin",
+    "treeview",
+    "unawaited",
+    "unversioned",
+    "Unversioned",
+    "uuid",
+    "Uuid",
+    "wcroot"
+  ]
 }

@@ -1,31 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
-import '../model/error/exception.dart';
-
-enum SVNInfo {
-  path('Path'),
-  workingDirPath('Working Copy Root Path'),
-  backupDirUrl('URL'),
-  relativeUrl('Relative URL'),
-  repositoryUrl('Repository Root'),
-  repositoryUUID('Repository UUID'),
-  savePointLength('Revision'),
-  nodeKind('Node Kind'),
-  schedule('Schedule'),
-  lastChangedAuthor('Last Changed Author'),
-  lastChangedRev('Last Changed Rev'),
-  lastChangedData('Last Changed Date');
-
-  const SVNInfo(this.key);
-  final String key;
-
-  String? extractKey(String data) {
-    // ignore: prefer_interpolation_to_compose_strings
-    final reg = RegExp(r'(?<=' + key + ': )(.*)');
-    final uriStr = reg.firstMatch(data)?.group(0);
-    return uriStr;
-  }
-}
+import '../model/class/svn.dart';
+import '../model/helper/svn.dart';
 
 enum SVNBaseCmd {
   svn,
@@ -40,24 +17,58 @@ class RepositorySVN {
     required List<String> args,
   }) async {
     Directory.current = currentDirectory;
-    final process = await Process.run(SVNBaseCmd.svn.name, args);
+    final process = await Process.run(
+      baseCmd.name,
+      args,
+      stdoutEncoding: Encoding.getByName('utf-8'),
+    );
     return process.stdout as String;
   }
 
-  Future<String> getSVNInfo(
-    Directory workingOrBackupDir,
-    SVNInfo infoKind,
+  Future<SvnRepositoryInfo> getRepositoryInfo(Directory workingDir) async {
+    final stdout = await _runCommand(
+      currentDirectory: workingDir,
+      baseCmd: SVNBaseCmd.svn,
+      args: ['info', '--xml'],
+    );
+    final repositoryInfo = SvnHelper().parseRepositoryInfo(stdout);
+
+    final repoJson = jsonEncode(repositoryInfo.toJson());
+    print(repoJson);
+
+    return repositoryInfo;
+  }
+
+  Future<List<SvnRevisionLog>> getRevisionsLog(
+    Directory workingDir,
   ) async {
     final stdout = await _runCommand(
-      currentDirectory: workingOrBackupDir,
+      currentDirectory: workingDir,
       baseCmd: SVNBaseCmd.svn,
-      args: ['info'],
+      args: ['log', '-v', '--xml'],
     );
+    final revisionLog = SvnHelper().parseRevisionInfo(stdout);
 
-    final info = infoKind.extractKey(stdout);
-    if (stdout.isEmpty || info == null) {
-      return Future.error(AIBASExceptions().svnInfoIsInvalid());
-    }
-    return info;
+    final revJson = jsonEncode(revisionLog.map((e) => e.toJson()).toList());
+    print(revJson);
+
+    return revisionLog;
+  }
+
+  Future<List<SvnStatusEntry>> getSvnStatusEntries(
+    Directory workingDir,
+  ) {
+    return _runCommand(
+      currentDirectory: workingDir,
+      baseCmd: SVNBaseCmd.svn,
+      args: ['status', '--xml'],
+    ).then((stdout) {
+      final statusEntries = SvnHelper().parseStatusEntries(stdout);
+      final statusJson =
+          jsonEncode(statusEntries.map((e) => e.toJson()).toList());
+      print(statusJson);
+
+      return statusEntries;
+    });
   }
 }

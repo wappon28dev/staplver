@@ -5,15 +5,13 @@ targets:
         generate_for:
           include:
             - lib/model/state.dart
-            - lib/model/data/class.dart
-            - lib/model/data/config.dart
+            - lib/model/class/*.dart
 
       json_serializable:
         generate_for:
           include:
             - lib/model/state.dart
-            - lib/model/data/class.dart
-            - lib/model/data/config.dart
+            - lib/model/class/*.dart
 
         options:
           any_map: true

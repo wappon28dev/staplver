@@ -9,7 +9,7 @@ import '../../../../vm/projects.dart';
 import '../../../model/constant.dart';
 import '../../../vm/page.dart';
 import '../../util/route.dart';
-import 'helper/details.dart';
+import 'details.dart';
 
 class PageProjects extends HookConsumerWidget {
   const PageProjects({super.key});

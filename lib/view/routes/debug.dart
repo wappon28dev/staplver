@@ -33,7 +33,7 @@ class PageDebug extends ConsumerWidget {
               children: [
                 ElevatedButton(
                   onPressed: () async => cmdSVNNotifier
-                      .runStatus()
+                      .getPjStatus()
                       .catchError(AIBASErrHandler(context, ref).noticeErr),
                   child: const Text('svn status'),
                 ),

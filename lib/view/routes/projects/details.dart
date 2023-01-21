@@ -3,12 +3,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../model/constant.dart';
-import '../../../../model/error/handler.dart';
-import '../../../../repository/svn.dart';
-import '../../../../vm/page.dart';
-import '../../../../vm/projects.dart';
-import '../../../components/navbar.dart';
+import '../../../model/constant.dart';
+import '../../../model/error/handler.dart';
+import '../../../repository/svn.dart';
+import '../../../vm/page.dart';
+import '../../../vm/projects.dart';
+import '../../components/navbar.dart';
 
 class CompProjectsDetails extends HookConsumerWidget {
   const CompProjectsDetails({super.key});
@@ -33,13 +33,15 @@ class CompProjectsDetails extends HookConsumerWidget {
 
     // local
     final isLaunching = useState(false);
-    final revisionLength = useMemoized(
-      () => RepositorySVN().getSVNInfo(
-        pj.workingDir,
-        SVNInfo.savePointLength,
-      ),
+    final pjInfo = useMemoized(
+      () async => RepositorySVN().getRepositoryInfo(pj.workingDir),
     );
-    final revisionLengthSnapshot = useFuture(revisionLength);
+    final pjHistory = useMemoized(
+      () async => RepositorySVN().getRevisionsLog(pj.workingDir),
+    );
+
+    final pjInfoSnapshot = useFuture(pjInfo);
+    final pjHistorySnapshot = useFuture(pjHistory);
 
     // init
     void init() {
@@ -52,17 +54,17 @@ class CompProjectsDetails extends HookConsumerWidget {
 
     useEffect(
       () => onMountedAsync(() async {
-        if (revisionLengthSnapshot.hasData) {
+        if (pjInfoSnapshot.hasData && pjHistorySnapshot.hasData) {
           await pageNotifier.completeProgress();
-        } else if (revisionLengthSnapshot.hasError) {
+        } else if (pjInfoSnapshot.hasError || pjHistorySnapshot.hasError) {
           AIBASErrHandler(context, ref).noticeErr(
-            revisionLengthSnapshot.error,
-            revisionLengthSnapshot.stackTrace ?? StackTrace.empty,
+            pjInfoSnapshot.error,
+            pjInfoSnapshot.stackTrace ?? StackTrace.empty,
           );
           await pageNotifier.completeProgress();
         }
       }),
-      [revisionLengthSnapshot],
+      [pjInfoSnapshot, pjHistorySnapshot],
     );
 
     // view
@@ -147,7 +149,7 @@ class CompProjectsDetails extends HookConsumerWidget {
             Expanded(
               child: Card(
                 child: Text(
-                  pj.workingDir.listSync(recursive: true).toString(),
+                  pjInfoSnapshot.data?.toJson().toString() ?? '',
                 ),
               ),
             ),
@@ -155,7 +157,7 @@ class CompProjectsDetails extends HookConsumerWidget {
             Expanded(
               child: Card(
                 child: Text(
-                  pj.workingDir.listSync(recursive: true).toString(),
+                  pjHistorySnapshot.data?.toString() ?? '',
                 ),
               ),
             )
@@ -165,7 +167,10 @@ class CompProjectsDetails extends HookConsumerWidget {
     ];
 
     Widget content() {
-      if (revisionLengthSnapshot.hasData) {
+      if (pjInfoSnapshot.hasData &&
+          pjInfoSnapshot.data != null &&
+          pjHistorySnapshot.hasData &&
+          pjHistorySnapshot.data != null) {
         return Column(
           children: [
             const SizedBox(height: 10),
@@ -173,7 +178,7 @@ class CompProjectsDetails extends HookConsumerWidget {
             ...info,
           ],
         );
-      } else if (revisionLengthSnapshot.hasError) {
+      } else if (pjInfoSnapshot.hasError || pjHistorySnapshot.hasError) {
         return const Center(
           child: Padding(
             padding: EdgeInsets.all(10),

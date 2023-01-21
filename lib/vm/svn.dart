@@ -2,16 +2,17 @@
 
 import 'dart:io';
 
-import 'package:aibas/model/class/app.dart';
-import 'package:aibas/model/constant.dart';
-import 'package:aibas/model/error/exception.dart';
-import 'package:aibas/model/state.dart';
-import 'package:aibas/vm/contents.dart';
-import 'package:aibas/vm/projects.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../model/class/app.dart';
+import '../model/class/svn.dart';
+import '../model/constant.dart';
+import '../model/error/exception.dart';
+import '../model/state.dart';
 import '../repository/svn.dart';
+import '../vm/contents.dart';
+import '../vm/projects.dart';
 
 final cmdSVNProvider =
     StateNotifierProvider<CmdSVNNotifier, CmdSVNState>(CmdSVNNotifier.new);
@@ -106,9 +107,13 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
 
   Future<void> runLog() async {
     debugPrint('>> runLog << ');
-    await _runCommand(
-      baseCommand: SVNBaseCmd.svn,
-      args: ['log', '-v', '--xml'],
+    // await _runCommand(
+    //   baseCommand: SVNBaseCmd.svn,
+    //   args: ['log', '-v', '--xml'],
+    // );
+
+    await RepositorySVN().getRevisionsLog(
+      (await currentPj).workingDir,
     );
   }
 
@@ -169,5 +174,17 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
       baseCommand: SVNBaseCmd.svn,
       args: ['up'],
     );
+  }
+
+  Future<SvnRepositoryInfo> getRepositoryInfo() async {
+    return RepositorySVN().getRepositoryInfo((await currentPj).workingDir);
+  }
+
+  Future<List<SvnRevisionLog>> getSavePointInfo() async {
+    return RepositorySVN().getRevisionsLog((await currentPj).workingDir);
+  }
+
+  Future<List<SvnStatusEntry>> getPjStatus() async {
+    return RepositorySVN().getSvnStatusEntries((await currentPj).workingDir);
   }
 }
