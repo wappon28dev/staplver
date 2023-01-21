@@ -112,7 +112,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     //   args: ['log', '-v', '--xml'],
     // );
 
-    await RepositorySVN().getRevisionsLog(
+    await SvnRepository().getRevisionsLog(
       (await currentPj).workingDir,
     );
   }
@@ -177,14 +177,14 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   }
 
   Future<SvnRepositoryInfo> getRepositoryInfo() async {
-    return RepositorySVN().getRepositoryInfo((await currentPj).workingDir);
+    return SvnRepository().getRepositoryInfo((await currentPj).workingDir);
   }
 
   Future<List<SvnRevisionLog>> getSavePointInfo() async {
-    return RepositorySVN().getRevisionsLog((await currentPj).workingDir);
+    return SvnRepository().getRevisionsLog((await currentPj).workingDir);
   }
 
   Future<List<SvnStatusEntry>> getPjStatus() async {
-    return RepositorySVN().getSvnStatusEntries((await currentPj).workingDir);
+    return SvnRepository().getSvnStatusEntries((await currentPj).workingDir);
   }
 }

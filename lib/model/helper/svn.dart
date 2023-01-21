@@ -57,9 +57,7 @@ class SvnHelper {
   List<SvnRevisionPath> parseRevisionPaths(List<XmlNode> pathElements) {
     final paths = <SvnRevisionPath>[];
 
-    for (var i = 0; i < pathElements.length; i++) {
-      final pathElement = pathElements[i];
-
+    for (final pathElement in pathElements) {
       if (pathElement.children.isEmpty) continue;
 
       final filePath = pathElement.text;

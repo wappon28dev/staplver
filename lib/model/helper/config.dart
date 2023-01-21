@@ -73,7 +73,7 @@ class AppConfigHelper {
 
   Future<void> updateAppConfig(WidgetRef ref) async {
     final appConfig = getCurrentAppConfig(ref);
-    await RepositoryAppConfig().saveAppConfig(appConfig);
+    await AppConfigRepository().saveAppConfig(appConfig);
   }
 }
 

@@ -10,16 +10,16 @@ enum SVNBaseCmd {
   mkdir,
 }
 
-class RepositorySVN {
+class SvnRepository {
   Future<String> _runCommand({
     required Directory currentDirectory,
     required SVNBaseCmd baseCmd,
     required List<String> args,
   }) async {
-    Directory.current = currentDirectory;
     final process = await Process.run(
       baseCmd.name,
       args,
+      workingDirectory: currentDirectory.path,
       stdoutEncoding: Encoding.getByName('utf-8'),
     );
     return process.stdout as String;

@@ -47,7 +47,7 @@ class RouteController {
     final snackBar = SnackBarController(context, ref);
 
     try {
-      final appConfig = await RepositoryAppConfig().getAppConfig();
+      final appConfig = await AppConfigRepository().getAppConfig();
       final savedProjects =
           await AppConfigHelper().appConfig2Projects(appConfig);
 

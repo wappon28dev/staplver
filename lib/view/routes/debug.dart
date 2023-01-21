@@ -1,10 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/error/handler.dart';
 import '../../model/helper/config.dart';
+import '../../repository/assets.dart';
 import '../../repository/config.dart';
 import '../../vm/contents.dart';
 import '../../vm/page.dart';
@@ -12,7 +15,7 @@ import '../../vm/projects.dart';
 import '../../vm/svn.dart';
 import '../util/route.dart';
 
-class PageDebug extends ConsumerWidget {
+class PageDebug extends HookConsumerWidget {
   const PageDebug({super.key});
 
   @override
@@ -21,6 +24,8 @@ class PageDebug extends ConsumerWidget {
     final cmdSVNState = ref.watch(cmdSVNProvider);
     final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
     final projectsState = ref.watch(projectsProvider);
+
+    final temp = useState('');
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -32,21 +37,41 @@ class PageDebug extends ConsumerWidget {
               runSpacing: 20,
               children: [
                 ElevatedButton(
-                  onPressed: () async => cmdSVNNotifier
-                      .getPjStatus()
-                      .catchError(AIBASErrHandler(context, ref).noticeErr),
+                  onPressed: () async {
+                    final svn = await AssetsRepository()
+                        .getSvnExecPath(SvnExecs.svn)
+                        .catchError(AIBASErrHandler(context, ref).noticeErr);
+                    temp
+                      ..value = svn.toString()
+                      ..value += svn.existsSync().toString();
+                  },
+                  child: const Text('get assets path'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final pjStatus = cmdSVNNotifier
+                        .getPjStatus()
+                        .catchError(AIBASErrHandler(context, ref).noticeErr);
+                    temp.value = (await pjStatus).toString();
+                  },
                   child: const Text('svn status'),
                 ),
                 ElevatedButton(
-                  onPressed: () async => cmdSVNNotifier
-                      .runInfo()
-                      .catchError(AIBASErrHandler(context, ref).noticeErr),
+                  onPressed: () async {
+                    final repoInfo = await cmdSVNNotifier
+                        .getRepositoryInfo()
+                        .catchError(AIBASErrHandler(context, ref).noticeErr);
+                    temp.value = repoInfo.toString();
+                  },
                   child: const Text('svn info'),
                 ),
                 ElevatedButton(
-                  onPressed: () async => cmdSVNNotifier
-                      .runLog()
-                      .catchError(AIBASErrHandler(context, ref).noticeErr),
+                  onPressed: () async {
+                    final log = await cmdSVNNotifier
+                        .getSavePointInfo()
+                        .catchError(AIBASErrHandler(context, ref).noticeErr);
+                    temp.value = log.toString();
+                  },
                   child: const Text('svn log'),
                 ),
                 ElevatedButton(
@@ -106,14 +131,14 @@ class PageDebug extends ConsumerWidget {
                   child: const Text('appInit'),
                 ),
                 ElevatedButton(
-                  onPressed: RepositoryAppConfig().writeEmptyAppConfig,
+                  onPressed: AppConfigRepository().writeEmptyAppConfig,
                   child: const Text('create empty config'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
                     final appConfig =
                         AppConfigHelper().getCurrentAppConfig(ref);
-                    await RepositoryAppConfig().saveAppConfig(appConfig);
+                    await AppConfigRepository().saveAppConfig(appConfig);
                   },
                   child: const Text('save config'),
                 ),
@@ -145,6 +170,7 @@ class PageDebug extends ConsumerWidget {
             ''',
               ),
             ),
+            Text('temp => ${temp.value}'),
             Text(
               'log:\n ${cmdSVNState.stdout}',
               style: const TextStyle(

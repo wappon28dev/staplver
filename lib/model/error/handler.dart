@@ -83,6 +83,8 @@ class AIBASErrHandler {
   }
 
   FutureOr<void> noticeErr(dynamic err, StackTrace trace) {
+    ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+
     debugPrint('=== Err Received ===\n$err\n$trace');
     debugPrintStack();
     if (err is AIBASException) {
@@ -102,6 +104,8 @@ class AIBASErrHandler {
   }
 
   void noticeUnhandledErr(dynamic err, StackTrace trace) {
+    ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+
     debugPrint('=== UnhandledErr Received ===\n$err\n$trace');
     pushBanner(
       title: '開発者の想定していないエラーが発生しました\n$err',

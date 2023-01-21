@@ -34,10 +34,10 @@ class CompProjectsDetails extends HookConsumerWidget {
     // local
     final isLaunching = useState(false);
     final pjInfo = useMemoized(
-      () async => RepositorySVN().getRepositoryInfo(pj.workingDir),
+      () async => SvnRepository().getRepositoryInfo(pj.workingDir),
     );
     final pjHistory = useMemoized(
-      () async => RepositorySVN().getRevisionsLog(pj.workingDir),
+      () async => SvnRepository().getRevisionsLog(pj.workingDir),
     );
 
     final pjInfoSnapshot = useFuture(pjInfo);
@@ -99,11 +99,13 @@ class CompProjectsDetails extends HookConsumerWidget {
                 iconTheme: IconThemeData(
                   color: Theme.of(context).colorScheme.onBackground,
                 ),
-                onPressed: () async {
-                  isLaunching.value = true;
-                  await launchUrl(pj.workingDir.uri);
-                  isLaunching.value = false;
-                },
+                onPressed: !isLaunching.value
+                    ? () async {
+                        isLaunching.value = true;
+                        await launchUrl(pj.workingDir.uri);
+                        isLaunching.value = false;
+                      }
+                    : null,
               ),
               ActionChip(
                 label: const Text('プロジェクトの設定'),

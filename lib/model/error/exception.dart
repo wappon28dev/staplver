@@ -5,14 +5,43 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../main.dart';
+import '../../repository/assets.dart';
 import '../../repository/config.dart';
 import '../../view/util/route.dart';
 import '../../vm/page.dart';
 import '../../vm/theme.dart';
 import '../class/app.dart';
+import '../constant.dart';
 import '../helper/config.dart';
 
 class AIBASExceptions {
+  AIBASException svnExecNotFound(SvnExecs svnExecs) => AIBASException(
+        message: '''
+${svnExecs.name}の実行ファイルが見つかりませんでした  再インストールをしてください
+パス: ${svnExecs.getFile().path}''',
+        icon: Icons.broken_image,
+        needShowAsBanner: true,
+        actions: [
+          ExceptionAction(
+            title: 'アプリを終了',
+            icon: Icons.close,
+            onClick: (BuildContext context, WidgetRef ref) => exit(0),
+          ),
+          ExceptionAction(
+            title: 'ダウンロードページへ',
+            isPrimary: true,
+            icon: Icons.download,
+            onClick: (BuildContext context, WidgetRef ref) async {
+              final pageNotifier = ref.read(pageProvider.notifier);
+              await pageNotifier.resetProgress();
+              pageNotifier.updateProgress(0.3);
+              await launchUrl(gitHubReleaseUrl);
+              await pageNotifier.completeProgress();
+            },
+          ),
+        ],
+      );
+
   AIBASException workingDirNotFound() => const AIBASException(
         message: '作業フォルダーが見つかりません',
         icon: Icons.search_off,
@@ -49,7 +78,7 @@ class AIBASExceptions {
 
               await pageNotifier.resetProgress();
               pageNotifier.updateProgress(0.3);
-              await RepositoryAppConfig().removeSavedProject(backupDirStr);
+              await AppConfigRepository().removeSavedProject(backupDirStr);
               await pageNotifier.completeProgress();
 
               RouteController.runPush(
@@ -89,7 +118,7 @@ class AIBASExceptions {
 
               await pageNotifier.resetProgress();
               pageNotifier.updateProgress(0.3);
-              await RepositoryAppConfig().removeSavedProject(backupDirStr);
+              await AppConfigRepository().removeSavedProject(backupDirStr);
               await pageNotifier.completeProgress();
 
               RouteController.runPush(
@@ -120,7 +149,7 @@ class AIBASExceptions {
             title: '設定フォルダーを開く',
             icon: Icons.folder_open,
             onClick: (BuildContext context, WidgetRef ref) async {
-              final path = await RepositoryAppConfig().appConfigPath;
+              final path = await AppConfigRepository().appConfigPath;
               await launchUrl(path.parent.uri);
               exit(0);
             },
@@ -130,7 +159,7 @@ class AIBASExceptions {
             isPrimary: true,
             icon: Icons.restart_alt,
             onClick: (BuildContext context, WidgetRef ref) {
-              RepositoryAppConfig().writeEmptyAppConfig();
+              AppConfigRepository().writeEmptyAppConfig();
               RouteController.runPush(
                 context: context,
                 page: const AIBAS(),

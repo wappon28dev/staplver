@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import '../model/class/config.dart';
 import '../model/error/exception.dart';
 
-class RepositoryAppConfig {
+class AppConfigRepository {
   Future<File> get appConfigPath async {
     final appConfigDir = await getApplicationSupportDirectory();
     return Future.value(File('${appConfigDir.path}/config.json'));
@@ -65,7 +65,7 @@ class RepositoryAppConfig {
   Future<void> removeSavedProject(
     String backupDirStr,
   ) async {
-    final appConfig = await RepositoryAppConfig().getAppConfig();
+    final appConfig = await AppConfigRepository().getAppConfig();
     final savedProjectsPath = {...appConfig.savedProjectPath}
       ..remove(backupDirStr);
 

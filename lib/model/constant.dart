@@ -38,3 +38,8 @@ Null onMountedAsync(FutureOr<void> Function() init) {
   widgetMountedAsync(init);
   return null;
 }
+
+final gitHubReleaseUrl = Uri.https(
+  'github.com',
+  'wappon-28-dev/AIBAS/releases',
+);
