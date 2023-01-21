@@ -46,3 +46,4 @@ app.*.map.json
 # generated file from freezed, json_serializable 
 /lib/**/*.freezed.dart
 /lib/**/*.g.dart
+/assets/svn

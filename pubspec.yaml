@@ -44,6 +44,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+   - assets/svn/license/
+   - assets/svn/linux/
+   - assets/svn/windows/
+
   fonts:
     - family: M PLUS 1
       fonts:
