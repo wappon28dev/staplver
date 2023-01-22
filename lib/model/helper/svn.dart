@@ -1,9 +1,26 @@
+import 'dart:io';
+
 import 'package:xml/xml.dart';
 
 import '../class/svn.dart';
 import '../error/exception.dart';
 
 class SvnHelper {
+  Future<void> handleSvnErr(ProcessResult process) async {
+    if (process.exitCode == 0) return;
+
+    final stderr = process.stderr.toString();
+
+    if (stderr.contains('E155007')) {
+      return Future.error(AIBASExceptions().dirNotSVNRepo());
+    }
+    if (stderr.contains('E165002')) {
+      return Future.error(AIBASExceptions().dirAlreadySVNRepo());
+    }
+
+    throw Exception(stderr);
+  }
+
   SvnRepositoryInfo parseRepositoryInfo(String xml) {
     final document = XmlDocument.parse(xml);
     final entryElement = document.findAllElements('entry').first;

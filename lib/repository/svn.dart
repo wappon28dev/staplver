@@ -3,72 +3,60 @@ import 'dart:io';
 
 import '../model/class/svn.dart';
 import '../model/helper/svn.dart';
-
-enum SVNBaseCmd {
-  svn,
-  svnadmin,
-  mkdir,
-}
+import 'assets.dart';
 
 class SvnRepository {
-  Future<String> _runCommand({
+  Future<ProcessResult> runCommand({
     required Directory currentDirectory,
-    required SVNBaseCmd baseCmd,
+    required SvnExecs svnExecs,
     required List<String> args,
   }) async {
     final process = await Process.run(
-      baseCmd.name,
+      svnExecs.getFile().path,
       args,
       workingDirectory: currentDirectory.path,
       stdoutEncoding: Encoding.getByName('utf-8'),
     );
-    return process.stdout as String;
+    await SvnHelper().handleSvnErr(process);
+    return process;
   }
 
-  Future<SvnRepositoryInfo> getRepositoryInfo(Directory workingDir) async {
-    final stdout = await _runCommand(
+  Future<SvnRepositoryInfo> getRepositoryInfo(
+    Directory workingDir,
+  ) async {
+    final process = await runCommand(
       currentDirectory: workingDir,
-      baseCmd: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['info', '--xml'],
     );
-    final repositoryInfo = SvnHelper().parseRepositoryInfo(stdout);
 
-    final repoJson = jsonEncode(repositoryInfo.toJson());
-    print(repoJson);
-
-    return repositoryInfo;
+    final stdout = process.stdout.toString();
+    return SvnHelper().parseRepositoryInfo(stdout);
   }
 
   Future<List<SvnRevisionLog>> getRevisionsLog(
     Directory workingDir,
   ) async {
-    final stdout = await _runCommand(
+    final process = await runCommand(
       currentDirectory: workingDir,
-      baseCmd: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['log', '-v', '--xml'],
     );
-    final revisionLog = SvnHelper().parseRevisionInfo(stdout);
 
-    final revJson = jsonEncode(revisionLog.map((e) => e.toJson()).toList());
-    print(revJson);
-
-    return revisionLog;
+    final stdout = process.stdout.toString();
+    return SvnHelper().parseRevisionInfo(stdout);
   }
 
   Future<List<SvnStatusEntry>> getSvnStatusEntries(
     Directory workingDir,
-  ) {
-    return _runCommand(
+  ) async {
+    final process = await runCommand(
       currentDirectory: workingDir,
-      baseCmd: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['status', '--xml'],
-    ).then((stdout) {
-      final statusEntries = SvnHelper().parseStatusEntries(stdout);
-      final statusJson =
-          jsonEncode(statusEntries.map((e) => e.toJson()).toList());
-      print(statusJson);
+    );
 
-      return statusEntries;
-    });
+    final stdout = process.stdout.toString();
+    return SvnHelper().parseStatusEntries(stdout);
   }
 }

@@ -2,12 +2,13 @@
 
 import 'dart:io';
 
+import 'package:aibas/model/constant.dart';
+import 'package:aibas/repository/assets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/class/app.dart';
 import '../model/class/svn.dart';
-import '../model/constant.dart';
 import '../model/error/exception.dart';
 import '../model/state.dart';
 import '../repository/svn.dart';
@@ -23,6 +24,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   final Ref ref;
 
   ContentsState get contentsState => ref.watch(contentsProvider);
+
   Future<Project> get currentPj async {
     final currentPjSnapshot = ref.watch(projectsProvider).currentPj;
     if (currentPjSnapshot == null) {
@@ -45,54 +47,23 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     });
   }
 
-  void _updateStdout(ProcessResult process) {
-    final stdout = process.stdout.toString();
-    final stderr = process.stderr.toString();
-
-    if (kDebugMode) {
-      print('out => \n $stdout');
-      print('err => \n $stderr');
-    }
-
-    state = state.copyWith(stdout: stdout + stderr);
-  }
-
-  Future<void> _runCommand({
+  Future<ProcessResult> _runCommand({
     Directory? currentDirectory,
-    required SVNBaseCmd baseCommand,
+    required SvnExecs svnExecs,
     required List<String> args,
   }) async {
     currentDirectory ??= (await currentPj).workingDir;
-    await Process.run(
-      baseCommand.name,
-      args,
-      workingDirectory: currentDirectory.path,
-    ).then(_updateStdout);
-  }
-
-  Future<Directory> getBackupDir(Directory workingDir) async {
-    await _runCommand(
-      currentDirectory: workingDir,
-      baseCommand: SVNBaseCmd.svn,
-      args: ['info'],
+    return SvnRepository().runCommand(
+      currentDirectory: currentDirectory,
+      svnExecs: svnExecs,
+      args: args,
     );
-
-    final reg = RegExp(r'(?<=URL: )(.*)');
-    final uriStr = reg.firstMatch(state.stdout)?.group(0);
-
-    if (uriStr == null) return Future.error(AIBASExceptions().dirNotSVNRepo);
-    final backupDir = Uri.parse(uriStr).toFilePath();
-    if (!await Directory(backupDir).exists()) {
-      return Future.error(AIBASExceptions().backupDirNotFound);
-    }
-
-    return Directory(backupDir);
   }
 
   Future<void> runStatus() async {
     debugPrint('>> runStatus << ');
     await _runCommand(
-      baseCommand: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['status'],
     );
   }
@@ -100,18 +71,13 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runInfo() async {
     debugPrint('>> runInfo << ');
     await _runCommand(
-      baseCommand: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['info'],
     );
   }
 
   Future<void> runLog() async {
     debugPrint('>> runLog << ');
-    // await _runCommand(
-    //   baseCommand: SVNBaseCmd.svn,
-    //   args: ['log', '-v', '--xml'],
-    // );
-
     await SvnRepository().getRevisionsLog(
       (await currentPj).workingDir,
     );
@@ -120,7 +86,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runCreate() async {
     debugPrint('>> runCreate << ');
     await _runCommand(
-      baseCommand: SVNBaseCmd.svnadmin,
+      svnExecs: SvnExecs.svnAdmin,
       args: ['create', (await currentPj).backupDir.path],
     );
   }
@@ -130,7 +96,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final backupUri = (await currentPj).backupDir.uri.toString();
 
     await _runCommand(
-      baseCommand: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['import', backupUri, '-m', 'import'],
     );
   }
@@ -147,7 +113,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     final backupUri = (await currentPj).backupDir.uri.toString();
     await _runCommand(
       currentDirectory: (await currentPj).workingDir.parent,
-      baseCommand: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['checkout', backupUri],
     );
   }
@@ -155,7 +121,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runStaging() async {
     debugPrint('>> runStaging << ');
     await _runCommand(
-      baseCommand: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['add', '.', '--force'],
     );
   }
@@ -163,7 +129,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> runCommit(String commitMsg) async {
     debugPrint('>> runCommit << ');
     await _runCommand(
-      baseCommand: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['commit', '-m', '"$commitMsg"'],
     );
   }
@@ -171,9 +137,22 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
   Future<void> update() async {
     debugPrint('>> update << ');
     await _runCommand(
-      baseCommand: SVNBaseCmd.svn,
+      svnExecs: SvnExecs.svn,
       args: ['up'],
     );
+  }
+
+  Future<Directory> getBackupDir(Directory workingDir) async {
+    final repoInfo = await SvnRepository().getRepositoryInfo(workingDir);
+
+    final backupUri = repoInfo.repositoryRoot;
+    final backupDir = Directory(backupUri.toFilePath());
+
+    if (!await backupDir.exists()) {
+      return Future.error(AIBASExceptions().backupDirNotFound);
+    }
+
+    return backupDir;
   }
 
   Future<SvnRepositoryInfo> getRepositoryInfo() async {

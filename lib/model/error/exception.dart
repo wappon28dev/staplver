@@ -17,8 +17,8 @@ import '../helper/config.dart';
 class AIBASExceptions {
   AIBASException svnExecNotFound(SvnExecs svnExecs) => AIBASException(
         message: '''
-${svnExecs.name}の実行ファイルが見つかりませんでした  再インストールをしてください
-パス: ${svnExecs.getFile().path}''',
+${svnExecs.name}の実行ファイルが見つかりませんでした  ファイルを元の場所に復元するか, 再インストールを行ってください
+予期したファイルパス: ${svnExecs.getFile().path}''',
         icon: Icons.broken_image,
         needShowAsBanner: true,
         actions: [
@@ -219,6 +219,9 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  再イ�
       );
   AIBASException pjAlreadyExists() => const AIBASException(
         message: 'AIBASプロジェクトは既に存在します',
+      );
+  AIBASException dirAlreadySVNRepo() => const AIBASException(
+        message: 'SVNリポジトリは既に存在します',
       );
   AIBASException dirNotSVNRepo() => const AIBASException(
         message: 'SVNリポジトリではありません',
