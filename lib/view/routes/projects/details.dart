@@ -9,6 +9,7 @@ import '../../../repository/svn.dart';
 import '../../../vm/page.dart';
 import '../../../vm/projects.dart';
 import '../../components/navbar.dart';
+import '../../components/projects/history.dart';
 
 class CompProjectsDetails extends HookConsumerWidget {
   const CompProjectsDetails({super.key});
@@ -156,13 +157,7 @@ class CompProjectsDetails extends HookConsumerWidget {
               ),
             ),
             const SizedBox(child: VerticalDivider()),
-            Expanded(
-              child: Card(
-                child: Text(
-                  pjHistorySnapshot.data?.toString() ?? '',
-                ),
-              ),
-            )
+            const Expanded(child: CompPjHistory())
           ],
         ),
       )

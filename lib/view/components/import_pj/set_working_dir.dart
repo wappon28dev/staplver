@@ -19,7 +19,7 @@ class CompSetWorkingDir extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // global ref
-    final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
+    final svnNotifier = ref.read(svnProvider.notifier);
 
     // wizard ref
     final isValidContentsNotifier =
@@ -44,7 +44,7 @@ class CompSetWorkingDir extends ConsumerWidget {
     ref.listen(PageImportPj.workingDirProvider, (_, workingDir) async {
       if (workingDir == null) return;
       try {
-        final backupDir = await cmdSVNNotifier.getBackupDir(workingDir);
+        final backupDir = await svnNotifier.getBackupDir(workingDir);
         final importedPjNotifier =
             ref.read(PageImportPj.importedPjProvider.notifier);
 

@@ -36,18 +36,18 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
   }
 
   Future<void> initProject() async {
-    final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
+    final svnNotifier = ref.read(svnProvider.notifier);
     final pageNotifier = ref.read(pageProvider.notifier);
 
     updateCurrentPjIndex(state.savedProjects.length - 1);
 
     final queue = [
-      () async => cmdSVNNotifier.runCreate(),
-      () async => cmdSVNNotifier.runImport(),
-      () async => cmdSVNNotifier.runRename(),
-      () async => cmdSVNNotifier.runCheckout(),
-      () async => cmdSVNNotifier.runStaging(),
-      () async => cmdSVNNotifier.update(),
+      () async => svnNotifier.runCreate(),
+      () async => svnNotifier.runImport(),
+      () async => svnNotifier.runRename(),
+      () async => svnNotifier.runCheckout(),
+      () async => svnNotifier.runStaging(),
+      () async => svnNotifier.update(),
       () async => RepositoryPjConfig().createNewPjConfig(
             PjConfigHelper().project2PjConfig(state.currentPj!),
           )

@@ -44,7 +44,11 @@ class SvnRepository {
     );
 
     final stdout = process.stdout.toString();
-    return SvnHelper().parseRevisionInfo(stdout);
+    final info = SvnHelper().parseRevisionInfo(stdout);
+
+    final infoList2Json = info.map((e) => e.toJson()).toList();
+    print(jsonEncode(infoList2Json));
+    return info;
   }
 
   Future<List<SvnStatusEntry>> getSvnStatusEntries(

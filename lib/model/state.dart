@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:aibas/model/class/app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import 'class/app.dart';
 
 part 'state.freezed.dart';
 
@@ -35,10 +36,10 @@ class ContentsState with _$ContentsState {
 }
 
 @freezed
-class CmdSVNState with _$CmdSVNState {
-  const factory CmdSVNState({
-    @Default('') String stdout,
-  }) = _CmdSVNState;
+class SvnState with _$SvnState {
+  const factory SvnState({
+    @Default('') String status,
+  }) = _SvnState;
 }
 
 @freezed

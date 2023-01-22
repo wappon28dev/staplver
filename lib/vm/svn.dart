@@ -3,23 +3,23 @@
 import 'dart:io';
 
 import 'package:aibas/model/constant.dart';
-import 'package:aibas/repository/assets.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aibas/vm/projects.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/class/app.dart';
 import '../model/class/svn.dart';
 import '../model/error/exception.dart';
 import '../model/state.dart';
+import '../repository/assets.dart';
 import '../repository/svn.dart';
-import '../vm/contents.dart';
-import '../vm/projects.dart';
+import 'contents.dart';
 
-final cmdSVNProvider =
-    StateNotifierProvider<CmdSVNNotifier, CmdSVNState>(CmdSVNNotifier.new);
+final svnProvider =
+    StateNotifierProvider<SvnNotifier, SvnState>(SvnNotifier.new);
 
-class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
-  CmdSVNNotifier(this.ref) : super(const CmdSVNState());
+class SvnNotifier extends StateNotifier<SvnState> {
+  SvnNotifier(this.ref) : super(const SvnState());
 
   final Ref ref;
 
@@ -159,7 +159,7 @@ class CmdSVNNotifier extends StateNotifier<CmdSVNState> {
     return SvnRepository().getRepositoryInfo((await currentPj).workingDir);
   }
 
-  Future<List<SvnRevisionLog>> getSavePointInfo() async {
+  Future<List<SvnRevisionLog>> getPjSavePoints() async {
     return SvnRepository().getRevisionsLog((await currentPj).workingDir);
   }
 

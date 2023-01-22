@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,8 +19,7 @@ class PageDebug extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final contentsState = ref.watch(contentsProvider);
-    final cmdSVNState = ref.watch(cmdSVNProvider);
-    final cmdSVNNotifier = ref.read(cmdSVNProvider.notifier);
+    final svnNotifier = ref.read(svnProvider.notifier);
     final projectsState = ref.watch(projectsProvider);
 
     final temp = useState('');
@@ -49,7 +46,7 @@ class PageDebug extends HookConsumerWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final pjStatus = cmdSVNNotifier
+                    final pjStatus = svnNotifier
                         .getPjStatus()
                         .catchError(AIBASErrHandler(context, ref).noticeErr);
                     temp.value = (await pjStatus).toString();
@@ -58,7 +55,7 @@ class PageDebug extends HookConsumerWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final repoInfo = await cmdSVNNotifier
+                    final repoInfo = await svnNotifier
                         .getRepositoryInfo()
                         .catchError(AIBASErrHandler(context, ref).noticeErr);
                     temp.value = repoInfo.toString();
@@ -67,15 +64,15 @@ class PageDebug extends HookConsumerWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final log = await cmdSVNNotifier
-                        .getSavePointInfo()
+                    final log = await svnNotifier
+                        .getPjSavePoints()
                         .catchError(AIBASErrHandler(context, ref).noticeErr);
                     temp.value = log.toString();
                   },
                   child: const Text('svn log'),
                 ),
                 ElevatedButton(
-                  onPressed: () async => cmdSVNNotifier
+                  onPressed: () async => svnNotifier
                       .runCreate()
                       .catchError(AIBASErrHandler(context, ref).noticeErr),
                   child: const Text('svn create'),
@@ -97,31 +94,31 @@ class PageDebug extends HookConsumerWidget {
                   child: const Text('progress'),
                 ),
                 ElevatedButton(
-                  onPressed: () async => cmdSVNNotifier
+                  onPressed: () async => svnNotifier
                       .runImport()
                       .catchError(AIBASErrHandler(context, ref).noticeErr),
                   child: const Text('svn import'),
                 ),
                 ElevatedButton(
-                  onPressed: () async => cmdSVNNotifier
+                  onPressed: () async => svnNotifier
                       .runRename()
                       .catchError(AIBASErrHandler(context, ref).noticeErr),
                   child: const Text('run rename'),
                 ),
                 ElevatedButton(
-                  onPressed: () async => cmdSVNNotifier
+                  onPressed: () async => svnNotifier
                       .runCheckout()
                       .catchError(AIBASErrHandler(context, ref).noticeErr),
                   child: const Text('svn checkout'),
                 ),
                 ElevatedButton(
-                  onPressed: () async => cmdSVNNotifier
+                  onPressed: () async => svnNotifier
                       .runStaging()
                       .catchError(AIBASErrHandler(context, ref).noticeErr),
                   child: const Text('svn add .'),
                 ),
                 ElevatedButton(
-                  onPressed: () async => cmdSVNNotifier
+                  onPressed: () async => svnNotifier
                       .update()
                       .catchError(AIBASErrHandler(context, ref).noticeErr),
                   child: const Text('svn update'),
@@ -147,7 +144,7 @@ class PageDebug extends HookConsumerWidget {
             SizedBox(
               width: 200,
               child: TextField(
-                onSubmitted: (String message) async => cmdSVNNotifier
+                onSubmitted: (String message) async => svnNotifier
                     .runCommit(message)
                     .catchError(AIBASErrHandler(context, ref).noticeErr),
                 decoration: const InputDecoration(
@@ -171,12 +168,6 @@ class PageDebug extends HookConsumerWidget {
               ),
             ),
             Text('temp => ${temp.value}'),
-            Text(
-              'log:\n ${cmdSVNState.stdout}',
-              style: const TextStyle(
-                fontFeatures: [FontFeature.tabularFigures()],
-              ),
-            ),
           ],
         ),
       ),
