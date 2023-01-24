@@ -34,11 +34,15 @@ enum SvnExecs {
 
 class AssetsRepository {
   Directory getAssetsAbsDir() {
-    final rootDir = Directory.fromUri(Platform.script).parent;
+    final debugRootDir = Directory(
+      Platform.resolvedExecutable,
+    ).parent.parent.parent.parent.parent;
+    final releaseRootDir = Directory(Platform.resolvedExecutable).parent;
+
     if (kDebugMode) {
-      return Directory('${rootDir.path}/assets');
+      return Directory('${debugRootDir.path}/assets');
     } else {
-      return Directory('${rootDir.path}/data/flutter_assets/assets');
+      return Directory('${releaseRootDir.path}/data/flutter_assets/assets');
     }
   }
 
