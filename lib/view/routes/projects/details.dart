@@ -5,14 +5,27 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../model/constant.dart';
 import '../../../model/error/handler.dart';
-import '../../../repository/svn.dart';
 import '../../../vm/page.dart';
 import '../../../vm/projects.dart';
+import '../../../vm/svn.dart';
 import '../../components/navbar.dart';
+import '../../components/projects/create_save_point.dart';
 import '../../components/projects/history.dart';
+import '../../components/projects/status.dart';
 
 class CompProjectsDetails extends HookConsumerWidget {
   const CompProjectsDetails({super.key});
+
+  static final repositoryProvider = FutureProvider.autoDispose(
+    (ref) async => ref.read(svnProvider.notifier).getRepositoryInfo(),
+  );
+  static final savePointsProvider = FutureProvider.autoDispose(
+    (ref) async => ref.read(svnProvider.notifier).getPjSavePoints(),
+  );
+  static final pjStatusProvider = FutureProvider.autoDispose(
+    (ref) async => ref.read(svnProvider.notifier).getPjStatus(),
+  );
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // state
@@ -23,26 +36,21 @@ class CompProjectsDetails extends HookConsumerWidget {
     if (pj == null) {
       return const SliverToBoxAdapter(
         child: Center(
-          child: Text('No project selected'),
+          child: Text('プロジェクトが選択されていません'),
         ),
       );
     }
 
     // notifier
     final pageNotifier = ref.read(pageProvider.notifier);
-    final orientation = MediaQuery.of(context).orientation;
 
     // local
+    final orientation = MediaQuery.of(context).orientation;
     final isLaunching = useState(false);
-    final pjInfo = useMemoized(
-      () async => SvnRepository().getRepositoryInfo(pj.workingDir),
-    );
-    final pjHistory = useMemoized(
-      () async => SvnRepository().getRevisionsLog(pj.workingDir),
-    );
-
-    final pjInfoSnapshot = useFuture(pjInfo);
-    final pjHistorySnapshot = useFuture(pjHistory);
+    final isRefreshing = useState(false);
+    final repoInfoState = ref.watch(repositoryProvider);
+    final savePointsState = ref.watch(savePointsProvider);
+    final pjStatusState = ref.watch(pjStatusProvider);
 
     // init
     void init() {
@@ -55,17 +63,25 @@ class CompProjectsDetails extends HookConsumerWidget {
 
     useEffect(
       () => onMountedAsync(() async {
-        if (pjInfoSnapshot.hasData && pjHistorySnapshot.hasData) {
-          await pageNotifier.completeProgress();
-        } else if (pjInfoSnapshot.hasError || pjHistorySnapshot.hasError) {
-          AIBASErrHandler(context, ref).noticeErr(
-            pjInfoSnapshot.error,
-            pjInfoSnapshot.stackTrace ?? StackTrace.empty,
-          );
+        if (repoInfoState.hasError) {
+          AIBASErrHandler(context, ref)
+              .noticeErr(repoInfoState.error, repoInfoState.stackTrace);
+        }
+        if (savePointsState.hasError) {
+          AIBASErrHandler(context, ref)
+              .noticeErr(savePointsState.error, savePointsState.stackTrace);
+        }
+        if (pjStatusState.hasError) {
+          AIBASErrHandler(context, ref)
+              .noticeErr(pjStatusState.error, pjStatusState.stackTrace);
+        }
+        if (repoInfoState.hasValue &&
+            savePointsState.hasValue &&
+            pjStatusState.hasValue) {
           await pageNotifier.completeProgress();
         }
       }),
-      [pjInfoSnapshot, pjHistorySnapshot],
+      [repoInfoState, savePointsState, pjStatusState],
     );
 
     // view
@@ -84,8 +100,26 @@ class CompProjectsDetails extends HookConsumerWidget {
               ),
               ActionChip(
                 label: const Text('最新の情報へ更新'),
-                avatar: const Icon(Icons.refresh),
-                onPressed: () {},
+                avatar: isRefreshing.value
+                    ? const Padding(
+                        padding: EdgeInsets.all(2),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(Icons.refresh),
+                iconTheme: IconThemeData(
+                  color: Theme.of(context).colorScheme.onBackground,
+                ),
+                onPressed: !isRefreshing.value
+                    ? () {
+                        init();
+                        ref
+                          ..invalidate(repositoryProvider)
+                          ..invalidate(savePointsProvider)
+                          ..invalidate(pjStatusProvider);
+                      }
+                    : null,
               ),
               ActionChip(
                 label: const Text('作業フォルダーを開く'),
@@ -148,53 +182,48 @@ class CompProjectsDetails extends HookConsumerWidget {
       IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Card(
-                child: Text(
-                  pjInfoSnapshot.data?.toJson().toString() ?? '',
-                ),
-              ),
-            ),
-            const SizedBox(child: VerticalDivider()),
-            const Expanded(child: CompPjHistory())
+          children: const [
+            Expanded(child: CompPjStatus()),
+            SizedBox(child: VerticalDivider()),
+            Expanded(child: CompPjHistory())
           ],
         ),
       )
     ];
 
     Widget content() {
-      if (pjInfoSnapshot.hasData &&
-          pjInfoSnapshot.data != null &&
-          pjHistorySnapshot.hasData &&
-          pjHistorySnapshot.data != null) {
-        return Column(
+      return repoInfoState.when(
+        data: (_) => Column(
           children: [
             const SizedBox(height: 10),
             ...actionChips,
             ...info,
           ],
-        );
-      } else if (pjInfoSnapshot.hasError || pjHistorySnapshot.hasError) {
-        return const Center(
+        ),
+        error: (err, __) => Center(
           child: Padding(
-            padding: EdgeInsets.all(10),
-            child: Text('SVNへの問い合わせ中にエラーが発生しました'),
+            padding: const EdgeInsets.all(10),
+            child: Text('SVNへの問い合わせ中にエラーが発生しました\n$err'),
           ),
-        );
-      } else {
-        return const Center(
+        ),
+        loading: () => const Center(
           child: Padding(
             padding: EdgeInsets.all(10),
             child: Text('SVNからの応答を待っています...'),
           ),
-        );
-      }
+        ),
+      );
     }
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pop(context),
+        onPressed: () async {
+          final savePointName = await showDialog<String>(
+            context: context,
+            builder: (context) => const CompPjCreateSavePoint(),
+          );
+          print(savePointName);
+        },
         tooltip: 'セーブポイントを作成',
         child: const Icon(Icons.save),
       ),

@@ -22,7 +22,7 @@ class PageNotifier extends StateNotifier<PageState> {
 
   // ignore: avoid_positional_boolean_parameters
   void updateIsVisibleProgressBar(bool newIsVisibleProgressBar) {
-    debugPrint('newIsVisibleProgressBar => $newIsVisibleProgressBar');
+    // debugPrint('newIsVisibleProgressBar => $newIsVisibleProgressBar');
     state = state.copyWith(isVisibleProgressBar: newIsVisibleProgressBar);
   }
 
@@ -31,6 +31,11 @@ class PageNotifier extends StateNotifier<PageState> {
     updateProgress(0);
     await Future<void>.delayed(const Duration(milliseconds: 600));
     updateIsVisibleProgressBar(true);
+  }
+
+  Future<void> hideProgress() async {
+    updateIsVisibleProgressBar(false);
+    updateProgress(0);
   }
 
   Future<void> completeProgress() async {

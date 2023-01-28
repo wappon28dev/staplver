@@ -6,7 +6,10 @@ import '../model/helper/svn.dart';
 import 'assets.dart';
 
 class SvnRepository {
-  Future<ProcessResult> runCommand({
+  SvnRepository(this.workingDir);
+  final Directory workingDir;
+
+  static Future<ProcessResult> runCommand({
     required Directory currentDirectory,
     required SvnExecs svnExecs,
     required List<String> args,
@@ -21,9 +24,7 @@ class SvnRepository {
     return process;
   }
 
-  Future<SvnRepositoryInfo> getRepositoryInfo(
-    Directory workingDir,
-  ) async {
+  Future<SvnRepositoryInfo> getRepositoryInfo() async {
     final process = await runCommand(
       currentDirectory: workingDir,
       svnExecs: SvnExecs.svn,
@@ -34,9 +35,7 @@ class SvnRepository {
     return SvnHelper().parseRepositoryInfo(stdout);
   }
 
-  Future<List<SvnRevisionLog>> getRevisionsLog(
-    Directory workingDir,
-  ) async {
+  Future<List<SvnRevisionLog>> getRevisionsLog() async {
     final process = await runCommand(
       currentDirectory: workingDir,
       svnExecs: SvnExecs.svn,
@@ -46,14 +45,12 @@ class SvnRepository {
     final stdout = process.stdout.toString();
     final info = SvnHelper().parseRevisionInfo(stdout);
 
-    final infoList2Json = info.map((e) => e.toJson()).toList();
-    print(jsonEncode(infoList2Json));
+    // final infoList2Json = info.map((e) => e.toJson()).toList();
+    // print(jsonEncode(infoList2Json));
     return info;
   }
 
-  Future<List<SvnStatusEntry>> getSvnStatusEntries(
-    Directory workingDir,
-  ) async {
+  Future<List<SvnStatusEntry>> getSvnStatusEntries() async {
     final process = await runCommand(
       currentDirectory: workingDir,
       svnExecs: SvnExecs.svn,

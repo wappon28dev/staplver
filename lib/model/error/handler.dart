@@ -82,7 +82,7 @@ class AIBASErrHandler {
     );
   }
 
-  FutureOr<void> noticeErr(dynamic err, StackTrace trace) {
+  FutureOr<void> noticeErr(dynamic err, StackTrace? trace) {
     ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
 
     debugPrint('=== Err Received ===\n$err\n$trace');
@@ -103,7 +103,7 @@ class AIBASErrHandler {
     }
   }
 
-  void _noticeUnhandledErr(dynamic err, StackTrace trace) {
+  void _noticeUnhandledErr(dynamic err, StackTrace? trace) {
     ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
 
     debugPrint('=== UnhandledErr Received ===\n$err\n$trace');

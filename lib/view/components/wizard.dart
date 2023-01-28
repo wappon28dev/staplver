@@ -1,7 +1,8 @@
-import 'package:aibas/model/class/app.dart';
-import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../model/class/app.dart';
+import '../../vm/page.dart';
 
 class CompWizard {
   CompWizard({
@@ -36,13 +37,8 @@ class CompWizard {
       if (index < components.length - 1) {
         return SizedBox(
           height: 40,
-          child: ElevatedButton(
+          child: FilledButton.tonal(
             onPressed: isValidContentsState ? runNextPage : null,
-            style: ElevatedButton.styleFrom(
-              foregroundColor:
-                  Theme.of(context).colorScheme.onSecondaryContainer,
-              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-            ).copyWith(elevation: ButtonStyleButton.allOrNull(0)),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: const [
@@ -55,12 +51,8 @@ class CompWizard {
       } else {
         return SizedBox(
           height: 40,
-          child: ElevatedButton(
+          child: FilledButton(
             onPressed: isValidContentsState ? onFinished : null,
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-            ).copyWith(elevation: ButtonStyleButton.allOrNull(0)),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

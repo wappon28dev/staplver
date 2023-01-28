@@ -1,7 +1,8 @@
-import 'package:aibas/vm/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
+
+import '../../vm/page.dart';
 
 class WindowController with WindowListener {
   WindowController({required this.context, required this.ref});
@@ -15,6 +16,7 @@ class WindowController with WindowListener {
     final pageState = ref.watch(pageProvider);
 
     if (isPreventClose && pageState.askWhenQuit) {
+      // ignore: use_build_context_synchronously
       await showDialog<void>(
         context: context,
         builder: (_) {

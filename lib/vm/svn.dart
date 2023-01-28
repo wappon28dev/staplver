@@ -53,7 +53,7 @@ class SvnNotifier extends StateNotifier<SvnState> {
     required List<String> args,
   }) async {
     currentDirectory ??= (await currentPj).workingDir;
-    return SvnRepository().runCommand(
+    return SvnRepository.runCommand(
       currentDirectory: currentDirectory,
       svnExecs: svnExecs,
       args: args,
@@ -78,9 +78,9 @@ class SvnNotifier extends StateNotifier<SvnState> {
 
   Future<void> runLog() async {
     debugPrint('>> runLog << ');
-    await SvnRepository().getRevisionsLog(
+    await SvnRepository(
       (await currentPj).workingDir,
-    );
+    ).getRevisionsLog();
   }
 
   Future<void> runCreate() async {
@@ -143,7 +143,7 @@ class SvnNotifier extends StateNotifier<SvnState> {
   }
 
   Future<Directory> getBackupDir(Directory workingDir) async {
-    final repoInfo = await SvnRepository().getRepositoryInfo(workingDir);
+    final repoInfo = await SvnRepository(workingDir).getRepositoryInfo();
 
     final backupUri = repoInfo.repositoryRoot;
     final backupDir = Directory(backupUri.toFilePath());
@@ -156,14 +156,14 @@ class SvnNotifier extends StateNotifier<SvnState> {
   }
 
   Future<SvnRepositoryInfo> getRepositoryInfo() async {
-    return SvnRepository().getRepositoryInfo((await currentPj).workingDir);
+    return SvnRepository((await currentPj).workingDir).getRepositoryInfo();
   }
 
   Future<List<SvnRevisionLog>> getPjSavePoints() async {
-    return SvnRepository().getRevisionsLog((await currentPj).workingDir);
+    return SvnRepository((await currentPj).workingDir).getRevisionsLog();
   }
 
   Future<List<SvnStatusEntry>> getPjStatus() async {
-    return SvnRepository().getSvnStatusEntries((await currentPj).workingDir);
+    return SvnRepository((await currentPj).workingDir).getSvnStatusEntries();
   }
 }

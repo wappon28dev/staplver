@@ -27,7 +27,7 @@ class PageProjects extends HookConsumerWidget {
     final projects = projectsState.savedProjects;
 
     // init
-    Future<void> init() async => pageNotifier.resetProgress();
+    Future<void> init() async => pageNotifier.hideProgress();
     useEffect(() => onMountedAsync(init), []);
 
     // view
