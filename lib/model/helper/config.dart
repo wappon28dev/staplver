@@ -39,7 +39,7 @@ class AppConfigHelper {
 
     await savedProjectPath.forEachAsync((backupDir, _) async {
       final pjConfig =
-          await RepositoryPjConfig().getPjConfigFromBackupDir(backupDir);
+          await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
 
       if (pjConfig == null) throw AIBASExceptions().pjConfigIsNull();
 

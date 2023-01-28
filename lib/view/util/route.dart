@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../model/class/app.dart';
 import '../../model/error/handler.dart';
 import '../../model/helper/config.dart';
 import '../../repository/config.dart';
@@ -72,11 +71,8 @@ class RouteController {
         );
       }
       await pageNotifier.completeProgress();
-    } on AIBASException catch (err, trace) {
+    } on Exception catch (err, trace) {
       AIBASErrHandler(context, ref).noticeErr(err, trace);
-      // ignore: avoid_catches_without_on_clauses
-    } catch (err, trace) {
-      AIBASErrHandler(context, ref).noticeUnhandledErr(err, trace);
     }
   }
 

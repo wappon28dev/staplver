@@ -6,7 +6,7 @@ import FlutterMacOS
 import Foundation
 
 import dynamic_color
-import path_provider_macos
+import path_provider_foundation
 import screen_retriever
 import url_launcher_macos
 import window_manager

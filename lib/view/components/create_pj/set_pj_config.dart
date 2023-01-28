@@ -84,8 +84,7 @@ class CompSetPjConfig extends HookConsumerWidget {
         if (!Directory(newVal).existsSync()) {
           return '入力したバックアップフォルダーのパスは存在しません';
         }
-        // ignore: avoid_catches_without_on_clauses
-      } catch (_, __) {
+      } on Exception catch (_, __) {
         return '入力したバックアップフォルダーのパスは存在しません';
       }
 

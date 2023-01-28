@@ -48,7 +48,7 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
       () async => svnNotifier.runCheckout(),
       () async => svnNotifier.runStaging(),
       () async => svnNotifier.update(),
-      () async => RepositoryPjConfig().createNewPjConfig(
+      () async => PjConfigRepository().createNewPjConfig(
             PjConfigHelper().project2PjConfig(state.currentPj!),
           )
     ];

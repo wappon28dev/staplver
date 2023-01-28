@@ -9,6 +9,7 @@ import '../../repository/assets.dart';
 import '../../repository/config.dart';
 import '../../view/util/route.dart';
 import '../../vm/page.dart';
+import '../../vm/projects.dart';
 import '../../vm/theme.dart';
 import '../class/app.dart';
 import '../constant.dart';
@@ -214,6 +215,50 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
           ),
         ],
       );
+
+  AIBASException pjConfigNotFound() =>
+      const AIBASException(message: 'プロジェクトの設定ファイルが見つかりません');
+
+  AIBASException pjConfigCannotLoaded(
+    String? osMessage,
+  ) {
+    return AIBASException(
+      message: osMessage == null
+          ? 'プロジェクトの設定ファイルは次の理由で読み込めませんでした:\n$osMessage'
+          : '不明な理由で, アプリの設定ファイルを読み込めません',
+    );
+  }
+
+  AIBASException pjConfigIsInvalid() => AIBASException(
+        message: 'プロジェクトの設定ファイルが壊れています',
+        needShowAsBanner: true,
+        icon: Icons.broken_image,
+        actions: [
+          ExceptionAction(
+            title: '設定フォルダーを開く',
+            icon: Icons.folder_open,
+            onClick: (BuildContext context, WidgetRef ref) async {
+              final backupDir = ref.read(projectsProvider).currentPj!.backupDir;
+              final path = File('${backupDir.path}/aibas/pj_config.json');
+              await launchUrl(path.parent.uri);
+              exit(0);
+            },
+          ),
+          ExceptionAction(
+            title: '空の設定ファイルで上書きする',
+            isPrimary: true,
+            icon: Icons.restart_alt,
+            onClick: (BuildContext context, WidgetRef ref) {
+              RouteController.runPush(
+                context: context,
+                page: const AIBAS(),
+                isReplace: true,
+              );
+            },
+          ),
+        ],
+      );
+
   AIBASException pjNotFound() => const AIBASException(
         message: 'バックアップフォルダーはSVNリポジトリですが, AIBASプロジェクトではありません',
       );

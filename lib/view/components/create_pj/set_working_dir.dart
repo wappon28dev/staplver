@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import 'package:aibas/model/constant.dart';
-import 'package:aibas/view/components/wizard.dart';
-import 'package:aibas/view/routes/fab/create_pj.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../../../model/constant.dart';
+import '../../routes/fab/create_pj.dart';
+import '../wizard.dart';
 
 class CompSetWorkingDir extends HookConsumerWidget {
   const CompSetWorkingDir({super.key});
@@ -50,8 +51,7 @@ class CompSetWorkingDir extends HookConsumerWidget {
         if (!Directory(newVal).existsSync()) {
           return '入力した作業フォルダーのパスは存在しません';
         }
-        // ignore: avoid_catches_without_on_clauses
-      } catch (_, __) {
+      } on Exception catch (_, __) {
         return '入力した作業フォルダーのパスは存在しません';
       }
 

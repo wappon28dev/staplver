@@ -99,11 +99,11 @@ class AIBASErrHandler {
         SnackBarController(context, ref).pushSnackBarErr(title: err.message);
       }
     } else {
-      noticeUnhandledErr(err, trace);
+      _noticeUnhandledErr(err, trace);
     }
   }
 
-  void noticeUnhandledErr(dynamic err, StackTrace trace) {
+  void _noticeUnhandledErr(dynamic err, StackTrace trace) {
     ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
 
     debugPrint('=== UnhandledErr Received ===\n$err\n$trace');

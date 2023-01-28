@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../model/class/app.dart';
 import '../../../model/error/exception.dart';
 import '../../../model/error/handler.dart';
 import '../../../model/helper/config.dart';
@@ -49,7 +48,7 @@ class CompSetWorkingDir extends ConsumerWidget {
             ref.read(PageImportPj.importedPjProvider.notifier);
 
         final pjConfig =
-            await RepositoryPjConfig().getPjConfigFromBackupDir(backupDir);
+            await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
         if (pjConfig == null) throw AIBASExceptions().pjConfigIsNull();
         final importedPj = await PjConfigHelper().pjConfig2Project(pjConfig);
 
@@ -57,13 +56,9 @@ class CompSetWorkingDir extends ConsumerWidget {
         snackBar.pushSnackBarSuccess(
           content: 'プロジェクト “${pjConfig.name}” は正しく読み込めます',
         );
-      } on AIBASException catch (err, trace) {
+      } on Exception catch (err, trace) {
         isValidContentsNotifier.state = false;
         AIBASErrHandler(context, ref).noticeErr(err, trace);
-        // ignore: avoid_catches_without_on_clauses
-      } catch (err, trace) {
-        isValidContentsNotifier.state = false;
-        AIBASErrHandler(context, ref).noticeUnhandledErr(err, trace);
       }
     });
 
@@ -84,8 +79,7 @@ class CompSetWorkingDir extends ConsumerWidget {
         if (!Directory(newVal).existsSync()) {
           return '入力した作業フォルダーのパスは存在しません';
         }
-        // ignore: avoid_catches_without_on_clauses
-      } catch (_, __) {
+      } on Exception catch (_, __) {
         return '入力した作業フォルダーのパスは存在しません';
       }
 

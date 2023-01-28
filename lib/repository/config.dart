@@ -23,8 +23,6 @@ class AppConfigRepository {
           json.decode(await (await appConfigPath).readAsString())
               as Map<String, dynamic>;
       appConfig = AppConfig.fromJson(appConfigJson);
-
-      // ignore: avoid_catching_errors
     } on FormatException {
       return Future.error(
         AIBASExceptions().appConfigIsInvalid(),
@@ -40,8 +38,7 @@ class AppConfigRepository {
 
     try {
       ThemeMode.values[appConfig.themeMode].name;
-      // ignore: avoid_catches_without_on_clauses
-    } catch (_, __) {
+    } on Exception catch (_, __) {
       return Future.error(
         AIBASExceptions().pjConfigThemeModeIsInvalid(),
       );
@@ -91,7 +88,7 @@ class AppConfigRepository {
   }
 }
 
-class RepositoryPjConfig {
+class PjConfigRepository {
   Future<bool> getIsPjDir(Directory backupDir) async =>
       Directory('${backupDir.path}/aibas').exists();
 
@@ -107,13 +104,21 @@ class RepositoryPjConfig {
     try {
       final pjConfigStr =
           await File('${backupDir.path}/aibas/pj_config.json').readAsString();
-
       final pjConfigJson = json.decode(pjConfigStr) as Map<String, dynamic>;
       pjConfig = PjConfig.fromJson(pjConfigJson);
-      // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      debugPrint(e.toString());
+    } on FormatException {
+      return Future.error(
+        AIBASExceptions().pjConfigIsInvalid(),
+      );
+    } on FileSystemException catch (err) {
+      if (err.osError?.errorCode == 2) {
+        return Future.error(AIBASExceptions().pjConfigNotFound());
+      }
+      return Future.error(
+        AIBASExceptions().pjConfigCannotLoaded(err.osError?.message),
+      );
     }
+
     debugPrint('target: ${backupDir.path}/aibas/pj_config');
     debugPrint('config: $pjConfig');
     debugPrint('-- loaded pjConfig -- ');
