@@ -38,12 +38,22 @@ class AssetsRepository {
     final debugRootDir = Directory(
       Platform.resolvedExecutable,
     ).parent.parent.parent.parent.parent;
-    final releaseRootDir = Directory(Platform.resolvedExecutable).parent;
+
+    var releaseRootDir = Directory.current;
+
+    if (Platform.isWindows) {
+      final dataDir = Directory(Platform.resolvedExecutable).parent;
+      releaseRootDir = Directory('${dataDir.path}/data');
+    } else if (Platform.isMacOS) {
+      final contentsDir = Directory(Platform.resolvedExecutable).parent.parent;
+      releaseRootDir =
+          Directory('${contentsDir.path}/Frameworks/App.framework/Resources');
+    }
 
     if (kDebugMode) {
       return Directory('${debugRootDir.path}/assets');
     } else {
-      return Directory('${releaseRootDir.path}/data/flutter_assets/assets');
+      return Directory('${releaseRootDir.path}/flutter_assets/assets');
     }
   }
 
