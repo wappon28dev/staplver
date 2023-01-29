@@ -13,7 +13,6 @@ enum SvnActions {
   deleted('D', '削除', Icons.delete_outline, Colors.red),
   external('X', '外部', Icons.link, Colors.blue),
   ignored('I', '無視', Icons.block, Colors.grey),
-  incomplete('!', '不完全', Icons.error_outline, Colors.red),
   missing('!', '削除', Icons.error_outline, Colors.red),
   modified('M', '変更', Icons.edit, Colors.orange),
   none(' ', 'なし', Icons.check, Colors.green),
@@ -116,9 +115,12 @@ class SvnStatusCommitInfo with _$SvnStatusCommitInfo {
 class SvnStatusEntry with _$SvnStatusEntry {
   const factory SvnStatusEntry({
     required String path,
-    required SvnActions item,
+    required SvnActions action,
     required String props,
     int? revision,
+    bool? copied,
+    String? movedTo,
+    String? movedFrom,
     SvnStatusCommitInfo? commit,
   }) = _SvnStatusEntry;
   const SvnStatusEntry._();

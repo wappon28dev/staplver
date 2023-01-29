@@ -20,6 +20,7 @@ class CompPjCreateSavePoint extends HookConsumerWidget {
           children: const [
             Divider(),
             TextField(
+              autofocus: true,
               decoration: InputDecoration(
                 labelText: 'セーブポイント名',
                 border: OutlineInputBorder(),

@@ -145,24 +145,31 @@ class SvnHelper {
         throw AIBASExceptions().svnStatusIsInvalid();
       }
 
-      if (itemName != 'unversioned') {
-        final revision = int.parse(wcStatusElement.getAttribute('revision')!);
+      final action = SvnActions.values.byName(itemName);
+
+      if (action != SvnActions.unversioned) {
+        final revision = wcStatusElement.getAttribute('revision');
         final commitElement = wcStatusElement.findElements('commit').first;
-        final committedRevision =
-            int.parse(commitElement.getAttribute('revision')!);
+        final committedRevision = commitElement.getAttribute('revision');
         final date =
             DateTime.parse(commitElement.findElements('date').first.text);
         final author = commitElement.findElements('author').first.text;
+        final copied = commitElement.getAttribute('copied') == 'true';
+
+        if (committedRevision == null) {
+          throw AIBASExceptions().svnStatusIsInvalid();
+        }
 
         entries.add(
           SvnStatusEntry(
             path: path,
-            item: SvnActions.values.byName(itemName),
+            action: SvnActions.values.byName(itemName),
             props: props,
-            revision: revision,
+            revision: revision != null ? int.parse(revision) : null,
+            copied: copied,
             commit: SvnStatusCommitInfo(
               author: author,
-              revision: committedRevision,
+              revision: int.parse(committedRevision),
               date: date,
             ),
           ),
@@ -171,7 +178,7 @@ class SvnHelper {
         entries.add(
           SvnStatusEntry(
             path: path,
-            item: SvnActions.values.byName(itemName),
+            action: SvnActions.values.byName(itemName),
             props: props,
           ),
         );

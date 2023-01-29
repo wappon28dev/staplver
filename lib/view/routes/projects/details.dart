@@ -65,23 +65,22 @@ class CompProjectsDetails extends HookConsumerWidget {
 
     useEffect(
       () => onMountedAsync(() async {
-        if (repoInfoState.hasError) {
-          AIBASErrHandler(context, ref)
-              .noticeErr(repoInfoState.error, repoInfoState.stackTrace);
-        }
-        if (savePointsState.hasError) {
-          AIBASErrHandler(context, ref)
-              .noticeErr(savePointsState.error, savePointsState.stackTrace);
-        }
-        if (pjStatusState.hasError) {
-          AIBASErrHandler(context, ref)
-              .noticeErr(pjStatusState.error, pjStatusState.stackTrace);
-        }
+        // if (repoInfoState.hasError) {
+        //   AIBASErrHandler(context, ref)
+        //       .noticeErr(repoInfoState.error, repoInfoState.stackTrace);
+        // }
+        // if (savePointsState.hasError) {
+        //   AIBASErrHandler(context, ref)
+        //       .noticeErr(savePointsState.error, savePointsState.stackTrace);
+        // }
+        // if (pjStatusState.hasError) {
+        //   AIBASErrHandler(context, ref)
+        //       .noticeErr(pjStatusState.error, pjStatusState.stackTrace);
+        // }
 
         if (!repoInfoState.isLoading &&
             !savePointsState.isLoading &&
             !pjStatusState.isLoading) {
-          print("ew");
           await pageNotifier.completeProgress();
         }
       }),

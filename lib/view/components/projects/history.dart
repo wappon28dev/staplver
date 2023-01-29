@@ -30,12 +30,7 @@ class CompPjHistory extends HookConsumerWidget {
           ),
           contents: Container(
             padding: const EdgeInsets.all(8),
-            child: Column(
-              children: [
-                Text(savePoint.message),
-                Text(savePoint.message),
-              ],
-            ),
+            child: Text(savePoint.message),
           ),
           node: TimelineNode(
             indicator: const DotIndicator(),

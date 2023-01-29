@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../model/class/svn.dart';
@@ -15,6 +16,7 @@ class CompPjStatus extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // local
     final pjStatusState = ref.watch(CompProjectsDetails.pjStatusProvider);
+    final selectedEntry = useState(<SvnStatusEntry>[]);
 
     // view
     Widget content(List<SvnStatusEntry> pjStatus) {
@@ -57,30 +59,86 @@ class CompPjStatus extends HookConsumerWidget {
         );
       }
 
+      Widget topTile() {
+        final someSelected = selectedEntry.value.isNotEmpty;
+        final allSelected = selectedEntry.value.length == pjStatus.length;
+        void handleClick({required bool? isSelected}) {
+          if (isSelected == null) return;
+          if (isSelected) {
+            selectedEntry.value = pjStatus;
+          } else {
+            selectedEntry.value = [];
+          }
+        }
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Checkbox(
+                value: allSelected,
+                tristate: selectedEntry.value.isNotEmpty &&
+                    selectedEntry.value.length != pjStatus.length,
+                onChanged: (isSelected) => handleClick(isSelected: isSelected),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.restart_alt),
+                    tooltip: '変更の破棄',
+                    onPressed: someSelected ? () {} : null,
+                  )
+                ],
+              ),
+            ),
+          ],
+        );
+      }
+
       List<Widget> getTiles() {
         final tiles = <Widget>[];
         final colorScheme = Theme.of(context).colorScheme;
 
         for (final entry in pjStatus) {
           final textColor =
-              entry.item.color.harmonizeWith(colorScheme.background);
+              entry.action.color.harmonizeWith(colorScheme.background);
+
+          final isSelected = selectedEntry.value.contains(entry);
+
+          void handleClick({required bool? isCheckedVal}) {
+            if (isCheckedVal == null) return;
+            final copiedSelectedEntry = selectedEntry.value.toList();
+            if (isCheckedVal) {
+              copiedSelectedEntry.add(entry);
+            } else {
+              copiedSelectedEntry.remove(entry);
+            }
+            selectedEntry.value = copiedSelectedEntry;
+          }
 
           tiles.add(
             CheckboxListTile(
               title: Text(
                 File(entry.path).name,
                 style: TextStyle(
-                  color: textColor,
+                  color: textColor.harmonizeWith(colorScheme.background),
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               subtitle: Text(entry.path),
-              secondary: entry.item.chips(colorScheme),
+              secondary: entry.action.chips(colorScheme),
               controlAffinity: ListTileControlAffinity.leading,
+              value: isSelected,
               dense: true,
-              value: true,
-              onChanged: (_) {},
+              activeColor: entry.action.color.shade400,
+              tileColor:
+                  isSelected ? entry.action.color.withOpacity(0.1) : null,
+              onChanged: (isCheckVal) => handleClick(isCheckedVal: isCheckVal),
             ),
           );
         }
@@ -93,7 +151,8 @@ class CompPjStatus extends HookConsumerWidget {
           children: [
                 title,
                 const Divider(),
-                const SizedBox(height: 20),
+                topTile(),
+                const Divider(),
               ] +
               getTiles(),
         ),

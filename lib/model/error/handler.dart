@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../class/app.dart';
+import '../constant.dart';
 
 class AIBASErrHandler {
   AIBASErrHandler(this.context, this.ref);
@@ -127,7 +128,7 @@ class AIBASErrHandler {
   }) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    // noticeErr(err, trace);
+    onMounted(() => noticeErr(err, trace));
 
     if (err is AIBASException) {
       return ColoredBox(
