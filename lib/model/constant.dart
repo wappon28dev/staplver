@@ -3,11 +3,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 extension FileExtension on FileSystemEntity {
   String get name {
-    return path.split('\\').last;
+    return basename(path);
   }
 }
 
@@ -21,22 +22,29 @@ extension AsyncMap<K, V> on Map<K, V> {
   }
 }
 
-void widgetMounted(VoidCallback init) {
+extension OnPrimary on Color {
+  Color get onColor {
+    if (computeLuminance() < 0.5) {
+      return Colors.white;
+    }
+    return Colors.black;
+  }
+}
+
+VoidCallback? onMounted(
+  VoidCallback init, [
+  VoidCallback? dispose,
+]) {
   WidgetsBinding.instance.addPostFrameCallback((_) => init());
+  return dispose;
 }
 
-void widgetMountedAsync(FutureOr<void> Function() init) {
+VoidCallback? onMountedAsync(
+  FutureOr<void> Function() init, [
+  VoidCallback? dispose,
+]) {
   WidgetsBinding.instance.addPostFrameCallback((_) async => await init());
-}
-
-Null onMounted(VoidCallback init) {
-  widgetMounted(init);
-  return null;
-}
-
-Null onMountedAsync(FutureOr<void> Function() init) {
-  widgetMountedAsync(init);
-  return null;
+  return dispose;
 }
 
 final gitHubReleaseUrl = Uri.https(

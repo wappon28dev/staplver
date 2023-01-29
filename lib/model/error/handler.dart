@@ -83,11 +83,10 @@ class AIBASErrHandler {
   }
 
   FutureOr<void> noticeErr(dynamic err, StackTrace? trace) {
-    ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-
-    debugPrint('=== Err Received ===\n$err\n$trace');
-    debugPrintStack();
+    ScaffoldMessenger.of(context).clearMaterialBanners();
     if (err is AIBASException) {
+      debugPrint('=== Err Received ===\n$err\n$trace');
+      debugPrintStack();
       debugPrint(err.message);
       if (err.needShowAsBanner) {
         pushBanner(
@@ -104,7 +103,7 @@ class AIBASErrHandler {
   }
 
   void _noticeUnhandledErr(dynamic err, StackTrace? trace) {
-    ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+    ScaffoldMessenger.of(context).clearMaterialBanners();
 
     debugPrint('=== UnhandledErr Received ===\n$err\n$trace');
     pushBanner(
@@ -115,10 +114,52 @@ class AIBASErrHandler {
           icon: Icons.close,
           isPrimary: false,
           onClick: (context, ref) =>
-              ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
+              ScaffoldMessenger.of(context).clearMaterialBanners(),
         ),
       ],
     );
+  }
+
+  Widget getErrWidget({
+    required String title,
+    required dynamic err,
+    required StackTrace trace,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    // noticeErr(err, trace);
+
+    if (err is AIBASException) {
+      return ColoredBox(
+        color: colorScheme.error,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Text(
+                '$title\n${err.message}\n$trace',
+                style: TextStyle(color: colorScheme.onError),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return ColoredBox(
+        color: colorScheme.error,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Text(
+                '$title\n$err\n$trace',
+                style: TextStyle(color: colorScheme.onError),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }
 

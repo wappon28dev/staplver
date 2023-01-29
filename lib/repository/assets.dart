@@ -22,7 +22,8 @@ enum SvnExecs {
 
   File getFile() {
     final assetsDir = AssetsRepository().getAssetsAbsDir();
-    final binPath = '${assetsDir.path}/svn/${Platform.operatingSystem}';
+    final platform = Platform.isWindows ? 'windows' : 'linux';
+    final binPath = '${assetsDir.path}/svn/$platform';
 
     final extension = Platform.isWindows ? '.exe' : '';
     final path = '$binPath/$name$extension';

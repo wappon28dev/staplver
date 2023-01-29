@@ -14,8 +14,9 @@ class SvnRepository {
     required SvnExecs svnExecs,
     required List<String> args,
   }) async {
+    final execPath = await AssetsRepository().getSvnExecPath(svnExecs);
     final process = await Process.run(
-      svnExecs.getFile().path,
+      execPath.path,
       args,
       workingDirectory: currentDirectory.path,
       stdoutEncoding: Encoding.getByName('utf-8'),
