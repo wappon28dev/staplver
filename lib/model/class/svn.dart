@@ -1,23 +1,41 @@
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../constant.dart';
 
 part 'svn.freezed.dart';
 part 'svn.g.dart';
 
 enum SvnActions {
-  added('A'),
-  conflicted('C'),
-  deleted('D'),
-  external('X'),
-  ignored('I'),
-  incomplete('!'),
-  missing('!'),
-  modified('M'),
-  none(' '),
-  replaced('R'),
-  unversioned('?');
+  added('A', '追加', Icons.add_outlined, Colors.green),
+  conflicted('C', '競合', Icons.error_outline, Colors.red),
+  deleted('D', '削除', Icons.delete_outline, Colors.red),
+  external('X', '外部', Icons.link, Colors.blue),
+  ignored('I', '無視', Icons.block, Colors.grey),
+  incomplete('!', '不完全', Icons.error_outline, Colors.red),
+  missing('!', '削除', Icons.error_outline, Colors.red),
+  modified('M', '変更', Icons.edit, Colors.orange),
+  none(' ', 'なし', Icons.check, Colors.green),
+  replaced('R', '置換', Icons.swap_horiz, Colors.blue),
+  unversioned('?', '新規', Icons.new_releases_outlined, Colors.green);
 
-  const SvnActions(this.marker);
+  const SvnActions(this.marker, this.altName, this.icon, this.color);
   final String marker;
+  final String altName;
+  final IconData icon;
+  final MaterialColor color;
+
+  Chip chips(ColorScheme colorScheme) {
+    final background = color.harmonizeWith(colorScheme.background);
+    final foreground = background.onColor;
+    return Chip(
+      avatar: Icon(icon, color: foreground),
+      label: Text(altName, style: TextStyle(color: foreground)),
+      side: const BorderSide(color: Colors.transparent),
+      backgroundColor: background,
+    );
+  }
 
   static SvnActions byName(String name) {
     return SvnActions.values.firstWhere((e) => e.marker == name);

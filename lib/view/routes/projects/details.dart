@@ -59,6 +59,8 @@ class CompProjectsDetails extends HookConsumerWidget {
         ..updateProgress(-1);
     }
 
+    void dispose() => pageNotifier.hideProgress();
+
     useEffect(() => onMounted(init), []);
 
     useEffect(
@@ -75,9 +77,11 @@ class CompProjectsDetails extends HookConsumerWidget {
           AIBASErrHandler(context, ref)
               .noticeErr(pjStatusState.error, pjStatusState.stackTrace);
         }
-        if (repoInfoState.hasValue &&
-            savePointsState.hasValue &&
-            pjStatusState.hasValue) {
+
+        if (!repoInfoState.isLoading &&
+            !savePointsState.isLoading &&
+            !pjStatusState.isLoading) {
+          print("ew");
           await pageNotifier.completeProgress();
         }
       }),
@@ -200,11 +204,10 @@ class CompProjectsDetails extends HookConsumerWidget {
             ...info,
           ],
         ),
-        error: (err, __) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Text('SVNへの問い合わせ中にエラーが発生しました\n$err'),
-          ),
+        error: (err, trace) => AIBASErrHandler(context, ref).getErrWidget(
+          title: 'SVNへの問い合わせ中にエラーが発生しました',
+          err: err,
+          trace: trace,
         ),
         loading: () => const Center(
           child: Padding(
@@ -252,7 +255,10 @@ class CompProjectsDetails extends HookConsumerWidget {
               SizedBox(
                 width: 60,
                 child: IconButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    dispose();
+                    Navigator.pop(context);
+                  },
                   icon: const Icon(Icons.close),
                 ),
               ),

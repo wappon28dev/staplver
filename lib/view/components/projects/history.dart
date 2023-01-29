@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timelines/timelines.dart';
 
 import '../../../model/class/svn.dart';
+import '../../../model/error/handler.dart';
 import '../../routes/projects/details.dart';
 import 'create_save_point.dart';
 
@@ -29,7 +30,12 @@ class CompPjHistory extends HookConsumerWidget {
           ),
           contents: Container(
             padding: const EdgeInsets.all(8),
-            child: Text(savePoint.message),
+            child: Column(
+              children: [
+                Text(savePoint.message),
+                Text(savePoint.message),
+              ],
+            ),
           ),
           node: TimelineNode(
             indicator: const DotIndicator(),
@@ -153,11 +159,16 @@ class CompPjHistory extends HookConsumerWidget {
 
     return savePointState.when(
       data: content,
-      error: (err, _) => Center(
-        child: Text('セーブポイントの読み込みに失敗しました\n$err'),
+      error: (err, trace) => AIBASErrHandler(context, ref).getErrWidget(
+        title: 'セーブポイントの状態の読み込みに失敗しました',
+        err: err,
+        trace: trace,
       ),
-      loading: () => const Center(
-        child: Text('セーブポイントを読み込み中...'),
+      loading: () => Column(
+        children: const [
+          SizedBox(height: 20),
+          Text('セーブポイントの状態を読み込み中...'),
+        ],
       ),
     );
   }

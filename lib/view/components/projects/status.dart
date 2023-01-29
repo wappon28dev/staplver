@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../model/class/svn.dart';
+import '../../../model/constant.dart';
+import '../../../model/error/handler.dart';
 import '../../routes/projects/details.dart';
 
 class CompPjStatus extends HookConsumerWidget {
@@ -54,23 +59,28 @@ class CompPjStatus extends HookConsumerWidget {
 
       List<Widget> getTiles() {
         final tiles = <Widget>[];
+        final colorScheme = Theme.of(context).colorScheme;
 
         for (final entry in pjStatus) {
+          final textColor =
+              entry.item.color.harmonizeWith(colorScheme.background);
+
           tiles.add(
-            ListTile(
-              leading: Icon(
-                entry.item == SvnActions.added
-                    ? Icons.add
-                    : entry.item == SvnActions.deleted
-                        ? Icons.delete
-                        : Icons.edit,
-                color: entry.item == SvnActions.added
-                    ? Colors.green
-                    : entry.item == SvnActions.deleted
-                        ? Colors.red
-                        : Colors.blue,
+            CheckboxListTile(
+              title: Text(
+                File(entry.path).name,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              title: Text(entry.path),
+              subtitle: Text(entry.path),
+              secondary: entry.item.chips(colorScheme),
+              controlAffinity: ListTileControlAffinity.leading,
+              dense: true,
+              value: true,
+              onChanged: (_) {},
             ),
           );
         }
@@ -92,14 +102,16 @@ class CompPjStatus extends HookConsumerWidget {
 
     return pjStatusState.when(
       data: content,
-      error: (err, _) => Center(
-        child: Text(
-          'セーブポイントの読み込みに失敗しました\n'
-          '$err',
-        ),
+      error: (err, trace) => AIBASErrHandler(context, ref).getErrWidget(
+        title: '作業フォルダーの状態の読み込みに失敗しました',
+        err: err,
+        trace: trace,
       ),
-      loading: () => const Center(
-        child: Text('セーブポイントを読み込み中...'),
+      loading: () => Column(
+        children: const [
+          SizedBox(height: 20),
+          Text('作業フォルダーの状態を読み込み中...'),
+        ],
       ),
     );
   }
