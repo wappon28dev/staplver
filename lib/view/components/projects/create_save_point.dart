@@ -8,6 +8,11 @@ class CompPjCreateSavePoint extends HookConsumerWidget {
   AlertDialog build(BuildContext context, WidgetRef ref) {
     final savePointName = useState('yay');
 
+    void onSubmitted(String value) {
+      savePointName.value = value;
+      Navigator.pop(context, savePointName.value);
+    }
+
     return AlertDialog(
       title: const Text(
         'セーブポイントを作成',
@@ -17,19 +22,26 @@ class CompPjCreateSavePoint extends HookConsumerWidget {
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Divider(),
-            TextField(
+          children: [
+            TextFormField(
               autofocus: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'セーブポイント名',
                 border: OutlineInputBorder(),
               ),
+              autovalidateMode: AutovalidateMode.always,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'セーブポイント名を入力してください';
+                }
+                return null;
+              },
+              onFieldSubmitted: onSubmitted,
             ),
-            Text('yey'),
-            Text('yey'),
-            Text('yey'),
-            Text('yey'),
+            const Text('yey'),
+            const Text('yey'),
+            const Text('yey'),
+            const Text('yey'),
           ],
         ),
       ),

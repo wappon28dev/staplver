@@ -25,13 +25,14 @@ class CompPjStatus extends HookConsumerWidget {
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 15,
-          children: [
-            const Icon(Icons.info_outline, size: 28),
+          children: const [
+            Icon(Icons.info_outline, size: 25),
             Text(
               '作業フォルダーの状態',
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ],
         ),
@@ -62,6 +63,9 @@ class CompPjStatus extends HookConsumerWidget {
       Widget topTile() {
         final someSelected = selectedEntry.value.isNotEmpty;
         final allSelected = selectedEntry.value.length == pjStatus.length;
+        final isTristate = selectedEntry.value.isNotEmpty &&
+            selectedEntry.value.length != pjStatus.length;
+
         void handleClick({required bool? isSelected}) {
           if (isSelected == null) return;
           if (isSelected) {
@@ -77,9 +81,8 @@ class CompPjStatus extends HookConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Checkbox(
-                value: allSelected,
-                tristate: selectedEntry.value.isNotEmpty &&
-                    selectedEntry.value.length != pjStatus.length,
+                value: !isTristate ? allSelected : null,
+                tristate: isTristate,
                 onChanged: (isSelected) => handleClick(isSelected: isSelected),
               ),
             ),
@@ -135,6 +138,7 @@ class CompPjStatus extends HookConsumerWidget {
               controlAffinity: ListTileControlAffinity.leading,
               value: isSelected,
               dense: true,
+              checkColor: entry.action.color.onColor,
               activeColor: entry.action.color.shade400,
               tileColor:
                   isSelected ? entry.action.color.withOpacity(0.1) : null,

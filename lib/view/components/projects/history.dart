@@ -112,13 +112,14 @@ class CompPjHistory extends HookConsumerWidget {
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 15,
-          children: [
-            const Icon(Icons.history, size: 28),
+          children: const [
+            Icon(Icons.history, size: 25),
             Text(
               'セーブポイントの履歴',
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ],
         ),
