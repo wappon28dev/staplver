@@ -7,8 +7,6 @@ part 'config.g.dart';
 class PjConfig with _$PjConfig {
   const factory PjConfig({
     required String name,
-    required String workingDirStr,
-    required String backupDirStr,
     required int backupMin,
   }) = _PjConfig;
   const PjConfig._();

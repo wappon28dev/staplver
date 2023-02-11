@@ -37,13 +37,14 @@ class AppConfigHelper {
     });
     final savedProject = <Project>[];
 
-    await savedProjectPath.forEachAsync((backupDir, _) async {
+    await savedProjectPath.forEachAsync((backupDir, workingDir) async {
       final pjConfig =
           await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
 
       if (pjConfig == null) throw AIBASExceptions().pjConfigIsNull();
 
-      final project = await PjConfigHelper().pjConfig2Project(pjConfig);
+      final project = await PjConfigHelper()
+          .pjConfig2Project(pjConfig, backupDir, workingDir);
       savedProject.add(project);
     });
     debugPrint('-- end --');
@@ -80,22 +81,14 @@ class AppConfigHelper {
 class PjConfigHelper {
   PjConfig project2PjConfig(Project project) => PjConfig(
         name: project.name,
-        workingDirStr: project.workingDir.path,
-        backupDirStr: project.backupDir.path,
         backupMin: project.backupMin,
       );
 
-  Future<Project> pjConfig2Project(PjConfig pjConfig) async {
-    if (!await Directory(pjConfig.workingDirStr).exists()) {
-      return Future.error(
-        AIBASExceptions().workingDirNotFound(),
-      );
-    }
-    if (!await Directory(pjConfig.backupDirStr).exists()) {
-      return Future.error(
-        AIBASExceptions().backupDirNotFound(),
-      );
-    }
+  Future<Project> pjConfig2Project(
+    PjConfig pjConfig,
+    Directory backupDir,
+    Directory workingDir,
+  ) async {
     if (pjConfig.name.isEmpty) {
       return Future.error(
         AIBASExceptions().pjNameIsInvalid(),
@@ -110,8 +103,8 @@ class PjConfigHelper {
     return Future.value(
       Project(
         name: pjConfig.name,
-        workingDir: Directory(pjConfig.workingDirStr),
-        backupDir: Directory(pjConfig.backupDirStr),
+        backupDir: backupDir,
+        workingDir: workingDir,
         backupMin: pjConfig.backupMin,
       ),
     );

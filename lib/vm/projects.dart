@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/class/app.dart';
+import '../model/error/exception.dart';
 import '../model/helper/config.dart';
 import '../model/state.dart';
 import '../repository/config.dart';
@@ -48,9 +49,18 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
       () async => svnNotifier.runCheckout(),
       () async => svnNotifier.runStaging(),
       () async => svnNotifier.update(),
-      () async => PjConfigRepository().createNewPjConfig(
-            PjConfigHelper().project2PjConfig(state.currentPj!),
-          )
+      () async {
+        final currentPj = state.currentPj;
+
+        if (currentPj == null) {
+          throw AIBASExceptions().pjNotFound();
+        }
+
+        await PjConfigRepository().createNewPjConfig(
+          PjConfigHelper().project2PjConfig(currentPj),
+          currentPj.backupDir,
+        );
+      }
     ];
 
     debugPrint('-- init project --');

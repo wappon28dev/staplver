@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +10,7 @@ import '../../../model/helper/config.dart';
 import '../../../repository/config.dart';
 import '../../../vm/svn.dart';
 import '../../routes/fab/import_pj.dart';
+import '../drag_and_drop.dart';
 import '../wizard.dart';
 
 class CompSetWorkingDir extends ConsumerWidget {
@@ -50,7 +50,8 @@ class CompSetWorkingDir extends ConsumerWidget {
         final pjConfig =
             await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
         if (pjConfig == null) throw AIBASExceptions().pjConfigIsNull();
-        final importedPj = await PjConfigHelper().pjConfig2Project(pjConfig);
+        final importedPj = await PjConfigHelper()
+            .pjConfig2Project(pjConfig, backupDir, workingDir);
 
         importedPjNotifier.state = importedPj;
         snackBar.pushSnackBarSuccess(
@@ -62,7 +63,7 @@ class CompSetWorkingDir extends ConsumerWidget {
       }
     });
 
-    Future<void> handleClick() async {
+    Future<void> selectDir() async {
       final selectedDirectory = await FilePicker.platform.getDirectoryPath();
       if (selectedDirectory == null) return;
       final dir = Directory(selectedDirectory);
@@ -123,7 +124,7 @@ class CompSetWorkingDir extends ConsumerWidget {
         ),
         Expanded(
           child: IconButton(
-            onPressed: handleClick,
+            onPressed: selectDir,
             icon: const Icon(Icons.more_horiz),
           ),
         ),
@@ -133,33 +134,13 @@ class CompSetWorkingDir extends ConsumerWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        GestureDetector(
-          onTap: handleClick,
-          child: DottedBorder(
-            color: Theme.of(context).colorScheme.tertiary,
-            dashPattern: const [15, 6],
-            strokeWidth: 3,
-            child: Container(
-              height: 400,
-              width: 400,
-              color: Theme.of(context).colorScheme.tertiaryContainer,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
-                  Text(
-                    'バージョン管理をするフォルダーを\nドラッグ & ドロップ',
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                  Icon(Icons.create_new_folder, size: 100),
-                  Text(
-                    'または, クリックしてフォルダーを選択',
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        const SizedBox(height: 20),
+        dragAndDropSquare(
+          selectDir,
+          Theme.of(context).colorScheme,
+          '作業フォルダーをドラッグ & ドロップ',
+          'または, クリックしてフォルダーを選択',
+          Icons.create_new_folder,
         ),
         const SizedBox(height: 40),
         workingDirField,

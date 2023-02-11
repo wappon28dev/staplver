@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../model/constant.dart';
 import '../../routes/fab/create_pj.dart';
+import '../drag_and_drop.dart';
 import '../wizard.dart';
 
 class CompSetWorkingDir extends HookConsumerWidget {
@@ -33,7 +33,7 @@ class CompSetWorkingDir extends HookConsumerWidget {
       (_) => isValidContentsNotifier.state = isValidContents(),
     );
 
-    Future<void> handleClick() async {
+    Future<void> selectDir() async {
       final selectedDirectory = await FilePicker.platform.getDirectoryPath();
       if (selectedDirectory == null) return;
       final dir = Directory(selectedDirectory);
@@ -95,7 +95,7 @@ class CompSetWorkingDir extends HookConsumerWidget {
         ),
         Expanded(
           child: IconButton(
-            onPressed: handleClick,
+            onPressed: selectDir,
             icon: const Icon(Icons.more_horiz),
           ),
         ),
@@ -105,35 +105,15 @@ class CompSetWorkingDir extends HookConsumerWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        GestureDetector(
-          onTap: handleClick,
-          child: DottedBorder(
-            color: Theme.of(context).colorScheme.tertiary,
-            dashPattern: const [15, 6],
-            strokeWidth: 3,
-            child: Container(
-              height: 400,
-              width: 400,
-              color: Theme.of(context).colorScheme.tertiaryContainer,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
-                  Text(
-                    'バージョン管理をするフォルダーを\nドラッグ & ドロップ',
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                  Icon(Icons.create_new_folder, size: 100),
-                  Text(
-                    'または, クリックしてフォルダーを選択',
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        const SizedBox(height: 20),
+        dragAndDropSquare(
+          selectDir,
+          Theme.of(context).colorScheme,
+          'バージョン管理をするフォルダーを\nドラッグ & ドロップ',
+          'または, クリックしてフォルダーを選択',
+          Icons.create_new_folder,
         ),
-        const SizedBox(height: 40),
+        const SizedBox(height: 30),
         workingDirField,
         SizedBox(
           height: 40,

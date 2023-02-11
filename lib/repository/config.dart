@@ -125,32 +125,35 @@ class PjConfigRepository {
     return Future.value(pjConfig);
   }
 
-  Future<void> createNewPjConfig(PjConfig pjConfig) async {
+  Future<void> createNewPjConfig(PjConfig pjConfig, Directory backupDir) async {
     debugPrint('-- create pjConfig --');
 
-    if (await Directory('${pjConfig.backupDirStr}/aibas').exists()) {
+    final backupDirStr = backupDir.path;
+
+    if (await Directory('$backupDirStr/aibas').exists()) {
       return Future.error(AIBASExceptions().pjAlreadyExists);
     } else {
-      await Directory('${pjConfig.backupDirStr}/aibas').create();
+      await Directory('$backupDirStr/aibas').create();
     }
-
-    final pjConfigPath = File('${pjConfig.backupDirStr}/aibas/pj_config.json');
+    final pjConfigPath = File('$backupDirStr/aibas/pj_config.json');
     final pjConfigStr = json.encode(pjConfig.toJson());
     await pjConfigPath.writeAsString(pjConfigStr);
 
     debugPrint('$pjConfigStr\n-- created pjConfig --');
   }
 
-  Future<void> updatePjConfig(PjConfig pjConfig) async {
+  Future<void> updatePjConfig(PjConfig pjConfig, Directory backupDir) async {
     debugPrint('-- update pjConfig --');
 
-    if (!await Directory('${pjConfig.backupDirStr}/aibas').exists()) {
-      return Future.error(AIBASExceptions().pjNotFound);
-    } else {
-      await Directory('${pjConfig.backupDirStr}/aibas').create();
+    if (!await backupDir.exists()) {
+      return Future.error(AIBASExceptions().backupDirNotFound());
     }
 
-    final pjConfigPath = File('${pjConfig.backupDirStr}/aibas/pj_config.json');
+    if (!await getIsPjDir(backupDir)) {
+      return Future.error(AIBASExceptions().pjNotFound());
+    }
+
+    final pjConfigPath = File('$backupDir/aibas/pj_config.json');
     final pjConfigStr = json.encode(pjConfig.toJson());
     await pjConfigPath.writeAsString(pjConfigStr);
 
