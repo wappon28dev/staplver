@@ -22,7 +22,7 @@ class CompSetIgnoreFiles extends HookConsumerWidget {
 
     // local - notifier
     final isValidContentsNotifier =
-        ref.read(CompWizard.isValidContentsProvider.notifier);
+        ref.read(CompWizard.isValidContentsPod.notifier);
     final ignoreFilesNotifier =
         ref.read(PageCreatePj.ignoreFilesProvider.notifier);
 

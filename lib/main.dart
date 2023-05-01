@@ -33,13 +33,15 @@ class Staplver extends ConsumerWidget with WindowListener {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // state
-    final themeState = ref.watch(themeProvider);
+    final themeState = ref.watch(appThemePod);
 
     // notifier
-    final contentsNotifier = ref.read(contentsProvider.notifier);
+    final contentsNotifier = ref.read(contentsPod.notifier);
+    final themeNotifier = ref.watch(appThemePod.notifier);
 
     // local
     dropEventStream.listen((paths) async {
+      print(paths);
       await contentsNotifier.handleDragAndDrop(paths);
     });
 
@@ -48,8 +50,8 @@ class Staplver extends ConsumerWidget with WindowListener {
       builder: (ColorScheme? lightColorScheme, ColorScheme? darkColorScheme) {
         return MaterialApp(
           title: 'Staplver',
-          theme: ThemeNotifier().getLightTheme(lightColorScheme, context),
-          darkTheme: ThemeNotifier().getDarkTheme(darkColorScheme, context),
+          theme: themeNotifier.getLightTheme(lightColorScheme, context),
+          darkTheme: themeNotifier.getDarkTheme(darkColorScheme, context),
           themeMode: themeState.themeMode,
           debugShowCheckedModeBanner: false,
           home: const AppRoot(),

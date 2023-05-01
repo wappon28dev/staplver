@@ -3,7 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:staplver/model/constant.dart';
 import 'package:staplver/vm/projects.dart';
 
@@ -15,18 +15,19 @@ import '../repository/assets.dart';
 import '../repository/svn.dart';
 import 'contents.dart';
 
-final svnProvider =
-    StateNotifierProvider<SvnNotifier, SvnState>(SvnNotifier.new);
+part 'svn.g.dart';
 
-class SvnNotifier extends StateNotifier<SvnState> {
-  SvnNotifier(this.ref) : super(const SvnState());
+@riverpod
+class Svn extends _$Svn {
+  @override
+  SvnState build() {
+    return const SvnState();
+  }
 
-  final Ref ref;
-
-  ContentsState get contentsState => ref.watch(contentsProvider);
+  ContentsState get contentsState => ref.watch(contentsPod);
 
   Future<Project> get currentPj async {
-    final currentPjSnapshot = ref.watch(projectsProvider).currentPj;
+    final currentPjSnapshot = ref.watch(projectsPod).currentPj;
     if (currentPjSnapshot == null) {
       throw Exception('currentPjSnapshot is null!');
     }

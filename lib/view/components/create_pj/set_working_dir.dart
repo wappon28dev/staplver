@@ -15,7 +15,7 @@ class CompSetWorkingDir extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // wizard ref
     final isValidContentsNotifier =
-        ref.read(CompWizard.isValidContentsProvider.notifier);
+        ref.read(CompWizard.isValidContentsPod.notifier);
 
     // local ref
     final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);

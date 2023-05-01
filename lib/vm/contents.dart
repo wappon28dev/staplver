@@ -1,22 +1,23 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:staplver/model/state.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final contentsProvider = StateNotifierProvider<ContentsNotifier, ContentsState>(
-  ContentsNotifier.new,
-);
+import '../model/state.dart';
+
+part 'contents.g.dart';
 
 enum DragAndDropErrors {
   multiPathsProvided,
   isNotDirectory,
 }
 
-class ContentsNotifier extends StateNotifier<ContentsState> {
-  ContentsNotifier(this.ref) : super(const ContentsState());
-
-  final Ref ref;
+@riverpod
+class Contents extends _$Contents {
+  @override
+  ContentsState build() {
+    return const ContentsState();
+  }
 
   void updateDefaultBackupDir(Directory? newDefaultBackupDir) {
     debugPrint('newDefaultBackupDir => $newDefaultBackupDir');

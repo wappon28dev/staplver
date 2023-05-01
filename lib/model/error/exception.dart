@@ -35,7 +35,7 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
             isPrimary: true,
             icon: Icons.download,
             onClick: (BuildContext context, WidgetRef ref) async {
-              final pageNotifier = ref.read(pageProvider.notifier);
+              final pageNotifier = ref.read(pagePod.notifier);
               await pageNotifier.resetProgress();
               pageNotifier.updateProgress(0.3);
               await launchUrl(gitHubReleaseUrl);
@@ -77,7 +77,7 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
             isPrimary: true,
             icon: Icons.delete_forever,
             onClick: (BuildContext context, WidgetRef ref) async {
-              final pageNotifier = ref.read(pageProvider.notifier);
+              final pageNotifier = ref.read(pagePod.notifier);
 
               await pageNotifier.resetProgress();
               pageNotifier.updateProgress(0.3);
@@ -117,7 +117,7 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
             isPrimary: true,
             icon: Icons.delete_forever,
             onClick: (BuildContext context, WidgetRef ref) async {
-              final pageNotifier = ref.read(pageProvider.notifier);
+              final pageNotifier = ref.read(pagePod.notifier);
 
               await pageNotifier.resetProgress();
               pageNotifier.updateProgress(0.3);
@@ -199,8 +199,8 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
             isPrimary: true,
             icon: Icons.delete_forever,
             onClick: (BuildContext context, WidgetRef ref) async {
-              final pageNotifier = ref.read(pageProvider.notifier);
-              final themeNotifier = ref.read(themeProvider.notifier);
+              final pageNotifier = ref.read(pagePod.notifier);
+              final themeNotifier = ref.read(appThemePod.notifier);
 
               await pageNotifier.resetProgress();
               pageNotifier.updateProgress(0.3);
@@ -240,7 +240,7 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
             title: '設定フォルダーを開く',
             icon: Icons.folder_open,
             onClick: (BuildContext context, WidgetRef ref) async {
-              final backupDir = ref.read(projectsProvider).currentPj!.backupDir;
+              final backupDir = ref.read(projectsPod).currentPj!.backupDir;
               final path = File('${backupDir.path}/staplver/pj_config.json');
               await launchUrl(path.parent.uri);
               exit(0);

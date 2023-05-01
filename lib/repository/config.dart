@@ -79,7 +79,7 @@ class AppConfigRepository {
       savedProjectPath: {},
       defaultBackupDir: '',
       themeMode: 0,
-      useDynamicColor: false,
+      useDynamicColor: true,
     );
     final appConfigStr = json.encode(emptyAppConfig.toJson());
     await (await appConfigPath).writeAsString(appConfigStr);

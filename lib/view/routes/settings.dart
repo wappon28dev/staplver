@@ -8,7 +8,7 @@ class PageSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final contentsState = ref.watch(contentsProvider);
+    final contentsState = ref.watch(contentsPod);
 
     return SliverToBoxAdapter(
       child: Column(

@@ -17,11 +17,11 @@ class PageProjects extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // state
-    final projectsState = ref.watch(projectsProvider);
+    final projectsState = ref.watch(projectsPod);
 
     // notifier
-    final projectsNotifier = ref.read(projectsProvider.notifier);
-    final pageNotifier = ref.read(pageProvider.notifier);
+    final projectsNotifier = ref.read(projectsPod.notifier);
+    final pageNotifier = ref.read(pagePod.notifier);
 
     // local
     final projects = projectsState.savedProjects;
@@ -111,7 +111,7 @@ class PageProjects extends HookConsumerWidget {
         ..removeAt(oldIndex)
         ..insert(newIndex, projects[oldIndex]);
 
-      ref.read(projectsProvider.notifier).updateSavedProject(clonedProjects);
+      ref.read(projectsPod.notifier).updateSavedProject(clonedProjects);
       AppConfigHelper().updateAppConfig(ref);
     }
 

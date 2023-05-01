@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/state.dart';
 
-final themeProvider =
-    StateNotifierProvider<ThemeNotifier, ThemeState>((ref) => ThemeNotifier());
+part 'theme.g.dart';
 
-class ThemeNotifier extends StateNotifier<ThemeState> {
-  ThemeNotifier() : super(const ThemeState());
+@riverpod
+class AppTheme extends _$AppTheme {
+  @override
+  AppThemeState build() {
+    return const AppThemeState();
+  }
 
   void updateThemeMode(ThemeMode newThemeMode) {
     debugPrint('newThemeMode => $newThemeMode');

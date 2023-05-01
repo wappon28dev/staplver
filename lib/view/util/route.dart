@@ -39,10 +39,10 @@ class RouteController {
   }
 
   Future<void> appInit(BuildContext context) async {
-    final pageNotifier = ref.read(pageProvider.notifier);
-    final projectsNotifier = ref.read(projectsProvider.notifier);
-    final contentsNotifier = ref.read(contentsProvider.notifier);
-    final themeNotifier = ref.read(themeProvider.notifier);
+    final pageNotifier = ref.read(pagePod.notifier);
+    final projectsNotifier = ref.read(projectsPod.notifier);
+    final contentsNotifier = ref.read(contentsPod.notifier);
+    final themeNotifier = ref.read(appThemePod.notifier);
     final snackBar = SnackBarController(context, ref);
 
     try {
@@ -77,7 +77,7 @@ class RouteController {
   }
 
   void home2fabInit() {
-    ref.read(pageProvider.notifier).updateWizardIndex(0);
-    ref.read(CompWizard.isValidContentsProvider.notifier).state = false;
+    ref.read(pagePod.notifier).updateWizardIndex(0);
+    ref.read(CompWizard.isValidContentsPod.notifier).state = false;
   }
 }

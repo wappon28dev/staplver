@@ -1,14 +1,16 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/state.dart';
 
-final pageProvider = StateNotifierProvider<PageNotifier, PageState>(
-  (ref) => PageNotifier(),
-);
+part 'page.g.dart';
 
-class PageNotifier extends StateNotifier<PageState> {
-  PageNotifier() : super(const PageState());
+@riverpod
+class Page extends _$Page {
+  @override
+  PageState build() {
+    return const PageState();
+  }
 
   void updateNavbarIndex(int newNavbarIndex) {
     debugPrint('newNavbarIndex => $newNavbarIndex');

@@ -52,8 +52,8 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
     final navbar = NavBar(ref: ref, orientation: orientation);
     final isPortrait = orientation == Orientation.portrait;
 
-    final pageState = ref.watch(pageProvider);
-    final nowState = ref.watch(nowProvider);
+    final pageState = ref.watch(pagePod);
+    final nowState = ref.watch(nowPod);
     final dateStr =
         DateFormat.yMMMMEEEEd('ja').format(nowState.value ?? DateTime.now());
     final timeStr = DateFormat.Hms().format(nowState.value ?? DateTime.now());

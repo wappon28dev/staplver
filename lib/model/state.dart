@@ -20,11 +20,11 @@ class PageState with _$PageState {
 }
 
 @freezed
-class ThemeState with _$ThemeState {
-  const factory ThemeState({
+class AppThemeState with _$AppThemeState {
+  const factory AppThemeState({
     @Default(ThemeMode.system) ThemeMode themeMode,
     @Default(true) bool useDynamicColor,
-  }) = _ThemeState;
+  }) = _AppThemeState;
 }
 
 @freezed

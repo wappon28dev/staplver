@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/class/app.dart';
 import '../model/error/exception.dart';
@@ -9,14 +9,14 @@ import '../repository/config.dart';
 import 'page.dart';
 import 'svn.dart';
 
-final projectsProvider = StateNotifierProvider<ProjectsNotifier, ProjectsState>(
-  ProjectsNotifier.new,
-);
+part 'projects.g.dart';
 
-class ProjectsNotifier extends StateNotifier<ProjectsState> {
-  ProjectsNotifier(this.ref) : super(const ProjectsState());
-
-  final Ref ref;
+@riverpod
+class Projects extends _$Projects {
+  @override
+  ProjectsState build() {
+    return const ProjectsState();
+  }
 
   void addSavedProject(Project newProject) {
     debugPrint('newProject => $newProject');
@@ -37,18 +37,18 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
   }
 
   Future<void> initProject() async {
-    final svnNotifier = ref.read(svnProvider.notifier);
-    final pageNotifier = ref.read(pageProvider.notifier);
+    final svnNotifier = ref.read(svnPod.notifier);
+    final pageNotifier = ref.read(pagePod.notifier);
 
     updateCurrentPjIndex(state.savedProjects.length - 1);
 
-    final queue = [
-      () async => svnNotifier.runCreate(),
-      () async => svnNotifier.runImport(),
-      () async => svnNotifier.runRename(),
-      () async => svnNotifier.runCheckout(),
-      () async => svnNotifier.runStaging(),
-      () async => svnNotifier.update(),
+    final queue = <Future<void> Function()>[
+      svnNotifier.runCreate,
+      svnNotifier.runImport,
+      svnNotifier.runRename,
+      svnNotifier.runCheckout,
+      svnNotifier.runStaging,
+      svnNotifier.update,
       () async {
         final currentPj = state.currentPj;
 

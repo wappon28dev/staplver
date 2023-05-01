@@ -9,7 +9,7 @@ class CompSetPjDetails extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref.read(CompWizard.isValidContentsProvider.notifier).state = true,
+      (_) => ref.read(CompWizard.isValidContentsPod.notifier).state = true,
     );
 
     return Column(

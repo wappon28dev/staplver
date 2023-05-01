@@ -18,11 +18,11 @@ class CompSetWorkingDir extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // global ref
-    final svnNotifier = ref.read(svnProvider.notifier);
+    final svnNotifier = ref.read(svnPod.notifier);
 
     // wizard ref
     final isValidContentsNotifier =
-        ref.read(CompWizard.isValidContentsProvider.notifier);
+        ref.read(CompWizard.isValidContentsPod.notifier);
 
     // local ref
     final workingDirState = ref.watch(PageImportPj.workingDirProvider);

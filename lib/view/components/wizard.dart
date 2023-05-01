@@ -23,13 +23,13 @@ class CompWizard {
   final VoidCallback onFinished;
   final VoidCallback onCanceled;
 
-  static final isValidContentsProvider = StateProvider<bool>((ref) => false);
+  static final isValidContentsPod = StateProvider<bool>((ref) => false);
 
   Widget parentWrap({required BuildContext context, required WidgetRef ref}) {
-    final pageState = ref.watch(pageProvider);
+    final pageState = ref.watch(pagePod);
 
     // local ref
-    final isValidContentsState = ref.watch(isValidContentsProvider);
+    final isValidContentsState = ref.watch(isValidContentsPod);
 
     final index = pageState.wizardIndex;
 

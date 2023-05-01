@@ -20,7 +20,7 @@ class NavBar {
   Orientation orientation;
 
   List<Destination> getDest() {
-    final contentsNotifier = ref.read(contentsProvider.notifier);
+    final contentsNotifier = ref.read(contentsPod.notifier);
 
     return <Destination>[
       Destination(
@@ -106,7 +106,7 @@ class NavBar {
   }
 
   PreferredSize getProgressIndicator() {
-    final pageState = ref.watch(pageProvider);
+    final pageState = ref.watch(pagePod);
     return PreferredSize(
       preferredSize: const Size.fromHeight(10),
       child: AnimatedOpacity(
@@ -128,8 +128,8 @@ class NavBar {
   }
 
   Widget getBottomNavbar() {
-    final pageState = ref.watch(pageProvider);
-    final pageNotifier = ref.read(pageProvider.notifier);
+    final pageState = ref.watch(pagePod);
+    final pageNotifier = ref.read(pagePod.notifier);
 
     final bottomDest = <NavigationDestination>[];
     for (final element in getDest()) {
@@ -146,6 +146,7 @@ class NavBar {
         ? NavigationBar(
             selectedIndex: pageState.navbarIndex,
             onDestinationSelected: (newIndex) {
+              print('new => $newIndex');
               getDest()[newIndex].runInit();
               pageNotifier.updateNavbarIndex(newIndex);
             },
@@ -158,8 +159,8 @@ class NavBar {
     BuildContext context,
     Widget mainContent,
   ) {
-    final pageState = ref.watch(pageProvider);
-    final pageNotifier = ref.read(pageProvider.notifier);
+    final pageState = ref.watch(pagePod);
+    final pageNotifier = ref.read(pagePod.notifier);
 
     final railDest = <NavigationRailDestination>[];
     for (final element in getDest()) {

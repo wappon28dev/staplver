@@ -13,7 +13,7 @@ class WindowController with WindowListener {
   @override
   Future<void> onWindowClose() async {
     final isPreventClose = await windowManager.isPreventClose();
-    final pageState = ref.watch(pageProvider);
+    final pageState = ref.watch(pagePod);
 
     if (isPreventClose && pageState.askWhenQuit) {
       // ignore: use_build_context_synchronously

@@ -29,10 +29,10 @@ class PageCreatePj extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // state
-    final contentsState = ref.watch(contentsProvider);
+    final contentsState = ref.watch(contentsPod);
 
     // notifier
-    final contentsNotifier = ref.read(contentsProvider.notifier);
+    final contentsNotifier = ref.read(contentsPod.notifier);
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
     final backupDirNotifier = ref.read(backupDirProvider.notifier);
 
@@ -92,8 +92,8 @@ class PageCreatePj extends HookConsumerWidget {
     ];
 
     void runNextPage(WidgetRef ref) {
-      final pageState = ref.watch(pageProvider);
-      final pageNotifier = ref.read(pageProvider.notifier);
+      final pageState = ref.watch(pagePod);
+      final pageNotifier = ref.read(pagePod.notifier);
       final index = pageState.wizardIndex;
 
       pageNotifier.updateWizardIndex(index + 1);
@@ -101,8 +101,8 @@ class PageCreatePj extends HookConsumerWidget {
     }
 
     void runPreviousPage(WidgetRef ref) {
-      final pageState = ref.watch(pageProvider);
-      final pageNotifier = ref.read(pageProvider.notifier);
+      final pageState = ref.watch(pagePod);
+      final pageNotifier = ref.read(pagePod.notifier);
       final index = pageState.wizardIndex;
 
       pageNotifier.updateWizardIndex(index - 1);
@@ -110,7 +110,7 @@ class PageCreatePj extends HookConsumerWidget {
     }
 
     Future<void> runCreateProject(WidgetRef ref) async {
-      final projectsNotifier = ref.watch(projectsProvider.notifier);
+      final projectsNotifier = ref.watch(projectsPod.notifier);
 
       final pjNameState = ref.watch(pjNameProvider);
       final workingDirState = ref.watch(workingDirProvider);
@@ -135,7 +135,7 @@ class PageCreatePj extends HookConsumerWidget {
 
     void runDispose(BuildContext context, WidgetRef ref) {
       Navigator.pop(context);
-      ref.read(contentsProvider.notifier).updateDragAndDropCallback(null);
+      ref.read(contentsPod.notifier).updateDragAndDropCallback(null);
     }
 
     return CompWizard(

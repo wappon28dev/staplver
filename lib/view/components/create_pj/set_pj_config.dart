@@ -15,7 +15,7 @@ class CompSetPjConfig extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // state
-    final contentsState = ref.watch(contentsProvider);
+    final contentsState = ref.watch(contentsPod);
 
     // local - state
     final pjNameState = ref.watch(PageCreatePj.pjNameProvider);
@@ -24,7 +24,7 @@ class CompSetPjConfig extends HookConsumerWidget {
 
     // local - notifier
     final isValidContentsNotifier =
-        ref.read(CompWizard.isValidContentsProvider.notifier);
+        ref.read(CompWizard.isValidContentsPod.notifier);
     final pjNameNotifier = ref.read(PageCreatePj.pjNameProvider.notifier);
     final backupDirNotifier = ref.read(PageCreatePj.backupDirProvider.notifier);
 

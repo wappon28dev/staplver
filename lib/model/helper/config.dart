@@ -52,9 +52,9 @@ class AppConfigHelper {
   }
 
   AppConfig getCurrentAppConfig(WidgetRef ref) {
-    final projectsState = ref.read(projectsProvider);
-    final contentsState = ref.read(contentsProvider);
-    final themeState = ref.read(themeProvider);
+    final projectsState = ref.read(projectsPod);
+    final contentsState = ref.read(contentsPod);
+    final themeState = ref.read(appThemePod);
 
     final savedProjectPath = <String, String>{};
 

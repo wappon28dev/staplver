@@ -17,9 +17,9 @@ class PageDebug extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final contentsState = ref.watch(contentsProvider);
-    final svnNotifier = ref.read(svnProvider.notifier);
-    final projectsState = ref.watch(projectsProvider);
+    final contentsState = ref.watch(contentsPod);
+    final svnNotifier = ref.read(svnPod.notifier);
+    final projectsState = ref.watch(projectsPod);
 
     final temp = useState('');
 
@@ -78,7 +78,7 @@ class PageDebug extends HookConsumerWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final pageNotifier = ref.read(pageProvider.notifier);
+                    final pageNotifier = ref.read(pagePod.notifier);
                     await pageNotifier.resetProgress();
 
                     for (var i = 0; i <= 5; i++) {

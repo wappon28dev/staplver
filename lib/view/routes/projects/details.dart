@@ -17,19 +17,19 @@ class CompProjectsDetails extends HookConsumerWidget {
   const CompProjectsDetails({super.key});
 
   static final repositoryProvider = FutureProvider.autoDispose(
-    (ref) async => ref.read(svnProvider.notifier).getRepositoryInfo(),
+    (ref) async => ref.read(svnPod.notifier).getRepositoryInfo(),
   );
   static final savePointsProvider = FutureProvider.autoDispose(
-    (ref) async => ref.read(svnProvider.notifier).getPjSavePoints(),
+    (ref) async => ref.read(svnPod.notifier).getPjSavePoints(),
   );
   static final pjStatusProvider = FutureProvider.autoDispose(
-    (ref) async => ref.read(svnProvider.notifier).getPjStatus(),
+    (ref) async => ref.read(svnPod.notifier).getPjStatus(),
   );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // state
-    final projectsState = ref.watch(projectsProvider);
+    final projectsState = ref.watch(projectsPod);
     final pj = projectsState.currentPj;
 
     // assert
@@ -42,7 +42,7 @@ class CompProjectsDetails extends HookConsumerWidget {
     }
 
     // notifier
-    final pageNotifier = ref.read(pageProvider.notifier);
+    final pageNotifier = ref.read(pagePod.notifier);
 
     // local
     final orientation = MediaQuery.of(context).orientation;
@@ -54,7 +54,7 @@ class CompProjectsDetails extends HookConsumerWidget {
 
     // init
     void init() {
-      ref.read(pageProvider.notifier)
+      ref.read(pagePod.notifier)
         ..updateIsVisibleProgressBar(true)
         ..updateProgress(-1);
     }

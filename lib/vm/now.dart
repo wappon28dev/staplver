@@ -1,8 +1,11 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final nowProvider = StreamProvider.autoDispose<DateTime>((ref) async* {
+part 'now.g.dart';
+
+@riverpod
+Stream<DateTime> now(NowRef ref) async* {
   while (true) {
     await Future<void>.delayed(const Duration(milliseconds: 10));
     yield DateTime.now();
   }
-});
+}
