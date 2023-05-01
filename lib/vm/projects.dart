@@ -53,7 +53,7 @@ class ProjectsNotifier extends StateNotifier<ProjectsState> {
         final currentPj = state.currentPj;
 
         if (currentPj == null) {
-          throw AIBASExceptions().pjNotFound();
+          throw SystemExceptions().pjNotFound();
         }
 
         await PjConfigRepository().createNewPjConfig(

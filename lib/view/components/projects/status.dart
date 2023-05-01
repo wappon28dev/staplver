@@ -165,7 +165,7 @@ class CompPjStatus extends HookConsumerWidget {
 
     return pjStatusState.when(
       data: content,
-      error: (err, trace) => AIBASErrHandler(context, ref).getErrWidget(
+      error: (err, trace) => SystemErrorHandler(context, ref).getErrWidget(
         title: '作業フォルダーの状態の読み込みに失敗しました',
         err: err,
         trace: trace,

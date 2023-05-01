@@ -49,5 +49,5 @@ VoidCallback? onMountedAsync(
 
 final gitHubReleaseUrl = Uri.https(
   'github.com',
-  'wappon-28-dev/AIBAS/releases',
+  'wappon-28-dev/staplver/releases',
 );

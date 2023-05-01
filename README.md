@@ -1,2 +1,4 @@
-# AIBAS
-An Incremental Backup App with Subversion　SVNベースの世代管理ソフト
+# staplver
+
+"staplver" は創作活動におけるファイルのバージョン管理をカチッとホチキスでまとめられるようなツールです.  
+"staplver" is a tool that allows you to staple together versions of files in your creative work.

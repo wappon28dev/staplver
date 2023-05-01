@@ -1,9 +1,9 @@
-name: aibas
+name: staplver
 description: An Incremental Backup App with Subversion.
 
 publish_to: "none"
 
-version: 1.0.0+1
+version: 0.0.0+1
 
 environment:
   sdk: ">=2.18.5 <3.0.0"
@@ -53,15 +53,9 @@ flutter:
     - assets/svn/windows/
 
   fonts:
-    - family: M PLUS 1
+    - family: LINE Seed JP
       fonts:
-        - asset: assets/fonts/MPLUS1-Medium.ttf
+        - asset: assets/fonts/LINESeedJP_TTF_Bd.ttf
           weight: 500
-        - asset: assets/fonts/MPLUS1-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/MPLUS1-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/MPLUS1-ExtraBold.ttf
+        - asset: assets/fonts/LINESeedJP_TTF_Eb.ttf
           weight: 800
-        - asset: assets/fonts/MPLUS1-Black.ttf
-          weight: 900

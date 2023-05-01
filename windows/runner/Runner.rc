@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "jp.wappon_28_dev" "\0"
-            VALUE "FileDescription", "aibas" "\0"
+            VALUE "FileDescription", "staplver" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "aibas" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 jp.wappon_28_dev. All rights reserved." "\0"
-            VALUE "OriginalFilename", "aibas.exe" "\0"
-            VALUE "ProductName", "aibas" "\0"
+            VALUE "InternalName", "staplver" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 jp.wappon_28_dev. All rights reserved." "\0"
+            VALUE "OriginalFilename", "staplver.exe" "\0"
+            VALUE "ProductName", "staplver" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

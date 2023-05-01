@@ -92,7 +92,7 @@ class CompPjHistory extends HookConsumerWidget {
               context: context,
               builder: (context) => const CompPjCreateSavePoint(),
             );
-            print(savePointName);
+            debugPrint(savePointName);
           },
         ),
         node: const TimelineNode(
@@ -155,7 +155,7 @@ class CompPjHistory extends HookConsumerWidget {
 
     return savePointState.when(
       data: content,
-      error: (err, trace) => AIBASErrHandler(context, ref).getErrWidget(
+      error: (err, trace) => SystemErrorHandler(context, ref).getErrWidget(
         title: 'セーブポイントの状態の読み込みに失敗しました',
         err: err,
         trace: trace,

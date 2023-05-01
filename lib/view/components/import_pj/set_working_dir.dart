@@ -49,7 +49,7 @@ class CompSetWorkingDir extends ConsumerWidget {
 
         final pjConfig =
             await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
-        if (pjConfig == null) throw AIBASExceptions().pjConfigIsNull();
+        if (pjConfig == null) throw SystemExceptions().pjConfigIsNull();
         final importedPj = await PjConfigHelper()
             .pjConfig2Project(pjConfig, backupDir, workingDir);
 
@@ -59,7 +59,7 @@ class CompSetWorkingDir extends ConsumerWidget {
         );
       } on Exception catch (err, trace) {
         isValidContentsNotifier.state = false;
-        AIBASErrHandler(context, ref).noticeErr(err, trace);
+        SystemErrorHandler(context, ref).noticeErr(err, trace);
       }
     });
 

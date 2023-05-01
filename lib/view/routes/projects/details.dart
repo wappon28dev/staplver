@@ -66,15 +66,15 @@ class CompProjectsDetails extends HookConsumerWidget {
     useEffect(
       () => onMountedAsync(() async {
         // if (repoInfoState.hasError) {
-        //   AIBASErrHandler(context, ref)
+        //   SystemErrorHandler(context, ref)
         //       .noticeErr(repoInfoState.error, repoInfoState.stackTrace);
         // }
         // if (savePointsState.hasError) {
-        //   AIBASErrHandler(context, ref)
+        //   SystemErrorHandler(context, ref)
         //       .noticeErr(savePointsState.error, savePointsState.stackTrace);
         // }
         // if (pjStatusState.hasError) {
-        //   AIBASErrHandler(context, ref)
+        //   SystemErrorHandler(context, ref)
         //       .noticeErr(pjStatusState.error, pjStatusState.stackTrace);
         // }
 
@@ -203,7 +203,7 @@ class CompProjectsDetails extends HookConsumerWidget {
             ...info,
           ],
         ),
-        error: (err, trace) => AIBASErrHandler(context, ref).getErrWidget(
+        error: (err, trace) => SystemErrorHandler(context, ref).getErrWidget(
           title: 'SVNへの問い合わせ中にエラーが発生しました',
           err: err,
           trace: trace,
@@ -224,7 +224,7 @@ class CompProjectsDetails extends HookConsumerWidget {
             context: context,
             builder: (context) => const CompPjCreateSavePoint(),
           );
-          print(savePointName);
+          debugPrint(savePointName);
         },
         tooltip: 'セーブポイントを作成',
         child: const Icon(Icons.save),

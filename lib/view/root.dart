@@ -74,7 +74,7 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
-                'AIBAS',
+                'Staplver',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: Theme.of(context).colorScheme.primary,
@@ -112,9 +112,9 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
                     ),
                   ],
                 ),
-                textAlign: TextAlign.right,
+                textAlign: TextAlign.left,
                 minFontSize: 20,
-                maxLines: 2,
+                maxLines: 1,
               ),
             ),
           ],

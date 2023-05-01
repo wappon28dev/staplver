@@ -53,7 +53,7 @@ jobs:
       - name: ⬆️ Artifacts upload
         uses: actions/upload-artifact@v3.1.1
         with:
-          name: AIBAS-windows-${{ steps.sha.outputs.short }}
+          name: staplver-windows-${{ steps.sha.outputs.short }}
           path: build/windows/runner/Release
 
       - name: 🚀 Make windows release zip
@@ -61,7 +61,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           type: "zip"
-          filename: AIBAS-windows.zip
+          filename: staplver-windows.zip
           directory: build/windows/runner/Release
 
       - name: 🚚 Windows Release
@@ -70,7 +70,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: build/windows/runner/Release/AIBAS-windows.zip
+          files: build/windows/runner/Release/staplver-windows.zip
 
   macos:
     runs-on: macos-latest
@@ -98,7 +98,7 @@ jobs:
 
       - name: 📦️ Extract SVN archives
         run: 7z x -oassets/svn/ assets/svn.zip
-        
+
       - name: 🎉 Install project dependencies
         run: flutter pub get
 
@@ -114,7 +114,7 @@ jobs:
       - name: ⬆️ Artifacts upload
         uses: actions/upload-artifact@v3.1.1
         with:
-          name: AIBAS-macOS-${{ steps.sha.outputs.short }}
+          name: staplver-macOS-${{ steps.sha.outputs.short }}
           path: build/macos/Build/Products/Release
 
       - name: 🚀 Make macOS release zip
@@ -122,7 +122,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           type: "zip"
-          filename: AIBAS-macOS.zip
+          filename: staplver-macOS.zip
           directory: build/macos/Build/Products/Release
 
       - name: 🚚 macOS Release
@@ -131,7 +131,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: build/macos/Build/Products/Release/AIBAS-macos.zip
+          files: build/macos/Build/Products/Release/staplver-macos.zip
 
   linux:
     runs-on: ubuntu-latest
@@ -159,7 +159,7 @@ jobs:
 
       - name: 📦️ Extract SVN archives
         run: 7z x -oassets/svn/ assets/svn.zip
-        
+
       - name: 🎉 Install project dependencies
         run: flutter pub get
 
@@ -178,7 +178,7 @@ jobs:
       - name: ⬆️ Artifacts upload
         uses: actions/upload-artifact@v3.1.1
         with:
-          name: AIBAS-linux-${{ steps.sha.outputs.short }}
+          name: staplver-linux-${{ steps.sha.outputs.short }}
           path: build/linux/x64/release/bundle
 
       - name: 🚀 Make linux release zip
@@ -186,7 +186,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           type: "zip"
-          filename: AIBAS-linux.zip
+          filename: staplver-linux.zip
           directory: build/linux/x64/release/bundle
 
       - name: 🚚 linux Release
@@ -195,4 +195,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: build/linux/x64/release/bundle/AIBAS-linux.zip
+          files: build/linux/x64/release/bundle/staplver-linux.zip

@@ -12,10 +12,10 @@ class SvnHelper {
     final stderr = process.stderr.toString();
 
     if (stderr.contains('E155007')) {
-      return Future.error(AIBASExceptions().dirNotSVNRepo());
+      return Future.error(SystemExceptions().dirNotSVNRepo());
     }
     if (stderr.contains('E165002')) {
-      return Future.error(AIBASExceptions().dirAlreadySVNRepo());
+      return Future.error(SystemExceptions().dirAlreadySVNRepo());
     }
 
     throw Exception(stderr);
@@ -52,7 +52,7 @@ class SvnHelper {
     final date = DateTime.parse(getElementText('commit', 'date'));
 
     if (kindName == null || path == null) {
-      throw AIBASExceptions().svnRepositoryInfoIsInvalid();
+      throw SystemExceptions().svnRepositoryInfoIsInvalid();
     }
 
     return SvnRepositoryInfo(
@@ -84,7 +84,7 @@ class SvnHelper {
       final kindName = pathElement.getAttribute('kind');
 
       if (actionName == null || kindName == null) {
-        throw AIBASExceptions().svnRevisionLogIsInvalid();
+        throw SystemExceptions().svnRevisionLogIsInvalid();
       }
 
       paths.add(
@@ -142,7 +142,7 @@ class SvnHelper {
       final props = wcStatusElement.getAttribute('props')!;
 
       if (itemName == null || path == null) {
-        throw AIBASExceptions().svnStatusIsInvalid();
+        throw SystemExceptions().svnStatusIsInvalid();
       }
 
       final action = SvnActions.values.byName(itemName);
@@ -157,7 +157,7 @@ class SvnHelper {
         final copied = commitElement.getAttribute('copied') == 'true';
 
         if (committedRevision == null) {
-          throw AIBASExceptions().svnStatusIsInvalid();
+          throw SystemExceptions().svnStatusIsInvalid();
         }
 
         entries.add(

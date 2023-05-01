@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = aibas
+PRODUCT_NAME = staplver
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = jp.wappon28dev.aibas
+PRODUCT_BUNDLE_IDENTIFIER = jp.wappon28dev.staplver
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2022 jp.wappon_28_dev. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2023 jp.wappon_28_dev. All rights reserved.

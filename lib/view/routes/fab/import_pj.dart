@@ -87,13 +87,13 @@ class PageImportPj extends HookConsumerWidget {
       final projectsNotifier = ref.read(projectsProvider.notifier);
 
       if (importedPjState == null) {
-        throw AIBASExceptions().importedPjIsNull();
+        throw SystemExceptions().importedPjIsNull();
       }
       projectsNotifier.addSavedProject(importedPjState);
       final appConfig = AppConfigHelper().getCurrentAppConfig(ref);
       await AppConfigRepository()
           .saveAppConfig(appConfig)
-          .catchError(AIBASErrHandler(context, ref).noticeErr);
+          .catchError(SystemErrorHandler(context, ref).noticeErr);
     }
 
     void runDispose(BuildContext context, WidgetRef ref) {

@@ -72,7 +72,7 @@ class RouteController {
       }
       await pageNotifier.completeProgress();
     } on Exception catch (err, trace) {
-      AIBASErrHandler(context, ref).noticeErr(err, trace);
+      SystemErrorHandler(context, ref).noticeErr(err, trace);
     }
   }
 

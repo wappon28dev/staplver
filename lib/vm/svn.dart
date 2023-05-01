@@ -2,10 +2,10 @@
 
 import 'dart:io';
 
-import 'package:aibas/model/constant.dart';
-import 'package:aibas/vm/projects.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:staplver/model/constant.dart';
+import 'package:staplver/vm/projects.dart';
 
 import '../model/class/app.dart';
 import '../model/class/svn.dart';
@@ -38,9 +38,9 @@ class SvnNotifier extends StateNotifier<SvnState> {
     await Future.wait(
       <Future<bool>>[
         currentPjSnapshot?.backupDir.exists() ??
-            Future.error(AIBASExceptions().backupDirNotFound),
+            Future.error(SystemExceptions().backupDirNotFound),
         currentPjSnapshot?.workingDir.exists() ??
-            Future.error(AIBASExceptions().workingDirNotFound),
+            Future.error(SystemExceptions().workingDirNotFound),
       ],
     ).catchError((dynamic err) {
       debugPrint(err.toString());
@@ -149,7 +149,7 @@ class SvnNotifier extends StateNotifier<SvnState> {
     final backupDir = Directory(backupUri.toFilePath());
 
     if (!await backupDir.exists()) {
-      return Future.error(AIBASExceptions().backupDirNotFound);
+      return Future.error(SystemExceptions().backupDirNotFound);
     }
 
     return backupDir;

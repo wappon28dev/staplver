@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../class/app.dart';
 import '../constant.dart';
 
-class AIBASErrHandler {
-  AIBASErrHandler(this.context, this.ref);
+class SystemErrorHandler {
+  SystemErrorHandler(this.context, this.ref);
 
   final BuildContext context;
   final WidgetRef ref;
@@ -85,7 +85,7 @@ class AIBASErrHandler {
 
   FutureOr<void> noticeErr(dynamic err, StackTrace? trace) {
     ScaffoldMessenger.of(context).clearMaterialBanners();
-    if (err is AIBASException) {
+    if (err is SystemException) {
       debugPrint('=== Err Received ===\n$err\n$trace');
       debugPrintStack();
       debugPrint(err.message);
@@ -130,7 +130,7 @@ class AIBASErrHandler {
 
     onMounted(() => noticeErr(err, trace));
 
-    if (err is AIBASException) {
+    if (err is SystemException) {
       return ColoredBox(
         color: colorScheme.error,
         child: Padding(

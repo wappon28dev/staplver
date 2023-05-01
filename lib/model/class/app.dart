@@ -47,11 +47,11 @@ class ExceptionAction with _$ExceptionAction {
 }
 
 @freezed
-class AIBASException with _$AIBASException implements Exception {
-  const factory AIBASException({
+class SystemException with _$SystemException implements Exception {
+  const factory SystemException({
     required String message,
     @Default(Icons.error_outline) IconData icon,
     List<ExceptionAction>? actions,
     @Default(false) bool needShowAsBanner,
-  }) = _AIBASException;
+  }) = _SystemException;
 }

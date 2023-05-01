@@ -17,18 +17,18 @@ void main() async {
 
   const windowOptions = WindowOptions(
     minimumSize: Size(750, 770),
-    title: 'AIBAS',
+    title: 'staplver',
   );
   await windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
   });
 
-  runApp(const ProviderScope(child: AIBAS()));
+  runApp(const ProviderScope(child: Staplver()));
 }
 
-class AIBAS extends ConsumerWidget with WindowListener {
-  const AIBAS({super.key});
+class Staplver extends ConsumerWidget with WindowListener {
+  const Staplver({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,7 +47,7 @@ class AIBAS extends ConsumerWidget with WindowListener {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightColorScheme, ColorScheme? darkColorScheme) {
         return MaterialApp(
-          title: 'AIBAS',
+          title: 'Staplver',
           theme: ThemeNotifier().getLightTheme(lightColorScheme, context),
           darkTheme: ThemeNotifier().getDarkTheme(darkColorScheme, context),
           themeMode: themeState.themeMode,

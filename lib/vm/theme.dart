@@ -1,7 +1,7 @@
-import 'package:aibas/model/state.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../model/state.dart';
 
 final themeProvider =
     StateNotifierProvider<ThemeNotifier, ThemeState>((ref) => ThemeNotifier());
@@ -32,9 +32,9 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      fontFamily: 'M PLUS 1',
+      fontFamily: 'LINE Seed JP',
       snackBarTheme: SnackBarThemeData(
-        contentTextStyle: const TextStyle(fontFamily: 'M PLUS 1'),
+        contentTextStyle: const TextStyle(fontFamily: 'LINE Seed JP'),
         backgroundColor: Theme.of(context).colorScheme.inverseSurface,
       ),
     );
@@ -54,9 +54,9 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       useMaterial3: true,
       colorScheme: scheme,
       brightness: Brightness.dark,
-      fontFamily: 'M PLUS 1',
+      fontFamily: 'LINE Seed JP',
       snackBarTheme: SnackBarThemeData(
-        contentTextStyle: const TextStyle(fontFamily: 'M PLUS 1'),
+        contentTextStyle: const TextStyle(fontFamily: 'LINE Seed JP'),
         backgroundColor: Theme.of(context).colorScheme.inverseSurface,
       ),
     );

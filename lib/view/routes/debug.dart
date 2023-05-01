@@ -36,7 +36,7 @@ class PageDebug extends HookConsumerWidget {
                   onPressed: () async {
                     final svn = await AssetsRepository()
                         .getSvnExecPath(SvnExecs.svn)
-                        .catchError(AIBASErrHandler(context, ref).noticeErr);
+                        .catchError(SystemErrorHandler(context, ref).noticeErr);
                     temp
                       ..value = svn.toString()
                       ..value += svn.existsSync().toString();
@@ -47,7 +47,7 @@ class PageDebug extends HookConsumerWidget {
                   onPressed: () async {
                     final pjStatus = svnNotifier
                         .getPjStatus()
-                        .catchError(AIBASErrHandler(context, ref).noticeErr);
+                        .catchError(SystemErrorHandler(context, ref).noticeErr);
                     temp.value = (await pjStatus).toString();
                   },
                   child: const Text('svn status'),
@@ -56,7 +56,7 @@ class PageDebug extends HookConsumerWidget {
                   onPressed: () async {
                     final repoInfo = await svnNotifier
                         .getRepositoryInfo()
-                        .catchError(AIBASErrHandler(context, ref).noticeErr);
+                        .catchError(SystemErrorHandler(context, ref).noticeErr);
                     temp.value = repoInfo.toString();
                   },
                   child: const Text('svn info'),
@@ -65,7 +65,7 @@ class PageDebug extends HookConsumerWidget {
                   onPressed: () async {
                     final log = await svnNotifier
                         .getPjSavePoints()
-                        .catchError(AIBASErrHandler(context, ref).noticeErr);
+                        .catchError(SystemErrorHandler(context, ref).noticeErr);
                     temp.value = log.toString();
                   },
                   child: const Text('svn log'),
@@ -73,7 +73,7 @@ class PageDebug extends HookConsumerWidget {
                 ElevatedButton(
                   onPressed: () async => svnNotifier
                       .runCreate()
-                      .catchError(AIBASErrHandler(context, ref).noticeErr),
+                      .catchError(SystemErrorHandler(context, ref).noticeErr),
                   child: const Text('svn create'),
                 ),
                 ElevatedButton(
@@ -95,31 +95,31 @@ class PageDebug extends HookConsumerWidget {
                 ElevatedButton(
                   onPressed: () async => svnNotifier
                       .runImport()
-                      .catchError(AIBASErrHandler(context, ref).noticeErr),
+                      .catchError(SystemErrorHandler(context, ref).noticeErr),
                   child: const Text('svn import'),
                 ),
                 ElevatedButton(
                   onPressed: () async => svnNotifier
                       .runRename()
-                      .catchError(AIBASErrHandler(context, ref).noticeErr),
+                      .catchError(SystemErrorHandler(context, ref).noticeErr),
                   child: const Text('run rename'),
                 ),
                 ElevatedButton(
                   onPressed: () async => svnNotifier
                       .runCheckout()
-                      .catchError(AIBASErrHandler(context, ref).noticeErr),
+                      .catchError(SystemErrorHandler(context, ref).noticeErr),
                   child: const Text('svn checkout'),
                 ),
                 ElevatedButton(
                   onPressed: () async => svnNotifier
                       .runStaging()
-                      .catchError(AIBASErrHandler(context, ref).noticeErr),
+                      .catchError(SystemErrorHandler(context, ref).noticeErr),
                   child: const Text('svn add .'),
                 ),
                 ElevatedButton(
                   onPressed: () async => svnNotifier
                       .update()
-                      .catchError(AIBASErrHandler(context, ref).noticeErr),
+                      .catchError(SystemErrorHandler(context, ref).noticeErr),
                   child: const Text('svn update'),
                 ),
                 ElevatedButton(
@@ -145,7 +145,7 @@ class PageDebug extends HookConsumerWidget {
               child: TextField(
                 onSubmitted: (String message) async => svnNotifier
                     .runCommit(message)
-                    .catchError(AIBASErrHandler(context, ref).noticeErr),
+                    .catchError(SystemErrorHandler(context, ref).noticeErr),
                 decoration: const InputDecoration(
                   labelText: 'commit message',
                 ),

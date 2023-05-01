@@ -17,8 +17,8 @@ import '../class/app.dart';
 import '../constant.dart';
 import '../helper/config.dart';
 
-class AIBASExceptions {
-  AIBASException svnExecNotFound(SvnExecs svnExecs) => AIBASException(
+class SystemExceptions {
+  SystemException svnExecNotFound(SvnExecs svnExecs) => SystemException(
         message: '''
 ${svnExecs.name}の実行ファイルが見つかりませんでした  ファイルを元の場所に復元するか, 再インストールを行ってください
 予期したファイルパス: ${svnExecs.getFile().path}''',
@@ -45,20 +45,20 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
         ],
       );
 
-  AIBASException workingDirNotFound() => const AIBASException(
+  SystemException workingDirNotFound() => const SystemException(
         message: '作業フォルダーが見つかりません',
         icon: Icons.search_off,
       );
-  AIBASException backupDirNotFound() => const AIBASException(
+  SystemException backupDirNotFound() => const SystemException(
         message: 'バックアップフォルダーが見つかりません',
         icon: Icons.search_off,
       );
 
-  AIBASException backupDirNotFoundOnLoad(
+  SystemException backupDirNotFoundOnLoad(
     String backupDirStr,
     String workingDirStr,
   ) =>
-      AIBASException(
+      SystemException(
         message: '''
 プロジェクトをロードしましたが, バックアップフォルダーが見つかりませんでした
 
@@ -86,7 +86,7 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
 
               RouteController.runPush(
                 context: context,
-                page: const AIBAS(),
+                page: const Staplver(),
                 isReplace: true,
               );
             },
@@ -94,11 +94,11 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
         ],
       );
 
-  AIBASException workingDirNotFoundOnLoad(
+  SystemException workingDirNotFoundOnLoad(
     String backupDirStr,
     String workingDirStr,
   ) =>
-      AIBASException(
+      SystemException(
         message: '''
 プロジェクトをロードしましたが, 作業フォルダーが見つかりませんでした
 
@@ -126,7 +126,7 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
 
               RouteController.runPush(
                 context: context,
-                page: const AIBAS(),
+                page: const Staplver(),
                 isReplace: true,
               );
             },
@@ -134,16 +134,16 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
         ],
       );
 
-  AIBASException pjNameIsInvalid() => const AIBASException(
+  SystemException pjNameIsInvalid() => const SystemException(
         message: 'プロジェクト名が不正です',
       );
-  AIBASException backupMinIsInvalid() => const AIBASException(
+  SystemException backupMinIsInvalid() => const SystemException(
         message: 'バックアップ頻度が不正です',
       );
-  AIBASException pjConfigIsNull() => const AIBASException(
+  SystemException pjConfigIsNull() => const SystemException(
         message: 'プロジェクトの設定ファイルに問題があるようです',
       );
-  AIBASException appConfigIsInvalid() => AIBASException(
+  SystemException appConfigIsInvalid() => SystemException(
         message: 'アプリの設定ファイルが壊れています',
         needShowAsBanner: true,
         icon: Icons.broken_image,
@@ -165,27 +165,27 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
               AppConfigRepository().writeEmptyAppConfig();
               RouteController.runPush(
                 context: context,
-                page: const AIBAS(),
+                page: const Staplver(),
                 isReplace: true,
               );
             },
           ),
         ],
       );
-  AIBASException appConfigNotFound() =>
-      const AIBASException(message: 'アプリの設定ファイルが見つかりません');
+  SystemException appConfigNotFound() =>
+      const SystemException(message: 'アプリの設定ファイルが見つかりません');
 
-  AIBASException appConfigCannotLoaded(
+  SystemException appConfigCannotLoaded(
     String? osMessage,
   ) {
-    return AIBASException(
+    return SystemException(
       message: osMessage == null
           ? 'アプリの設定ファイルは次の理由で読み込めませんでした:\n$osMessage'
           : '不明な理由で, アプリの設定ファイルを読み込めません',
     );
   }
 
-  AIBASException pjConfigThemeModeIsInvalid() => AIBASException(
+  SystemException pjConfigThemeModeIsInvalid() => SystemException(
         message: 'アプリの設定ファイル内: ThemeModeが不正です',
         needShowAsBanner: true,
         actions: [
@@ -210,7 +210,7 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
 
               RouteController.runPush(
                 context: context,
-                page: const AIBAS(),
+                page: const Staplver(),
                 isReplace: true,
               );
             },
@@ -218,20 +218,20 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
         ],
       );
 
-  AIBASException pjConfigNotFound() =>
-      const AIBASException(message: 'プロジェクトの設定ファイルが見つかりません');
+  SystemException pjConfigNotFound() =>
+      const SystemException(message: 'プロジェクトの設定ファイルが見つかりません');
 
-  AIBASException pjConfigCannotLoaded(
+  SystemException pjConfigCannotLoaded(
     String? osMessage,
   ) {
-    return AIBASException(
+    return SystemException(
       message: osMessage == null
           ? 'プロジェクトの設定ファイルは次の理由で読み込めませんでした:\n$osMessage'
           : '不明な理由で, アプリの設定ファイルを読み込めません',
     );
   }
 
-  AIBASException pjConfigIsInvalid() => AIBASException(
+  SystemException pjConfigIsInvalid() => SystemException(
         message: 'プロジェクトの設定ファイルが壊れています',
         needShowAsBanner: true,
         icon: Icons.broken_image,
@@ -241,7 +241,7 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
             icon: Icons.folder_open,
             onClick: (BuildContext context, WidgetRef ref) async {
               final backupDir = ref.read(projectsProvider).currentPj!.backupDir;
-              final path = File('${backupDir.path}/aibas/pj_config.json');
+              final path = File('${backupDir.path}/staplver/pj_config.json');
               await launchUrl(path.parent.uri);
               exit(0);
             },
@@ -253,7 +253,7 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
             onClick: (BuildContext context, WidgetRef ref) {
               RouteController.runPush(
                 context: context,
-                page: const AIBAS(),
+                page: const Staplver(),
                 isReplace: true,
               );
             },
@@ -261,29 +261,29 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
         ],
       );
 
-  AIBASException pjNotFound() => const AIBASException(
-        message: 'バックアップフォルダーはSVNリポジトリですが, AIBASプロジェクトではありません',
+  SystemException pjNotFound() => const SystemException(
+        message: 'バックアップフォルダーはSVNリポジトリですが, staplverプロジェクトではありません',
       );
-  AIBASException pjAlreadyExists() => const AIBASException(
-        message: 'AIBASプロジェクトは既に存在します',
+  SystemException pjAlreadyExists() => const SystemException(
+        message: 'staplverプロジェクトは既に存在します',
       );
-  AIBASException dirAlreadySVNRepo() => const AIBASException(
+  SystemException dirAlreadySVNRepo() => const SystemException(
         message: 'SVNリポジトリは既に存在します',
       );
-  AIBASException dirNotSVNRepo() => const AIBASException(
+  SystemException dirNotSVNRepo() => const SystemException(
         message: 'SVNリポジトリではありません',
       );
-  AIBASException importedPjIsNull() => const AIBASException(
+  SystemException importedPjIsNull() => const SystemException(
         message: 'インポートしたプロジェクトに問題があるようです',
       );
 
-  AIBASException svnRepositoryInfoIsInvalid() => const AIBASException(
+  SystemException svnRepositoryInfoIsInvalid() => const SystemException(
         message: 'SVNリポジトリログのXMLが不正です',
       );
-  AIBASException svnRevisionLogIsInvalid() => const AIBASException(
+  SystemException svnRevisionLogIsInvalid() => const SystemException(
         message: 'SVNログのXMLが不正です',
       );
-  AIBASException svnStatusIsInvalid() => const AIBASException(
+  SystemException svnStatusIsInvalid() => const SystemException(
         message: 'SVNステータスのXMLが不正です',
       );
 }

@@ -61,7 +61,7 @@ class AssetsRepository {
     final file = svnExecs.getFile();
 
     if (!await file.exists()) {
-      return Future.error(AIBASExceptions().svnExecNotFound(svnExecs));
+      return Future.error(SystemExceptions().svnExecNotFound(svnExecs));
     }
 
     return Future.value(file);

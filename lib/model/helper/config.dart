@@ -24,12 +24,12 @@ class AppConfigHelper {
         .forEachAsync((backupDir, workingDir) async {
       if (!await Directory(backupDir).exists()) {
         return Future.error(
-          AIBASExceptions().backupDirNotFoundOnLoad(backupDir, workingDir),
+          SystemExceptions().backupDirNotFoundOnLoad(backupDir, workingDir),
         );
       }
       if (!await Directory(workingDir).exists()) {
         return Future.error(
-          AIBASExceptions().workingDirNotFoundOnLoad(backupDir, workingDir),
+          SystemExceptions().workingDirNotFoundOnLoad(backupDir, workingDir),
         );
       }
 
@@ -41,7 +41,7 @@ class AppConfigHelper {
       final pjConfig =
           await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
 
-      if (pjConfig == null) throw AIBASExceptions().pjConfigIsNull();
+      if (pjConfig == null) throw SystemExceptions().pjConfigIsNull();
 
       final project = await PjConfigHelper()
           .pjConfig2Project(pjConfig, backupDir, workingDir);
@@ -91,12 +91,12 @@ class PjConfigHelper {
   ) async {
     if (pjConfig.name.isEmpty) {
       return Future.error(
-        AIBASExceptions().pjNameIsInvalid(),
+        SystemExceptions().pjNameIsInvalid(),
       );
     }
     if (pjConfig.backupMin != -1 && pjConfig.backupMin < 0) {
       return Future.error(
-        AIBASExceptions().backupMinIsInvalid(),
+        SystemExceptions().backupMinIsInvalid(),
       );
     }
 

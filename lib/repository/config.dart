@@ -25,14 +25,14 @@ class AppConfigRepository {
       appConfig = AppConfig.fromJson(appConfigJson);
     } on FormatException {
       return Future.error(
-        AIBASExceptions().appConfigIsInvalid(),
+        SystemExceptions().appConfigIsInvalid(),
       );
     } on FileSystemException catch (err) {
       if (err.osError?.errorCode == 2) {
-        return Future.error(AIBASExceptions().appConfigNotFound());
+        return Future.error(SystemExceptions().appConfigNotFound());
       }
       return Future.error(
-        AIBASExceptions().appConfigCannotLoaded(err.osError?.message),
+        SystemExceptions().appConfigCannotLoaded(err.osError?.message),
       );
     }
 
@@ -40,7 +40,7 @@ class AppConfigRepository {
       ThemeMode.values[appConfig.themeMode].name;
     } on Exception catch (_, __) {
       return Future.error(
-        AIBASExceptions().pjConfigThemeModeIsInvalid(),
+        SystemExceptions().pjConfigThemeModeIsInvalid(),
       );
     }
 
@@ -90,36 +90,37 @@ class AppConfigRepository {
 
 class PjConfigRepository {
   Future<bool> getIsPjDir(Directory backupDir) async =>
-      Directory('${backupDir.path}/aibas').exists();
+      Directory('${backupDir.path}/staplver').exists();
 
   Future<PjConfig?> getPjConfigFromBackupDir(Directory backupDir) async {
     debugPrint('-- load pjConfig --');
 
     if (!await getIsPjDir(backupDir)) {
-      return Future.error(AIBASExceptions().pjNotFound());
+      return Future.error(SystemExceptions().pjNotFound());
     }
 
     PjConfig? pjConfig;
 
     try {
       final pjConfigStr =
-          await File('${backupDir.path}/aibas/pj_config.json').readAsString();
+          await File('${backupDir.path}/staplver/pj_config.json')
+              .readAsString();
       final pjConfigJson = json.decode(pjConfigStr) as Map<String, dynamic>;
       pjConfig = PjConfig.fromJson(pjConfigJson);
     } on FormatException {
       return Future.error(
-        AIBASExceptions().pjConfigIsInvalid(),
+        SystemExceptions().pjConfigIsInvalid(),
       );
     } on FileSystemException catch (err) {
       if (err.osError?.errorCode == 2) {
-        return Future.error(AIBASExceptions().pjConfigNotFound());
+        return Future.error(SystemExceptions().pjConfigNotFound());
       }
       return Future.error(
-        AIBASExceptions().pjConfigCannotLoaded(err.osError?.message),
+        SystemExceptions().pjConfigCannotLoaded(err.osError?.message),
       );
     }
 
-    debugPrint('target: ${backupDir.path}/aibas/pj_config');
+    debugPrint('target: ${backupDir.path}/staplver/pj_config');
     debugPrint('config: $pjConfig');
     debugPrint('-- loaded pjConfig -- ');
     return Future.value(pjConfig);
@@ -130,12 +131,12 @@ class PjConfigRepository {
 
     final backupDirStr = backupDir.path;
 
-    if (await Directory('$backupDirStr/aibas').exists()) {
-      return Future.error(AIBASExceptions().pjAlreadyExists);
+    if (await Directory('$backupDirStr/staplver').exists()) {
+      return Future.error(SystemExceptions().pjAlreadyExists);
     } else {
-      await Directory('$backupDirStr/aibas').create();
+      await Directory('$backupDirStr/staplver').create();
     }
-    final pjConfigPath = File('$backupDirStr/aibas/pj_config.json');
+    final pjConfigPath = File('$backupDirStr/staplver/pj_config.json');
     final pjConfigStr = json.encode(pjConfig.toJson());
     await pjConfigPath.writeAsString(pjConfigStr);
 
@@ -146,14 +147,14 @@ class PjConfigRepository {
     debugPrint('-- update pjConfig --');
 
     if (!await backupDir.exists()) {
-      return Future.error(AIBASExceptions().backupDirNotFound());
+      return Future.error(SystemExceptions().backupDirNotFound());
     }
 
     if (!await getIsPjDir(backupDir)) {
-      return Future.error(AIBASExceptions().pjNotFound());
+      return Future.error(SystemExceptions().pjNotFound());
     }
 
-    final pjConfigPath = File('$backupDir/aibas/pj_config.json');
+    final pjConfigPath = File('$backupDir/staplver/pj_config.json');
     final pjConfigStr = json.encode(pjConfig.toJson());
     await pjConfigPath.writeAsString(pjConfigStr);
 

@@ -1,9 +1,8 @@
 import 'dart:io';
 
-import 'package:aibas/model/state.dart';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:staplver/model/state.dart';
 
 final contentsProvider = StateNotifierProvider<ContentsNotifier, ContentsState>(
   ContentsNotifier.new,
