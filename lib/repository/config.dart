@@ -34,6 +34,11 @@ class AppConfigRepository {
       return Future.error(
         SystemExceptions().appConfigCannotLoaded(err.osError?.message),
       );
+      // ignore: avoid_catching_errors
+    } on TypeError catch (err) {
+      return Future.error(
+        SystemExceptions().appConfigCannotLoaded(err.toString()),
+      );
     }
 
     try {

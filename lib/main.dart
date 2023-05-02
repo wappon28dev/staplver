@@ -17,7 +17,7 @@ void main() async {
 
   const windowOptions = WindowOptions(
     minimumSize: Size(750, 770),
-    title: 'staplver',
+    title: 'Staplver',
   );
   await windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
@@ -40,10 +40,9 @@ class Staplver extends ConsumerWidget with WindowListener {
     final themeNotifier = ref.watch(appThemePod.notifier);
 
     // local
-    dropEventStream.listen((paths) async {
-      print(paths);
-      await contentsNotifier.handleDragAndDrop(paths);
-    });
+    dropEventStream.listen(
+      (paths) async => contentsNotifier.handleDragAndDrop(paths),
+    );
 
     // view
     return DynamicColorBuilder(

@@ -11,7 +11,7 @@ import 'svn.dart';
 
 part 'projects.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Projects extends _$Projects {
   @override
   ProjectsState build() {

@@ -12,7 +12,7 @@ enum DragAndDropErrors {
   isNotDirectory,
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Contents extends _$Contents {
   @override
   ContentsState build() {

@@ -13,7 +13,6 @@ import '../model/error/exception.dart';
 import '../model/state.dart';
 import '../repository/assets.dart';
 import '../repository/svn.dart';
-import 'contents.dart';
 
 part 'svn.g.dart';
 
@@ -23,8 +22,6 @@ class Svn extends _$Svn {
   SvnState build() {
     return const SvnState();
   }
-
-  ContentsState get contentsState => ref.watch(contentsPod);
 
   Future<Project> get currentPj async {
     final currentPjSnapshot = ref.watch(projectsPod).currentPj;

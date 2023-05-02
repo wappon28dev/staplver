@@ -147,41 +147,48 @@ class SvnHelper {
 
       final action = SvnActions.values.byName(itemName);
 
-      if (action != SvnActions.unversioned) {
-        final revision = wcStatusElement.getAttribute('revision');
-        final commitElement = wcStatusElement.findElements('commit').first;
-        final committedRevision = commitElement.getAttribute('revision');
-        final date =
-            DateTime.parse(commitElement.findElements('date').first.text);
-        final author = commitElement.findElements('author').first.text;
-        final copied = commitElement.getAttribute('copied') == 'true';
-
-        if (committedRevision == null) {
-          throw SystemExceptions().svnStatusIsInvalid();
-        }
-
-        entries.add(
-          SvnStatusEntry(
-            path: path,
-            action: SvnActions.values.byName(itemName),
-            props: props,
-            revision: revision != null ? int.parse(revision) : null,
-            copied: copied,
-            commit: SvnStatusCommitInfo(
-              author: author,
-              revision: int.parse(committedRevision),
-              date: date,
+      switch (action) {
+        case SvnActions.added:
+        case SvnActions.deleted:
+        case SvnActions.unversioned:
+          entries.add(
+            SvnStatusEntry(
+              path: path,
+              action: SvnActions.values.byName(itemName),
+              props: props,
             ),
-          ),
-        );
-      } else {
-        entries.add(
-          SvnStatusEntry(
-            path: path,
-            action: SvnActions.values.byName(itemName),
-            props: props,
-          ),
-        );
+          );
+          break;
+
+        // ignore: no_default_cases
+        default:
+          final revision = wcStatusElement.getAttribute('revision');
+          final commitElement = wcStatusElement.findElements('commit').first;
+          final committedRevision = commitElement.getAttribute('revision');
+          final date =
+              DateTime.parse(commitElement.findElements('date').first.text);
+          final author = commitElement.findElements('author').first.text;
+          final copied = commitElement.getAttribute('copied') == 'true';
+
+          if (committedRevision == null) {
+            throw SystemExceptions().svnStatusIsInvalid();
+          }
+
+          entries.add(
+            SvnStatusEntry(
+              path: path,
+              action: SvnActions.values.byName(itemName),
+              props: props,
+              revision: revision != null ? int.parse(revision) : null,
+              copied: copied,
+              commit: SvnStatusCommitInfo(
+                author: author,
+                revision: int.parse(committedRevision),
+                date: date,
+              ),
+            ),
+          );
+          break;
       }
     }
     return entries;
