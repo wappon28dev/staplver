@@ -102,10 +102,10 @@ class CompSetPjConfig extends HookConsumerWidget {
     final pjNameField = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
+        const Expanded(
           flex: 2,
           child: Column(
-            children: const [
+            children: [
               Icon(Icons.badge, size: 47),
               Text('プロジェクト名'),
             ],
@@ -159,10 +159,10 @@ class CompSetPjConfig extends HookConsumerWidget {
     final workingDirField = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
+        const Expanded(
           flex: 2,
           child: Column(
-            children: const [
+            children: [
               Icon(Icons.folder, size: 47),
               Text('作業フォルダー'),
             ],
@@ -192,10 +192,10 @@ class CompSetPjConfig extends HookConsumerWidget {
     final backupDirField = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
+        const Expanded(
           flex: 2,
           child: Column(
-            children: const [
+            children: [
               Icon(Icons.folder_copy, size: 47),
               Text('バックアップ\nフォルダー', textAlign: TextAlign.center),
             ],

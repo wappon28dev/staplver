@@ -141,10 +141,10 @@ class CompSetIgnoreFiles extends HookConsumerWidget {
             tiles(),
       );
     } else {
-      return Center(
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             CircularProgressIndicator(),
             SizedBox(height: 20),
             Text('フォルダーの中身を探索中...'),

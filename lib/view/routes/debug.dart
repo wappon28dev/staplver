@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:staplver/model/class/app.dart';
 
 import '../../model/error/handler.dart';
 import '../../model/helper/config.dart';
@@ -34,39 +35,48 @@ class PageDebug extends HookConsumerWidget {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    final svn = await AssetsRepository()
-                        .getSvnExecPath(SvnExecs.svn)
-                        .catchError(SystemErrorHandler(context, ref).noticeErr);
-                    temp
-                      ..value = svn.toString()
-                      ..value += svn.existsSync().toString();
+                    try {
+                      final svn =
+                          await AssetsRepository().getSvnExecPath(SvnExecs.svn);
+                      temp
+                        ..value = svn.toString()
+                        ..value += svn.existsSync().toString();
+                    } on SystemException catch (err, stack) {
+                      SystemErrorHandler(context, ref).noticeErr(err, stack);
+                    }
                   },
                   child: const Text('get assets path'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final pjStatus = svnNotifier
-                        .getPjStatus()
-                        .catchError(SystemErrorHandler(context, ref).noticeErr);
-                    temp.value = (await pjStatus).toString();
+                    try {
+                      final pjStatus = svnNotifier.getPjStatus();
+                      temp.value = (await pjStatus).toString();
+                    } on SystemException catch (err, stack) {
+                      SystemErrorHandler(context, ref).noticeErr(err, stack);
+                    }
                   },
                   child: const Text('svn status'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final repoInfo = await svnNotifier
-                        .getRepositoryInfo()
-                        .catchError(SystemErrorHandler(context, ref).noticeErr);
-                    temp.value = repoInfo.toString();
+                    try {
+                      final repoInfo = await svnNotifier.getRepositoryInfo();
+                      temp.value = repoInfo.toString();
+                    } on SystemException catch (err, stack) {
+                      SystemErrorHandler(context, ref).noticeErr(err, stack);
+                    }
                   },
                   child: const Text('svn info'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final log = await svnNotifier
-                        .getPjSavePoints()
-                        .catchError(SystemErrorHandler(context, ref).noticeErr);
-                    temp.value = log.toString();
+                    try {
+                      final log = await svnNotifier.getPjSavePoints();
+                      temp.value = log.toString();
+                    } on SystemException catch (err, stack) {
+                      SystemErrorHandler(context, ref).noticeErr(err, stack);
+                    }
                   },
                   child: const Text('svn log'),
                 ),

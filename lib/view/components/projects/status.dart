@@ -20,12 +20,12 @@ class CompPjStatus extends HookConsumerWidget {
 
     // view
     Widget content(List<SvnStatusEntry> pjStatus) {
-      final title = Padding(
-        padding: const EdgeInsets.all(8),
+      const title = Padding(
+        padding: EdgeInsets.all(8),
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 15,
-          children: const [
+          children: [
             Icon(Icons.info_outline, size: 25),
             Text(
               '作業フォルダーの状態',
@@ -39,21 +39,21 @@ class CompPjStatus extends HookConsumerWidget {
       );
 
       if (pjStatus.isEmpty) {
-        return Center(
+        return const Center(
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(8),
             child: Column(
               children: [
                 title,
-                const Divider(),
-                const SizedBox(height: 20),
-                const Icon(
+                Divider(),
+                SizedBox(height: 20),
+                Icon(
                   Icons.check,
                   color: Colors.green,
                   size: 48,
                 ),
-                const SizedBox(height: 20),
-                const Text('変更はありません'),
+                SizedBox(height: 20),
+                Text('変更はありません'),
               ],
             ),
           ),
@@ -170,8 +170,8 @@ class CompPjStatus extends HookConsumerWidget {
         err: err,
         trace: trace,
       ),
-      loading: () => Column(
-        children: const [
+      loading: () => const Column(
+        children: [
           SizedBox(height: 20),
           Text('作業フォルダーの状態を読み込み中...'),
         ],

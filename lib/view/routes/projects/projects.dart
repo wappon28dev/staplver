@@ -44,9 +44,9 @@ class PageProjects extends HookConsumerWidget {
                 padding: const EdgeInsets.all(10),
                 child: ExpandablePanel(
                   header: ListTile(
-                    leading: Row(
+                    leading: const Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children: [
                         Icon(Icons.folder),
                         SizedBox(width: 10),
                       ],

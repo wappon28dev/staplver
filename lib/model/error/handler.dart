@@ -113,7 +113,6 @@ class SystemErrorHandler {
         ExceptionAction(
           title: '閉じる',
           icon: Icons.close,
-          isPrimary: false,
           onClick: (context, ref) =>
               ScaffoldMessenger.of(context).clearMaterialBanners(),
         ),

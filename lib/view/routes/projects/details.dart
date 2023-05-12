@@ -158,14 +158,14 @@ class CompProjectsDetails extends HookConsumerWidget {
         ),
       ),
       const Divider(),
-      SizedBox(
+      const SizedBox(
         width: double.infinity,
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.all(8),
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: const [
+            children: [
               ActionChip(
                 label: Text('カスタム'),
                 avatar: Icon(Icons.emoji_nature),
@@ -182,10 +182,10 @@ class CompProjectsDetails extends HookConsumerWidget {
     ];
 
     final info = [
-      IntrinsicHeight(
+      const IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
+          children: [
             Expanded(child: CompPjStatus()),
             SizedBox(child: VerticalDivider()),
             Expanded(child: CompPjHistory())

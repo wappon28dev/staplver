@@ -5,6 +5,6 @@ class CompPjSummary extends ConsumerWidget {
   const CompPjSummary({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column();
+    return const Column();
   }
 }

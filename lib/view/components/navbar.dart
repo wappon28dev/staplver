@@ -146,7 +146,6 @@ class NavBar {
         ? NavigationBar(
             selectedIndex: pageState.navbarIndex,
             onDestinationSelected: (newIndex) {
-              print('new => $newIndex');
               getDest()[newIndex].runInit();
               pageNotifier.updateNavbarIndex(newIndex);
             },

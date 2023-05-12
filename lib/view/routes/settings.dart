@@ -16,10 +16,10 @@ class PageSettings extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
+              const Expanded(
                 flex: 2,
                 child: Column(
-                  children: const [
+                  children: [
                     Icon(Icons.folder_copy, size: 47),
                     Text('既定のバックアップ\nフォルダー', textAlign: TextAlign.center),
                   ],

@@ -6,9 +6,9 @@ class PageHome extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SliverToBoxAdapter(
+    return const SliverToBoxAdapter(
       child: Column(
-        children: const [
+        children: [
           Text('data'),
           Text('data'),
           Text('data'),

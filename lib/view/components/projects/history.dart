@@ -107,12 +107,12 @@ class CompPjHistory extends HookConsumerWidget {
         ),
       );
 
-      final title = Padding(
-        padding: const EdgeInsets.all(8),
+      const title = Padding(
+        padding: EdgeInsets.all(8),
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 15,
-          children: const [
+          children: [
             Icon(Icons.history, size: 25),
             Text(
               'セーブポイントの履歴',
@@ -160,8 +160,8 @@ class CompPjHistory extends HookConsumerWidget {
         err: err,
         trace: trace,
       ),
-      loading: () => Column(
-        children: const [
+      loading: () => const Column(
+        children: [
           SizedBox(height: 20),
           Text('セーブポイントの状態を読み込み中...'),
         ],

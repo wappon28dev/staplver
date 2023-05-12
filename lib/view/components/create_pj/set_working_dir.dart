@@ -61,10 +61,10 @@ class CompSetWorkingDir extends HookConsumerWidget {
     final workingDirField = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
+        const Expanded(
           flex: 2,
           child: Column(
-            children: const [
+            children: [
               Icon(Icons.folder, size: 47),
               Text('作業フォルダー', textAlign: TextAlign.center),
             ],

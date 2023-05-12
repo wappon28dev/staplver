@@ -39,9 +39,9 @@ class CompWizard {
           height: 40,
           child: FilledButton.tonal(
             onPressed: isValidContentsState ? runNextPage : null,
-            child: Row(
+            child: const Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 Text('次へ'),
                 Icon(Icons.arrow_forward),
               ],
