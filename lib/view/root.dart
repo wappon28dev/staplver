@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -78,12 +77,12 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: Theme.of(context).colorScheme.primary,
-                  fontSize: 40,
+                  fontSize: 38,
                 ),
               ),
               Text(
                 ' / ${dest[pageState.navbarIndex].label}',
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 18),
               )
             ],
           ),
@@ -94,27 +93,27 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
           actions: [
             Padding(
               padding: const EdgeInsets.all(10),
-              child: AutoSizeText.rich(
-                TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '$dateStr・',
-                      style: const TextStyle(
-                        fontSize: 10,
-                      ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    '$dateStr・',
+                    style: const TextStyle(
+                      fontSize: 13,
                     ),
-                    TextSpan(
-                      text: timeStr,
+                  ),
+                  SizedBox(
+                    width: 160,
+                    child: Text(
+                      timeStr,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
-                        fontSize: 20,
+                        fontSize: 30,
                       ),
                     ),
-                  ],
-                ),
-                textAlign: TextAlign.left,
-                minFontSize: 20,
-                maxLines: 1,
+                  ),
+                ],
               ),
             ),
           ],

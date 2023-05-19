@@ -26,7 +26,7 @@ class Svn extends _$Svn {
   Future<Project> get currentPj async {
     final currentPjSnapshot = ref.watch(projectsPod).currentPj;
     if (currentPjSnapshot == null) {
-      throw Exception('currentPjSnapshot is null!');
+      throw SystemExceptions().currentPjIsNull();
     }
     await _directoryExist(currentPjSnapshot);
     return Future.value(currentPjSnapshot);

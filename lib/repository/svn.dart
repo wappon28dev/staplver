@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import '../model/class/svn.dart';
@@ -18,7 +19,7 @@ class SvnRepository {
       execPath.path,
       args,
       workingDirectory: currentDirectory.path,
-      // stdoutEncoding: Encoding.getByName('utf-8'),
+      stdoutEncoding: Encoding.getByName('utf-8'),
     );
     await SvnHelper().handleSvnErr(process);
     return process;

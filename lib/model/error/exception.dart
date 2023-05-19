@@ -286,4 +286,8 @@ ${svnExecs.name}の実行ファイルが見つかりませんでした  ファ�
   SystemException svnStatusIsInvalid() => const SystemException(
         message: 'SVNステータスのXMLが不正です',
       );
+
+  SystemException currentPjIsNull() => const SystemException(
+        message: '現在のプロジェクトが見つかりません',
+      );
 }
