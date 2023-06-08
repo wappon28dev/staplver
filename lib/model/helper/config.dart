@@ -18,19 +18,16 @@ class AppConfigHelper {
 
     final savedProjectPath = <Directory, Directory>{};
 
-    if (appConfig.savedProjectPath.isEmpty) return Future.value(<Project>[]);
+    if (appConfig.savedProjectPath.isEmpty) return [];
 
     await appConfig.savedProjectPath
         .forEachAsync((backupDir, workingDir) async {
       if (!await Directory(backupDir).exists()) {
-        return Future.error(
-          SystemExceptions().backupDirNotFoundOnLoad(backupDir, workingDir),
-        );
+        throw SystemExceptions().backupDirNotFoundOnLoad(backupDir, workingDir);
       }
       if (!await Directory(workingDir).exists()) {
-        return Future.error(
-          SystemExceptions().workingDirNotFoundOnLoad(backupDir, workingDir),
-        );
+        throw SystemExceptions()
+            .workingDirNotFoundOnLoad(backupDir, workingDir);
       }
 
       savedProjectPath.addAll({Directory(backupDir): Directory(workingDir)});
@@ -48,7 +45,7 @@ class AppConfigHelper {
       savedProject.add(project);
     });
     debugPrint('-- end --');
-    return Future.value(savedProject);
+    return savedProject;
   }
 
   AppConfig getCurrentAppConfig(WidgetRef ref) {
@@ -90,23 +87,17 @@ class PjConfigHelper {
     Directory workingDir,
   ) async {
     if (pjConfig.name.isEmpty) {
-      return Future.error(
-        SystemExceptions().pjNameIsInvalid(),
-      );
+      throw SystemExceptions().pjNameIsInvalid();
     }
     if (pjConfig.backupMin != -1 && pjConfig.backupMin < 0) {
-      return Future.error(
-        SystemExceptions().backupMinIsInvalid(),
-      );
+      throw SystemExceptions().backupMinIsInvalid();
     }
 
-    return Future.value(
-      Project(
-        name: pjConfig.name,
-        backupDir: backupDir,
-        workingDir: workingDir,
-        backupMin: pjConfig.backupMin,
-      ),
+    return Project(
+      name: pjConfig.name,
+      backupDir: backupDir,
+      workingDir: workingDir,
+      backupMin: pjConfig.backupMin,
     );
   }
 }

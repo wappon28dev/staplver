@@ -28,21 +28,24 @@ class Svn extends _$Svn {
     if (currentPjSnapshot == null) {
       throw SystemExceptions().currentPjIsNull();
     }
-    await _directoryExist(currentPjSnapshot);
-    return Future.value(currentPjSnapshot);
+    await _directoryExists(currentPjSnapshot);
+    return currentPjSnapshot;
   }
 
-  Future<void> _directoryExist(Project? currentPjSnapshot) async {
-    await Future.wait(
-      <Future<bool>>[
-        currentPjSnapshot?.backupDir.exists() ??
-            Future.error(SystemExceptions().backupDirNotFound),
-        currentPjSnapshot?.workingDir.exists() ??
-            Future.error(SystemExceptions().workingDirNotFound),
-      ],
-    ).catchError((dynamic err) {
-      debugPrint(err.toString());
-    });
+  Future<bool> _directoryExists(Project? currentPjSnapshot) async {
+    final backupDirExists =
+        switch (await currentPjSnapshot?.backupDir.exists()) {
+      true => true,
+      false || null => throw SystemExceptions().backupDirNotFound(),
+    };
+
+    final workingDirExists =
+        switch (await currentPjSnapshot?.workingDir.exists()) {
+      true => true,
+      false || null => throw SystemExceptions().workingDirNotFound(),
+    };
+
+    return backupDirExists && workingDirExists;
   }
 
   Future<ProcessResult> _runCommand({
@@ -147,7 +150,7 @@ class Svn extends _$Svn {
     final backupDir = Directory(backupUri.toFilePath());
 
     if (!await backupDir.exists()) {
-      return Future.error(SystemExceptions().backupDirNotFound);
+      throw SystemExceptions().backupDirNotFound();
     }
 
     return backupDir;

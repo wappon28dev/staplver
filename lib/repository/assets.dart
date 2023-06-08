@@ -60,10 +60,9 @@ class AssetsRepository {
   Future<File> getSvnExecPath(SvnExecs svnExecs) async {
     final file = svnExecs.getFile();
 
-    if (!await file.exists()) {
-      return Future.error(SystemExceptions().svnExecNotFound(svnExecs));
-    }
-
-    return Future.value(file);
+    return switch (await file.exists()) {
+      true => file,
+      false => throw SystemExceptions().svnExecNotFound(svnExecs)
+    };
   }
 }

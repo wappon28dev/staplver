@@ -12,10 +12,10 @@ class SvnHelper {
     final stderr = process.stderr.toString();
 
     if (stderr.contains('E155007')) {
-      return Future.error(SystemExceptions().dirNotSVNRepo());
+      throw SystemExceptions().dirNotSVNRepo();
     }
     if (stderr.contains('E165002')) {
-      return Future.error(SystemExceptions().dirAlreadySVNRepo());
+      throw SystemExceptions().dirAlreadySVNRepo();
     }
 
     throw Exception(stderr);
