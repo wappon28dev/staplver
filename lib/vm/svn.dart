@@ -26,23 +26,29 @@ class Svn extends _$Svn {
   Future<Project> get currentPj async {
     final currentPjSnapshot = ref.watch(projectsPod).currentPj;
     if (currentPjSnapshot == null) {
-      throw SystemExceptions().currentPjIsNull();
+      throw ProjectExceptions().currentPjIsNull();
     }
     await _directoryExists(currentPjSnapshot);
     return currentPjSnapshot;
   }
 
-  Future<bool> _directoryExists(Project? currentPjSnapshot) async {
+  Future<bool> _directoryExists(Project currentPjSnapshot) async {
     final backupDirExists =
-        switch (await currentPjSnapshot?.backupDir.exists()) {
+        switch (await currentPjSnapshot.backupDir.exists()) {
       true => true,
-      false || null => throw SystemExceptions().backupDirNotFound(),
+      _ => throw ConfigExceptions().dirNotFound(
+          isBackupDir: true,
+          missingDir: currentPjSnapshot.backupDir,
+        ),
     };
 
     final workingDirExists =
-        switch (await currentPjSnapshot?.workingDir.exists()) {
+        switch (await currentPjSnapshot.workingDir.exists()) {
       true => true,
-      false || null => throw SystemExceptions().workingDirNotFound(),
+      _ => throw ConfigExceptions().dirNotFound(
+          isBackupDir: false,
+          missingDir: currentPjSnapshot.workingDir,
+        ),
     };
 
     return backupDirExists && workingDirExists;
@@ -149,11 +155,13 @@ class Svn extends _$Svn {
     final backupUri = repoInfo.repositoryRoot;
     final backupDir = Directory(backupUri.toFilePath());
 
-    if (!await backupDir.exists()) {
-      throw SystemExceptions().backupDirNotFound();
-    }
-
-    return backupDir;
+    return switch (await backupDir.exists()) {
+      true => backupDir,
+      _ => throw ConfigExceptions().dirNotFound(
+          isBackupDir: true,
+          missingDir: backupDir,
+        ),
+    };
   }
 
   Future<SvnRepositoryInfo> getRepositoryInfo() async {

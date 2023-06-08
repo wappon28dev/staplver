@@ -53,7 +53,7 @@ class Projects extends _$Projects {
         final currentPj = state.currentPj;
 
         if (currentPj == null) {
-          throw SystemExceptions().pjNotFound();
+          throw ProjectExceptions().pjNotFound();
         }
 
         await PjConfigRepository().createNewPjConfig(

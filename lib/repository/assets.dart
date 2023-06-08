@@ -62,7 +62,7 @@ class AssetsRepository {
 
     return switch (await file.exists()) {
       true => file,
-      false => throw SystemExceptions().svnExecNotFound(svnExecs)
+      false => throw AppExceptions().svnExecNotFound(svnExecs)
     };
   }
 }

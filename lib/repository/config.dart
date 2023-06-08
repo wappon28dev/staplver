@@ -20,19 +20,21 @@ Future<Result<T, SystemException>> parseJson<T>(
     parsedJson = parseMethod(decodedJson);
   } on FormatException {
     return Failure(
-      SystemExceptions().appConfigIsInvalid(),
+      AppConfigExceptions().invalid(),
     );
   } on FileSystemException catch (err) {
     if (err.osError?.errorCode == 2) {
-      throw SystemExceptions().appConfigNotFound();
+      return Failure(
+        AppConfigExceptions().configNotFound(),
+      );
     }
     return Failure(
-      SystemExceptions().appConfigCannotLoaded(err.osError?.message),
+      AppConfigExceptions().cannotLoad(err.osError?.message),
     );
     // ignore: avoid_catching_errors
   } on TypeError catch (err) {
     return Failure(
-      SystemExceptions().appConfigCannotLoaded(err.toString()),
+      AppConfigExceptions().cannotLoad(err.toString()),
     );
   }
   return Success(parsedJson);
@@ -56,7 +58,7 @@ class AppConfigRepository {
     try {
       ThemeMode.values[appConfig.themeMode].name;
     } on Exception catch (_, __) {
-      throw SystemExceptions().pjConfigThemeModeIsInvalid();
+      throw PjConfigExceptions().themeModeIsInvalid();
     }
 
     debugPrint('config: $appConfig');
@@ -75,11 +77,11 @@ class AppConfigRepository {
   }
 
   Future<void> removeSavedProject(
-    String backupDirStr,
+    Directory backupDir,
   ) async {
     final appConfig = await AppConfigRepository().getAppConfig();
     final savedProjectsPath = {...appConfig.savedProjectPath}
-      ..remove(backupDirStr);
+      ..remove(backupDir.path);
 
     final appConfigModded =
         appConfig.copyWith(savedProjectPath: savedProjectsPath);
@@ -111,7 +113,8 @@ class PjConfigRepository {
     debugPrint('-- load pjConfig --');
 
     if (!await getIsPjDir(backupDir)) {
-      throw SystemExceptions().pjNotFound();
+      throw PjConfigExceptions()
+          .dirNotFound(isBackupDir: true, missingDir: backupDir);
     }
 
     final pjConfig = switch (await parseJson<PjConfig>(
@@ -125,7 +128,7 @@ class PjConfigRepository {
     debugPrint('target: ${backupDir.path}/staplver/pj_config');
     debugPrint('config: $pjConfig');
     debugPrint('-- loaded pjConfig -- ');
-    return Future.value(pjConfig);
+    return pjConfig;
   }
 
   Future<void> createNewPjConfig(PjConfig pjConfig, Directory backupDir) async {
@@ -134,7 +137,7 @@ class PjConfigRepository {
     final backupDirStr = backupDir.path;
 
     if (await Directory('$backupDirStr/staplver').exists()) {
-      throw SystemExceptions().pjAlreadyExists();
+      throw ProjectExceptions().pjAlreadyExists();
     } else {
       await Directory('$backupDirStr/staplver').create();
     }
@@ -149,11 +152,12 @@ class PjConfigRepository {
     debugPrint('-- update pjConfig --');
 
     if (!await backupDir.exists()) {
-      throw SystemExceptions().backupDirNotFound();
+      throw PjConfigExceptions()
+          .dirNotFound(isBackupDir: true, missingDir: backupDir);
     }
 
     if (!await getIsPjDir(backupDir)) {
-      throw SystemExceptions().pjNotFound();
+      throw ProjectExceptions().pjNotFound();
     }
 
     final pjConfigPath = File('$backupDir/staplver/pj_config.json');

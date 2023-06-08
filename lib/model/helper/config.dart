@@ -21,16 +21,24 @@ class AppConfigHelper {
     if (appConfig.savedProjectPath.isEmpty) return [];
 
     await appConfig.savedProjectPath
-        .forEachAsync((backupDir, workingDir) async {
-      if (!await Directory(backupDir).exists()) {
-        throw SystemExceptions().backupDirNotFoundOnLoad(backupDir, workingDir);
+        .forEachAsync((backupDirStr, workingDirStr) async {
+      final backupDir = Directory(backupDirStr);
+      final workingDir = Directory(workingDirStr);
+
+      if (!await backupDir.exists()) {
+        throw AppConfigExceptions().dirNotFound(
+          isBackupDir: true,
+          missingDir: backupDir,
+        );
       }
-      if (!await Directory(workingDir).exists()) {
-        throw SystemExceptions()
-            .workingDirNotFoundOnLoad(backupDir, workingDir);
+      if (!await workingDir.exists()) {
+        throw AppConfigExceptions().dirNotFound(
+          isBackupDir: false,
+          missingDir: workingDir,
+        );
       }
 
-      savedProjectPath.addAll({Directory(backupDir): Directory(workingDir)});
+      savedProjectPath.addAll({backupDir: workingDir});
     });
     final savedProject = <Project>[];
 
@@ -38,7 +46,7 @@ class AppConfigHelper {
       final pjConfig =
           await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
 
-      if (pjConfig == null) throw SystemExceptions().pjConfigIsNull();
+      if (pjConfig == null) throw PjConfigExceptions().configNotFound();
 
       final project = await PjConfigHelper()
           .pjConfig2Project(pjConfig, backupDir, workingDir);
@@ -87,10 +95,10 @@ class PjConfigHelper {
     Directory workingDir,
   ) async {
     if (pjConfig.name.isEmpty) {
-      throw SystemExceptions().pjNameIsInvalid();
+      throw PjConfigExceptions().pjNameIsInvalid();
     }
     if (pjConfig.backupMin != -1 && pjConfig.backupMin < 0) {
-      throw SystemExceptions().backupMinIsInvalid();
+      throw PjConfigExceptions().backupMinIsInvalid();
     }
 
     return Project(

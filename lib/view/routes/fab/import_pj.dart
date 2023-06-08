@@ -87,7 +87,7 @@ class PageImportPj extends HookConsumerWidget {
       final projectsNotifier = ref.read(projectsPod.notifier);
 
       if (importedPjState == null) {
-        throw SystemExceptions().importedPjIsNull();
+        throw ProjectExceptions().importedPjIsNull();
       }
       projectsNotifier.addSavedProject(importedPjState);
       final appConfig = AppConfigHelper().getCurrentAppConfig(ref);
