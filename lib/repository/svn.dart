@@ -5,6 +5,15 @@ import '../model/class/svn.dart';
 import '../model/helper/svn.dart';
 import 'assets.dart';
 
+String shellArgumentEscape(String stdin) {
+  var escapedStdin = stdin;
+  final needEscapeChar = ['^', '&', '<', '>', '|', '"', ' '];
+  for (final char in needEscapeChar) {
+    escapedStdin = stdin.replaceAll(char, '^$char');
+  }
+  return escapedStdin;
+}
+
 class SvnRepository {
   SvnRepository(this.workingDir);
   final Directory workingDir;
@@ -21,7 +30,7 @@ class SvnRepository {
       workingDirectory: currentDirectory.path,
       stdoutEncoding: Encoding.getByName('utf-8'),
     );
-    await SvnHelper().handleSvnErr(process);
+    SvnHelper.handleSvnErr(process);
     return process;
   }
 
@@ -33,7 +42,7 @@ class SvnRepository {
     );
 
     final stdout = process.stdout.toString();
-    return SvnHelper().parseRepositoryInfo(stdout);
+    return SvnHelper.parseRepositoryInfo(stdout);
   }
 
   Future<List<SvnRevisionLog>> getRevisionsLog() async {
@@ -44,7 +53,7 @@ class SvnRepository {
     );
 
     final stdout = process.stdout.toString();
-    final info = SvnHelper().parseRevisionInfo(stdout);
+    final info = SvnHelper.parseRevisionInfo(stdout);
 
     // final infoList2Json = info.map((e) => e.toJson()).toList();
     // print(jsonEncode(infoList2Json));
@@ -59,6 +68,22 @@ class SvnRepository {
     );
 
     final stdout = process.stdout.toString();
-    return SvnHelper().parseStatusEntries(stdout);
+    return SvnHelper.parseStatusEntries(stdout);
+  }
+
+  Future<void> runStagingAll() async {
+    await runCommand(
+      currentDirectory: workingDir,
+      svnExecs: SvnExecs.svn,
+      args: ['add', '--force', './'],
+    );
+  }
+
+  Future<void> runCommit(String commitMessage) async {
+    await runCommand(
+      currentDirectory: workingDir,
+      svnExecs: SvnExecs.svn,
+      args: ['commit', '-m', shellArgumentEscape(commitMessage)],
+    );
   }
 }

@@ -10,6 +10,7 @@ import 'package:staplver/vm/projects.dart';
 import '../model/class/app.dart';
 import '../model/class/svn.dart';
 import '../model/error/exception.dart';
+import '../model/result.dart';
 import '../model/state.dart';
 import '../repository/assets.dart';
 import '../repository/svn.dart';
@@ -67,6 +68,7 @@ class Svn extends _$Svn {
     );
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> runStatus() async {
     debugPrint('>> runStatus << ');
     await _runCommand(
@@ -75,6 +77,7 @@ class Svn extends _$Svn {
     );
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> runInfo() async {
     debugPrint('>> runInfo << ');
     await _runCommand(
@@ -83,6 +86,7 @@ class Svn extends _$Svn {
     );
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> runLog() async {
     debugPrint('>> runLog << ');
     await SvnRepository(
@@ -90,6 +94,7 @@ class Svn extends _$Svn {
     ).getRevisionsLog();
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> runCreate() async {
     debugPrint('>> runCreate << ');
     await _runCommand(
@@ -98,6 +103,7 @@ class Svn extends _$Svn {
     );
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> runImport() async {
     debugPrint('>> runImport << ');
     final backupUri = (await currentPj).backupDir.uri.toString();
@@ -108,6 +114,7 @@ class Svn extends _$Svn {
     );
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> runRename() async {
     debugPrint('>> runRename << ');
     final workingDir = (await currentPj).workingDir;
@@ -115,6 +122,7 @@ class Svn extends _$Svn {
     await workingDir.rename('_${workingDir.name}');
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> runCheckout() async {
     debugPrint('>> runCheckout << ');
     final backupUri = (await currentPj).backupDir.uri.toString();
@@ -125,6 +133,7 @@ class Svn extends _$Svn {
     );
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> runStaging() async {
     debugPrint('>> runStaging << ');
     await _runCommand(
@@ -133,6 +142,7 @@ class Svn extends _$Svn {
     );
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> runCommit(String commitMsg) async {
     debugPrint('>> runCommit << ');
     await _runCommand(
@@ -141,6 +151,7 @@ class Svn extends _$Svn {
     );
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<void> update() async {
     debugPrint('>> update << ');
     await _runCommand(
@@ -174,5 +185,20 @@ class Svn extends _$Svn {
 
   Future<List<SvnStatusEntry>> getPjStatus() async {
     return SvnRepository((await currentPj).workingDir).getSvnStatusEntries();
+  }
+
+  Future<Result<void, SystemException>> createSavePoint(
+    String commitMessage,
+  ) async {
+    final repository = SvnRepository((await currentPj).workingDir);
+
+    try {
+      await repository.runStagingAll();
+      await repository.runCommit(commitMessage);
+    } on SvnExceptions catch (e) {
+      return Failure(e as SystemException);
+    }
+
+    return const Success(null);
   }
 }

@@ -57,7 +57,7 @@ class Projects extends _$Projects {
         }
 
         await PjConfigRepository().createNewPjConfig(
-          PjConfigHelper().project2PjConfig(currentPj),
+          PjConfigHelper.project2PjConfig(currentPj),
           currentPj.backupDir,
         );
       }

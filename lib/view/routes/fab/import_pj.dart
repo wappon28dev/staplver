@@ -90,7 +90,7 @@ class PageImportPj extends HookConsumerWidget {
         throw ProjectExceptions().importedPjIsNull();
       }
       projectsNotifier.addSavedProject(importedPjState);
-      final appConfig = AppConfigHelper().getCurrentAppConfig(ref);
+      final appConfig = AppConfigHelper.getCurrentAppConfig(ref);
       await AppConfigRepository()
           .saveAppConfig(appConfig)
           .catchError(SystemErrorHandler(context, ref).noticeErr);

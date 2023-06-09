@@ -130,7 +130,7 @@ class PageCreatePj extends HookConsumerWidget {
       projectsNotifier.addSavedProject(newProject);
       await projectsNotifier.initProject();
 
-      await AppConfigHelper().updateAppConfig(ref);
+      await AppConfigHelper.updateAppConfig(ref);
     }
 
     void runDispose(BuildContext context, WidgetRef ref) {

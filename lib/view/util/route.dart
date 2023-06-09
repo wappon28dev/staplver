@@ -47,8 +47,7 @@ class RouteController {
 
     try {
       final appConfig = await AppConfigRepository().getAppConfig();
-      final savedProjects =
-          await AppConfigHelper().appConfig2Projects(appConfig);
+      final savedProjects = await AppConfigHelper.appConfig2Projects(appConfig);
 
       Directory? defaultBackupDir;
 

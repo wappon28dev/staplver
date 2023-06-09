@@ -6,7 +6,9 @@ import '../class/svn.dart';
 import '../error/exception.dart';
 
 class SvnHelper {
-  Future<void> handleSvnErr(ProcessResult process) async {
+  const SvnHelper._();
+
+  static void handleSvnErr(ProcessResult process) {
     if (process.exitCode == 0) return;
 
     final stderr = process.stderr.toString();
@@ -21,7 +23,7 @@ class SvnHelper {
     throw Exception(stderr);
   }
 
-  SvnRepositoryInfo parseRepositoryInfo(String xml) {
+  static SvnRepositoryInfo parseRepositoryInfo(String xml) {
     final document = XmlDocument.parse(xml);
     final entryElement = document.findAllElements('entry').first;
 
@@ -71,7 +73,7 @@ class SvnHelper {
     );
   }
 
-  List<SvnRevisionPath> parseRevisionPaths(List<XmlNode> pathElements) {
+  static List<SvnRevisionPath> parseRevisionPaths(List<XmlNode> pathElements) {
     final paths = <SvnRevisionPath>[];
 
     for (final pathElement in pathElements) {
@@ -101,7 +103,7 @@ class SvnHelper {
     return paths;
   }
 
-  List<SvnRevisionLog> parseRevisionInfo(String xml) {
+  static List<SvnRevisionLog> parseRevisionInfo(String xml) {
     final document = XmlDocument.parse(xml);
     final logEntries = document.findAllElements('logentry');
     final revisionLogs = <SvnRevisionLog>[];
@@ -128,7 +130,7 @@ class SvnHelper {
     return revisionLogs;
   }
 
-  List<SvnStatusEntry> parseStatusEntries(String xml) {
+  static List<SvnStatusEntry> parseStatusEntries(String xml) {
     final document = XmlDocument.parse(xml);
     final targetElement = document.findAllElements('target').first;
     final entryElements = targetElement.findAllElements('entry');

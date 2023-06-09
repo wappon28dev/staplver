@@ -112,7 +112,7 @@ class PageProjects extends HookConsumerWidget {
         ..insert(newIndex, projects[oldIndex]);
 
       ref.read(projectsPod.notifier).updateSavedProject(clonedProjects);
-      AppConfigHelper().updateAppConfig(ref);
+      AppConfigHelper.updateAppConfig(ref);
     }
 
     return ReorderableSliverList(

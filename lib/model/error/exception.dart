@@ -61,7 +61,7 @@ base class ConfigExceptions extends SystemExceptions {
           await pageNotifier.resetProgress();
           pageNotifier.updateProgress(0.3);
           updater(ref);
-          await AppConfigHelper().updateAppConfig(ref);
+          await AppConfigHelper.updateAppConfig(ref);
           await pageNotifier.completeProgress();
 
           RouteController.runPush(

@@ -13,7 +13,9 @@ import '../constant.dart';
 import '../error/exception.dart';
 
 class AppConfigHelper {
-  Future<List<Project>> appConfig2Projects(AppConfig appConfig) async {
+  const AppConfigHelper._();
+
+  static Future<List<Project>> appConfig2Projects(AppConfig appConfig) async {
     debugPrint('-- appConfig2Projects --');
 
     final savedProjectPath = <Directory, Directory>{};
@@ -48,15 +50,18 @@ class AppConfigHelper {
 
       if (pjConfig == null) throw PjConfigExceptions().configNotFound();
 
-      final project = await PjConfigHelper()
-          .pjConfig2Project(pjConfig, backupDir, workingDir);
+      final project = await PjConfigHelper.pjConfig2Project(
+        pjConfig,
+        backupDir,
+        workingDir,
+      );
       savedProject.add(project);
     });
     debugPrint('-- end --');
     return savedProject;
   }
 
-  AppConfig getCurrentAppConfig(WidgetRef ref) {
+  static AppConfig getCurrentAppConfig(WidgetRef ref) {
     final projectsState = ref.read(projectsPod);
     final contentsState = ref.read(contentsPod);
     final themeState = ref.read(appThemePod);
@@ -77,19 +82,21 @@ class AppConfigHelper {
     );
   }
 
-  Future<void> updateAppConfig(WidgetRef ref) async {
+  static Future<void> updateAppConfig(WidgetRef ref) async {
     final appConfig = getCurrentAppConfig(ref);
     await AppConfigRepository().saveAppConfig(appConfig);
   }
 }
 
 class PjConfigHelper {
-  PjConfig project2PjConfig(Project project) => PjConfig(
+  const PjConfigHelper._();
+
+  static PjConfig project2PjConfig(Project project) => PjConfig(
         name: project.name,
         backupMin: project.backupMin,
       );
 
-  Future<Project> pjConfig2Project(
+  static Future<Project> pjConfig2Project(
     PjConfig pjConfig,
     Directory backupDir,
     Directory workingDir,

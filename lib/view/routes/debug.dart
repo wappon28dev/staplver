@@ -142,8 +142,7 @@ class PageDebug extends HookConsumerWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final appConfig =
-                        AppConfigHelper().getCurrentAppConfig(ref);
+                    final appConfig = AppConfigHelper.getCurrentAppConfig(ref);
                     await AppConfigRepository().saveAppConfig(appConfig);
                   },
                   child: const Text('save config'),

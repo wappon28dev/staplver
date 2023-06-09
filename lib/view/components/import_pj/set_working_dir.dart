@@ -51,8 +51,11 @@ class CompSetWorkingDir extends ConsumerWidget {
             await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
         if (pjConfig == null) throw PjConfigExceptions().pjConfigIsNull();
 
-        final importedPj = await PjConfigHelper()
-            .pjConfig2Project(pjConfig, backupDir, workingDir);
+        final importedPj = await PjConfigHelper.pjConfig2Project(
+          pjConfig,
+          backupDir,
+          workingDir,
+        );
 
         importedPjNotifier.state = importedPj;
         snackBar.pushSnackBarSuccess(
