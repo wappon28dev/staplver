@@ -26,6 +26,14 @@ class CompProjectsDetails extends HookConsumerWidget {
     (ref) async => ref.read(svnPod.notifier).getPjStatus(),
   );
 
+  static Future<void> refresh(WidgetRef ref, {bool needUpdate = false}) async {
+    if (needUpdate) await ref.read(svnPod.notifier).runUpdate();
+    ref
+      ..invalidate(repositoryProvider)
+      ..invalidate(savePointsProvider)
+      ..invalidate(pjStatusProvider);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // state
@@ -117,10 +125,7 @@ class CompProjectsDetails extends HookConsumerWidget {
                 onPressed: !isRefreshing.value
                     ? () {
                         init();
-                        ref
-                          ..invalidate(repositoryProvider)
-                          ..invalidate(savePointsProvider)
-                          ..invalidate(pjStatusProvider);
+                        refresh(ref);
                       }
                     : null,
               ),
@@ -218,17 +223,19 @@ class CompProjectsDetails extends HookConsumerWidget {
     }
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final savePointName = await showDialog<String>(
-            context: context,
-            builder: (context) => const CompPjCreateSavePoint(),
-          );
-          debugPrint(savePointName);
-        },
-        tooltip: 'セーブポイントを作成',
-        child: const Icon(Icons.save),
-      ),
+      floatingActionButton: pjStatusState.value?.isEmpty ?? true
+          ? const SizedBox.shrink()
+          : FloatingActionButton(
+              onPressed: () async {
+                final savePointName = await showDialog<String>(
+                  context: context,
+                  builder: (context) => const CompPjCreateSavePoint(),
+                );
+                debugPrint(savePointName);
+              },
+              tooltip: 'セーブポイントを作成',
+              child: const Icon(Icons.save),
+            ),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar.large(

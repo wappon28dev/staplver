@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:staplver/view/routes/projects/details.dart';
+import 'package:staplver/vm/svn.dart';
 
 class CompPjCreateSavePoint extends HookConsumerWidget {
   const CompPjCreateSavePoint({super.key});
@@ -8,8 +10,15 @@ class CompPjCreateSavePoint extends HookConsumerWidget {
   AlertDialog build(BuildContext context, WidgetRef ref) {
     final savePointName = useState('yay');
 
-    void onSubmitted(String value) {
+    // notifier
+    final svnNotifier = ref.read(svnPod.notifier);
+
+    Future<void> onSubmitted(String value) async {
       savePointName.value = value;
+      await svnNotifier.createSavePoint(value);
+      await CompProjectsDetails.refresh(ref, needUpdate: true);
+
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, savePointName.value);
     }
 
