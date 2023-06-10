@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/state.dart';
+import 'log.dart';
 
 part 'contents.g.dart';
 
@@ -20,14 +20,14 @@ class Contents extends _$Contents {
   }
 
   void updateDefaultBackupDir(Directory? newDefaultBackupDir) {
-    debugPrint('newDefaultBackupDir => $newDefaultBackupDir');
+    log.v('newDefaultBackupDir:\n  $newDefaultBackupDir');
     state = state.copyWith(defaultBackupDir: newDefaultBackupDir);
   }
 
   void updateDragAndDropCallback(
     void Function(Directory)? newDragAndDropCallback,
   ) {
-    debugPrint('newDragAndDropCallback => $newDragAndDropCallback');
+    log.v('newDragAndDropCallback:\n  $newDragAndDropCallback');
     state = state.copyWith(dragAndDropCallback: newDragAndDropCallback);
   }
 

@@ -48,7 +48,7 @@ class CompSetWorkingDir extends ConsumerWidget {
             ref.read(PageImportPj.importedPjProvider.notifier);
 
         final pjConfig =
-            await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
+            await PjConfigRepository(backupDir).getPjConfigFromBackupDir();
         if (pjConfig == null) throw PjConfigExceptions().pjConfigIsNull();
 
         final importedPj = await PjConfigHelper.pjConfig2Project(

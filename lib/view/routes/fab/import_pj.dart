@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:staplver/vm/log.dart';
 
 import '../../../model/class/app.dart';
 import '../../../model/constant.dart';
@@ -34,14 +35,14 @@ class PageImportPj extends HookConsumerWidget {
 
     // init
     void init() {
-      debugPrint('-- init (home -> importPj) --');
+      log.d('init (home -> importPj)');
       RouteController(ref).home2fabInit();
       workingDirNotifier.state = null;
       importedPjNotifier.state = null;
       contentsNotifier.updateDragAndDropCallback(
         (newDir) => workingDirNotifier.state = newDir,
       );
-      debugPrint('-- end --');
+      log.d('init (home -> importPj)');
     }
 
     useEffect(() => onMounted(init), []);

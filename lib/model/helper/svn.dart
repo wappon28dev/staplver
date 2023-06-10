@@ -30,9 +30,9 @@ class SvnHelper {
     final kindName = entryElement.getAttribute('kind');
     final path = entryElement.getAttribute('path');
     final revision = int.parse(entryElement.getAttribute('revision')!);
-    final url = Uri.parse(entryElement.findElements('url').first.text);
+    final url = Uri.parse(entryElement.findElements('url').first.innerText);
     final relativeUrl =
-        Uri.parse(entryElement.findElements('relative-url').first.text);
+        Uri.parse(entryElement.findElements('relative-url').first.innerText);
 
     String getElementText(String element1, String element2) {
       return entryElement
@@ -40,7 +40,7 @@ class SvnHelper {
           .first
           .findElements(element2)
           .first
-          .text;
+          .innerText;
     }
 
     final repositoryRoot = Uri.parse(getElementText('repository', 'root'));
@@ -79,7 +79,7 @@ class SvnHelper {
     for (final pathElement in pathElements) {
       if (pathElement.children.isEmpty) continue;
 
-      final filePath = pathElement.text;
+      final filePath = pathElement.innerText;
       final actionName = pathElement.getAttribute('action');
       final textMods = pathElement.getAttribute('text-mods') == 'true';
       final propMods = pathElement.getAttribute('prop-mods') == 'true';
@@ -110,9 +110,10 @@ class SvnHelper {
 
     for (final logEntry in logEntries) {
       final revisionIndex = int.parse(logEntry.getAttribute('revision')!);
-      final author = logEntry.findElements('author').first.text;
-      final date = DateTime.parse(logEntry.findElements('date').first.text);
-      final message = logEntry.findElements('msg').first.text;
+      final author = logEntry.findElements('author').first.innerText;
+      final date =
+          DateTime.parse(logEntry.findElements('date').first.innerText);
+      final message = logEntry.findElements('msg').first.innerText;
       final pathElements = logEntry.findElements('paths').first.children;
       final paths = parseRevisionPaths(pathElements);
 
@@ -160,16 +161,15 @@ class SvnHelper {
               props: props,
             ),
           );
-          break;
 
         // ignore: no_default_cases
         default:
           final revision = wcStatusElement.getAttribute('revision');
           final commitElement = wcStatusElement.findElements('commit').first;
           final committedRevision = commitElement.getAttribute('revision');
-          final date =
-              DateTime.parse(commitElement.findElements('date').first.text);
-          final author = commitElement.findElements('author').first.text;
+          final date = DateTime.parse(
+              commitElement.findElements('date').first.innerText);
+          final author = commitElement.findElements('author').first.innerText;
           final copied = commitElement.getAttribute('copied') == 'true';
 
           if (committedRevision == null) {

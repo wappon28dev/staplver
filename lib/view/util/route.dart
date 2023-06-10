@@ -7,6 +7,7 @@ import '../../model/error/handler.dart';
 import '../../model/helper/config.dart';
 import '../../repository/config.dart';
 import '../../vm/contents.dart';
+import '../../vm/log.dart';
 import '../../vm/page.dart';
 import '../../vm/projects.dart';
 import '../../vm/theme.dart';
@@ -39,6 +40,7 @@ class RouteController {
   }
 
   Future<void> appInit(BuildContext context) async {
+    log.i('$START initializing app ...');
     final pageNotifier = ref.read(pagePod.notifier);
     final projectsNotifier = ref.read(projectsPod.notifier);
     final contentsNotifier = ref.read(contentsPod.notifier);
@@ -55,6 +57,8 @@ class RouteController {
         defaultBackupDir = Directory(appConfig.defaultBackupDir ?? '');
       }
 
+      log.ds('applying app config');
+
       // state notifier
       projectsNotifier.updateSavedProject(savedProjects);
       contentsNotifier.updateDefaultBackupDir(defaultBackupDir);
@@ -70,6 +74,10 @@ class RouteController {
         );
       }
       await pageNotifier.completeProgress();
+
+      log
+        ..df('applying app config')
+        ..i('$FINISH initializing app');
     } on Exception catch (err, trace) {
       SystemErrorHandler(context, ref).noticeErr(err, trace);
     }

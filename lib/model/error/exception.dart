@@ -120,8 +120,8 @@ final class AppConfigExceptions extends ConfigExceptions {
             title: '設定フォルダーを開く',
             icon: Icons.folder_open,
             onClick: (BuildContext context, WidgetRef ref) async {
-              final path = await AppConfigRepository().appConfigPath;
-              await launchUrl(path.parent.uri);
+              final file = await AppConfigRepository().appConfigFile;
+              await launchUrl(file.parent.uri);
               exit(0);
             },
           ),
@@ -267,13 +267,13 @@ final class SvnExceptions extends SystemExceptions {
   SystemException dirNotSVNRepo() => const SystemException(
         message: 'SVNリポジトリではありません',
       );
-  SystemException repositoryInfoIsInvalid() => const SystemException(
-        message: 'SVNリポジトリログのXMLが不正です',
+  SystemException repositoryInfoIsInvalid([String? details]) => SystemException(
+        message: 'SVNリポジトリログのXMLが不正です ($details)',
       );
-  SystemException revisionLogIsInvalid() => const SystemException(
-        message: 'SVNログのXMLが不正です',
+  SystemException revisionLogIsInvalid([String? details]) => SystemException(
+        message: 'SVNログのXMLが不正です ($details)',
       );
-  SystemException statusIsInvalid() => const SystemException(
-        message: 'SVNステータスのXMLが不正です',
+  SystemException statusIsInvalid([String? details]) => SystemException(
+        message: 'SVNステータスのXMLが不正です ($details)',
       );
 }

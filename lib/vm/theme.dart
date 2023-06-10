@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:staplver/vm/log.dart';
 
 import '../model/state.dart';
 
@@ -13,13 +14,13 @@ class AppTheme extends _$AppTheme {
   }
 
   void updateThemeMode(ThemeMode newThemeMode) {
-    debugPrint('newThemeMode => $newThemeMode');
+    log.v('newThemeMode:\n  $newThemeMode');
     state = state.copyWith(themeMode: newThemeMode);
   }
 
   // ignore: avoid_positional_boolean_parameters
   void updateUseDynamicColor(bool newUseDynamicColor) {
-    debugPrint('newUseDynamicColor => $newUseDynamicColor');
+    log.v('newUseDynamicColor:\n  $newUseDynamicColor');
     state = state.copyWith(useDynamicColor: newUseDynamicColor);
   }
 

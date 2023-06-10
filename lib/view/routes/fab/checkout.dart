@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:staplver/vm/log.dart';
 
 import '../../../model/class/app.dart';
 import '../../../model/constant.dart';
@@ -33,14 +34,14 @@ class PageCheckout extends HookConsumerWidget {
 
     // init
     void init() {
-      debugPrint('-- init (home -> createPj) --');
+      log.d('init (home -> createPj)');
       RouteController(ref).home2fabInit();
       workingDirNotifier.state = null;
       newPjDataNotifier.state = null;
       contentsNotifier.updateDragAndDropCallback(
         (newDir) => backupDirNotifier.state = newDir,
       );
-      debugPrint('-- end --');
+      log.d('init (home -> createPj)');
     }
 
     useEffect(() => onMounted(init), []);

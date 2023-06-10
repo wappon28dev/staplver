@@ -55,6 +55,7 @@ class Svn extends _$Svn {
     return backupDirExists && workingDirExists;
   }
 
+  // TODO: この辺りの処理は、SvnRepository に移動する
   Future<ProcessResult> _runCommand({
     Directory? currentDirectory,
     required SvnExecs svnExecs,
@@ -175,6 +176,9 @@ class Svn extends _$Svn {
     };
   }
 
+  Future<void> runUpdate() async =>
+      SvnRepository((await currentPj).workingDir).runUpdate();
+
   Future<SvnRepositoryInfo> getRepositoryInfo() async {
     return SvnRepository((await currentPj).workingDir).getRepositoryInfo();
   }
@@ -184,7 +188,7 @@ class Svn extends _$Svn {
   }
 
   Future<List<SvnStatusEntry>> getPjStatus() async {
-    return SvnRepository((await currentPj).workingDir).getSvnStatusEntries();
+    return SvnRepository((await currentPj).workingDir).getStatusEntries();
   }
 
   Future<Result<void, SystemException>> createSavePoint(

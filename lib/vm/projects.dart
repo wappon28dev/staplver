@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/class/app.dart';
@@ -6,6 +5,7 @@ import '../model/error/exception.dart';
 import '../model/helper/config.dart';
 import '../model/state.dart';
 import '../repository/config.dart';
+import 'log.dart';
 import 'page.dart';
 import 'svn.dart';
 
@@ -19,19 +19,19 @@ class Projects extends _$Projects {
   }
 
   void addSavedProject(Project newProject) {
-    debugPrint('newProject => $newProject');
+    log.v('newProject:\n  $newProject');
     final savedProjectsClone = state.savedProjects.toList()..add(newProject);
 
     state = state.copyWith(savedProjects: savedProjectsClone);
   }
 
   void updateSavedProject(List<Project> newSavedProjects) {
-    debugPrint('newProjects => $newSavedProjects');
+    log.v('newProjects:\n  $newSavedProjects');
     state = state.copyWith(savedProjects: newSavedProjects);
   }
 
   void updateCurrentPjIndex(int newCurrentPjIndex) {
-    debugPrint('newCurrentPjIndex => $newCurrentPjIndex');
+    log.v('newCurrentPjIndex:\n  $newCurrentPjIndex');
     assert((state.savedProjects.length) >= newCurrentPjIndex);
     state = state.copyWith(currentPjIndex: newCurrentPjIndex);
   }
@@ -56,20 +56,19 @@ class Projects extends _$Projects {
           throw ProjectExceptions().pjNotFound();
         }
 
-        await PjConfigRepository().createNewPjConfig(
+        await PjConfigRepository(currentPj.backupDir).createNewPjConfig(
           PjConfigHelper.project2PjConfig(currentPj),
-          currentPj.backupDir,
         );
       }
     ];
 
-    debugPrint('-- init project --');
+    log.i('initProject...');
     pageNotifier.updateProgress(0);
 
     for (var i = 0; i < queue.length; i++) {
       await queue[i]();
       pageNotifier.updateProgress(i / queue.length);
     }
-    debugPrint('-- end --');
+    log.i('┗ Finish initProject!');
   }
 }

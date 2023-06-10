@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:staplver/vm/log.dart';
 
 import '../../../model/class/app.dart';
 import '../../../model/constant.dart';
@@ -42,7 +43,7 @@ class PageCreatePj extends HookConsumerWidget {
 
     // init
     void init() {
-      debugPrint('-- init (home -> createPj) --');
+      log.ds('init (home -> createPj)');
       RouteController(ref).home2fabInit();
       pjNameNotifier.state = '';
       workingDirNotifier.state = null;
@@ -51,7 +52,7 @@ class PageCreatePj extends HookConsumerWidget {
       contentsNotifier.updateDragAndDropCallback(
         (newDir) => workingDirNotifier.state = newDir,
       );
-      debugPrint('-- end --');
+      log.df('init (home -> createPj)');
     }
 
     useEffect(() => onMounted(init), []);

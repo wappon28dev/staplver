@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:staplver/vm/log.dart';
 
 import '../class/app.dart';
 import '../constant.dart';
@@ -86,9 +87,7 @@ class SystemErrorHandler {
   FutureOr<void> noticeErr(dynamic err, StackTrace? trace) {
     ScaffoldMessenger.of(context).clearMaterialBanners();
     if (err is SystemException) {
-      debugPrint('=== Err Received ===\n$err\n$trace');
-      debugPrintStack();
-      debugPrint(err.message);
+      log.e('ERROR RECEIVED', err, trace);
       if (err.needShowAsBanner) {
         pushBanner(
           title: err.message,
@@ -106,7 +105,7 @@ class SystemErrorHandler {
   void _noticeUnhandledErr(dynamic err, StackTrace? trace) {
     ScaffoldMessenger.of(context).clearMaterialBanners();
 
-    debugPrint('=== UnhandledErr Received ===\n$err\n$trace');
+    log.e('UNHANDLED ERROR RECEIVED', err, trace);
     pushBanner(
       title: '開発者の想定していないエラーが発生しました\n$err',
       actions: [

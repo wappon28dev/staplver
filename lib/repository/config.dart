@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:staplver/model/class/app.dart';
+import 'package:staplver/vm/log.dart';
 
 import '../model/class/config.dart';
 import '../model/error/exception.dart';
@@ -41,16 +42,16 @@ Future<Result<T, SystemException>> parseJson<T>(
 }
 
 class AppConfigRepository {
-  Future<File> get appConfigPath async {
+  Future<File> get appConfigFile async {
     final appConfigDir = await getApplicationSupportDirectory();
     return Future.value(File('${appConfigDir.path}/config.json'));
   }
 
   Future<AppConfig> getAppConfig() async {
-    debugPrint('-- load appConfig --');
+    log.ds('loading appConfig');
 
     final appConfig = switch (
-        await parseJson<AppConfig>(await appConfigPath, AppConfig.fromJson)) {
+        await parseJson<AppConfig>(await appConfigFile, AppConfig.fromJson)) {
       Success(value: final value) => value,
       Failure(exception: final exception) => throw exception,
     };
@@ -61,19 +62,21 @@ class AppConfigRepository {
       throw PjConfigExceptions().themeModeIsInvalid();
     }
 
-    debugPrint('config: $appConfig');
-    debugPrint('-- loaded appConfig --');
+    log
+      ..v('appConfig: $appConfig')
+      ..df('loading appConfig');
     return appConfig;
   }
 
   Future<void> saveAppConfig(AppConfig appConfig) async {
-    debugPrint('-- save appConfig --');
+    log.ds('saving appConfig');
 
     final appConfigStr = json.encode(appConfig.toJson());
-    await (await appConfigPath).writeAsString(appConfigStr);
+    await (await appConfigFile).writeAsString(appConfigStr);
 
-    debugPrint(appConfigStr);
-    debugPrint('-- saved appConfig --');
+    log
+      ..v('appConfig: $appConfig')
+      ..df('saving appConfig');
   }
 
   Future<void> removeSavedProject(
@@ -87,11 +90,12 @@ class AppConfigRepository {
         appConfig.copyWith(savedProjectPath: savedProjectsPath);
 
     final appConfigStr = json.encode(appConfigModded.toJson());
-    await (await appConfigPath).writeAsString(appConfigStr);
+    await (await appConfigFile).writeAsString(appConfigStr);
   }
 
   Future<void> writeEmptyAppConfig() async {
-    debugPrint('-- create emptyConfig --');
+    log.ds('creating empty appConfig');
+
     const emptyAppConfig = AppConfig(
       savedProjectPath: {},
       defaultBackupDir: '',
@@ -99,71 +103,75 @@ class AppConfigRepository {
       useDynamicColor: true,
     );
     final appConfigStr = json.encode(emptyAppConfig.toJson());
-    await (await appConfigPath).writeAsString(appConfigStr);
-    debugPrint(appConfigStr);
-    debugPrint('-- created emptyConfig --');
+    await (await appConfigFile).writeAsString(appConfigStr);
+
+    log.df('creating empty appConfig');
   }
 }
 
 class PjConfigRepository {
-  Future<bool> getIsPjDir(Directory backupDir) async =>
-      Directory('${backupDir.path}/staplver').exists();
+  PjConfigRepository(this.backupDir);
+  Directory backupDir;
 
-  Future<PjConfig?> getPjConfigFromBackupDir(Directory backupDir) async {
-    debugPrint('-- load pjConfig --');
+  Directory get pjDir => Directory('${backupDir.path}/_staplver');
+  File get pjConfigFile => File('${pjDir.path}/config.json');
+  Future<bool> get getIsPjDir async => pjDir.exists();
 
-    if (!await getIsPjDir(backupDir)) {
+  Future<PjConfig?> getPjConfigFromBackupDir() async {
+    log.ds('Loading pjConfig...');
+
+    if (!await getIsPjDir) {
       throw PjConfigExceptions()
           .dirNotFound(isBackupDir: true, missingDir: backupDir);
     }
 
     final pjConfig = switch (await parseJson<PjConfig>(
-      File('${backupDir.path}/staplver/pj_config.json'),
+      pjConfigFile,
       PjConfig.fromJson,
     )) {
       Success(value: final value) => value,
       Failure(exception: final exception) => throw exception,
     };
 
-    debugPrint('target: ${backupDir.path}/staplver/pj_config');
-    debugPrint('config: $pjConfig');
-    debugPrint('-- loaded pjConfig -- ');
+    log
+      ..v('config: $pjConfig')
+      ..df('loading pjConfig');
     return pjConfig;
   }
 
-  Future<void> createNewPjConfig(PjConfig pjConfig, Directory backupDir) async {
-    debugPrint('-- create pjConfig --');
+  Future<void> createNewPjConfig(PjConfig pjConfig) async {
+    log.ds('creating new pjConfig');
 
-    final backupDirStr = backupDir.path;
-
-    if (await Directory('$backupDirStr/staplver').exists()) {
+    if (await pjDir.exists()) {
       throw ProjectExceptions().pjAlreadyExists();
     } else {
-      await Directory('$backupDirStr/staplver').create();
+      await pjDir.create();
     }
-    final pjConfigPath = File('$backupDirStr/staplver/pj_config.json');
     final pjConfigStr = json.encode(pjConfig.toJson());
-    await pjConfigPath.writeAsString(pjConfigStr);
+    await pjConfigFile.writeAsString(pjConfigStr);
 
-    debugPrint('$pjConfigStr\n-- created pjConfig --');
+    log
+      ..v('config: $pjConfig')
+      ..df('creating new pjConfig');
   }
 
-  Future<void> updatePjConfig(PjConfig pjConfig, Directory backupDir) async {
-    debugPrint('-- update pjConfig --');
+  Future<void> updatePjConfig(PjConfig pjConfig) async {
+    log.ds('updating pjConfig...');
 
     if (!await backupDir.exists()) {
       throw PjConfigExceptions()
           .dirNotFound(isBackupDir: true, missingDir: backupDir);
     }
 
-    if (!await getIsPjDir(backupDir)) {
+    if (!await getIsPjDir) {
       throw ProjectExceptions().pjNotFound();
     }
 
-    final pjConfigPath = File('$backupDir/staplver/pj_config.json');
     final pjConfigStr = json.encode(pjConfig.toJson());
-    await pjConfigPath.writeAsString(pjConfigStr);
+    await pjConfigFile.writeAsString(pjConfigStr);
 
-    debugPrint('$pjConfigStr\n-- update pjConfig --');
+    log
+      ..v('config: $pjConfig')
+      ..df('updating pjConfig');
   }
 }

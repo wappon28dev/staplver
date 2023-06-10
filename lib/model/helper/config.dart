@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:staplver/vm/log.dart';
 
 import '../../repository/config.dart';
 import '../../vm/contents.dart';
@@ -16,7 +16,7 @@ class AppConfigHelper {
   const AppConfigHelper._();
 
   static Future<List<Project>> appConfig2Projects(AppConfig appConfig) async {
-    debugPrint('-- appConfig2Projects --');
+    log.ds('appConfig2Projects');
 
     final savedProjectPath = <Directory, Directory>{};
 
@@ -46,7 +46,7 @@ class AppConfigHelper {
 
     await savedProjectPath.forEachAsync((backupDir, workingDir) async {
       final pjConfig =
-          await PjConfigRepository().getPjConfigFromBackupDir(backupDir);
+          await PjConfigRepository(backupDir).getPjConfigFromBackupDir();
 
       if (pjConfig == null) throw PjConfigExceptions().configNotFound();
 
@@ -57,7 +57,9 @@ class AppConfigHelper {
       );
       savedProject.add(project);
     });
-    debugPrint('-- end --');
+    log
+      ..v('savedProject: $savedProject')
+      ..df('appConfig2Projects');
     return savedProject;
   }
 

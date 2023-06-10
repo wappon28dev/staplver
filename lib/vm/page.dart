@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:staplver/vm/log.dart';
 
 import '../model/state.dart';
 
@@ -17,13 +17,11 @@ class Page extends _$Page {
   }
 
   void updateProgress(double newProgress) {
-    // debugPrint('newProgress => $newProgress');
     state = state.copyWith(progress: newProgress);
   }
 
   // ignore: avoid_positional_boolean_parameters
   void updateIsVisibleProgressBar(bool newIsVisibleProgressBar) {
-    // debugPrint('newIsVisibleProgressBar => $newIsVisibleProgressBar');
     state = state.copyWith(isVisibleProgressBar: newIsVisibleProgressBar);
   }
 
@@ -47,12 +45,12 @@ class Page extends _$Page {
 
   // ignore: avoid_positional_boolean_parameters
   void updateAskWhenClose(bool newAskWhenQuit) {
-    debugPrint('newAskWhenQuit => $newAskWhenQuit');
+    log.v('newAskWhenQuit:\n  $newAskWhenQuit');
     state = state.copyWith(askWhenQuit: newAskWhenQuit);
   }
 
   void updateWizardIndex(int newWizardIndex) {
-    debugPrint('newWizardIndex => $newWizardIndex');
+    log.v('newWizardIndex:\n  $newWizardIndex');
     state = state.copyWith(wizardIndex: newWizardIndex);
   }
 }
