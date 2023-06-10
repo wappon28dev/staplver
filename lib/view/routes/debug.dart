@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:staplver/model/class/app.dart';
+import 'package:staplver/vm/log.dart';
 
 import '../../model/error/handler.dart';
 import '../../model/helper/config.dart';
@@ -21,6 +22,7 @@ class PageDebug extends HookConsumerWidget {
     final contentsState = ref.watch(contentsPod);
     final svnNotifier = ref.read(svnPod.notifier);
     final projectsState = ref.watch(projectsPod);
+    final logState = ref.watch(logPod);
 
     final temp = useState('');
 
@@ -175,7 +177,16 @@ class PageDebug extends HookConsumerWidget {
             ''',
               ),
             ),
-            Text('temp => ${temp.value}'),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('temp => ${temp.value}'),
+                  Text('log => ${logState.logs.join('\n')}'),
+                ],
+              ),
+            )
           ],
         ),
       ),

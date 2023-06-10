@@ -13,7 +13,6 @@ class Page extends _$Page {
   }
 
   void updateNavbarIndex(int newNavbarIndex) {
-    debugPrint('newNavbarIndex => $newNavbarIndex');
     state = state.copyWith(navbarIndex: newNavbarIndex);
   }
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:staplver/vm/log.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../vm/now.dart';
@@ -25,6 +26,7 @@ class AppRoot extends ConsumerStatefulWidget {
 class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
   @override
   void initState() {
+    log.i('Staplver started');
     windowManager.addListener(this);
     windowInit();
     RouteController(ref).appInit(context);
@@ -47,17 +49,20 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
+    // state
+    final pageState = ref.watch(pagePod);
+    final nowState = ref.watch(nowPod);
+
+    // local
     final orientation = MediaQuery.of(context).orientation;
     final navbar = NavBar(ref: ref, orientation: orientation);
     final isPortrait = orientation == Orientation.portrait;
-
-    final pageState = ref.watch(pagePod);
-    final nowState = ref.watch(nowPod);
     final dateStr =
         DateFormat.yMMMMEEEEd('ja').format(nowState.value ?? DateTime.now());
     final timeStr = DateFormat.Hms().format(nowState.value ?? DateTime.now());
     final dest = NavBar(ref: ref, orientation: orientation).getDest();
 
+    // view
     const pages = [
       PageHome(),
       PageProjects(),

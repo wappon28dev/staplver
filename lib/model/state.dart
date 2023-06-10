@@ -9,6 +9,13 @@ import 'class/app.dart';
 part 'state.freezed.dart';
 
 @freezed
+class LogState with _$LogState {
+  const factory LogState({
+    @Default(<String>[]) List<String> logs,
+  }) = _LogState;
+}
+
+@freezed
 class PageState with _$PageState {
   const factory PageState({
     @Default(0) int navbarIndex,

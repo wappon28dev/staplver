@@ -1,8 +1,9 @@
 import 'package:drag_and_drop_windows/drag_and_drop_windows.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:logger/logger.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'view/root.dart';
@@ -10,6 +11,8 @@ import 'vm/contents.dart';
 import 'vm/theme.dart';
 
 void main() async {
+  Logger.level = Level.info;
+
   await initializeDateFormatting('ja_JP');
   WidgetsFlutterBinding.ensureInitialized();
   // Must add this line.
