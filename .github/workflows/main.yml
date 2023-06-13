@@ -76,7 +76,6 @@ jobs:
     runs-on: macos-latest
     # FIXME: RunnerTests fail on macOS build
     # ref: https://stackoverflow.com/questions/76247185
-    if: false
 
     steps:
       - name: 📥 Checkout repository
