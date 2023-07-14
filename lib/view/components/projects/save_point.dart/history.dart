@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:staplver/view/components/projects/save_point.dart/diff.dart';
+import 'package:staplver/view/util/route.dart';
 import 'package:timelines/timelines.dart';
 
-import '../../../model/class/svn.dart';
-import '../../../model/error/handler.dart';
-import '../../routes/projects/details.dart';
-import 'create_save_point.dart';
+import '../../../../model/class/svn.dart';
+import '../../../../model/error/handler.dart';
+import '../../../routes/projects/details.dart';
+import '../create_save_point.dart';
 
-class CompPjHistory extends HookConsumerWidget {
-  const CompPjHistory({super.key});
+class CompPjSavePointHistory extends HookConsumerWidget {
+  const CompPjSavePointHistory({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // local
@@ -30,7 +32,16 @@ class CompPjHistory extends HookConsumerWidget {
           ),
           contents: Container(
             padding: const EdgeInsets.all(8),
-            child: Text(savePoint.message),
+            child: TextButton(
+              child: Text(savePoint.message),
+              onPressed: () => {
+                RouteController.runPush(
+                  context: context,
+                  page: CompPjSavePointDiff(savePoint: savePoint),
+                  isFullscreen: true,
+                )
+              },
+            ),
           ),
           node: TimelineNode(
             indicator: const DotIndicator(),
@@ -90,7 +101,7 @@ class CompPjHistory extends HookConsumerWidget {
           onPressed: () async {
             final savePointName = await showDialog<String>(
               context: context,
-              builder: (context) => const CompPjCreateSavePoint(),
+              builder: (_) => const CompPjCreateSavePoint(),
             );
             debugPrint(savePointName);
           },

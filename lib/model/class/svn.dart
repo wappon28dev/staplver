@@ -46,6 +46,7 @@ enum SvnKinds {
   dir,
 }
 
+/// Repository (= Project) の情報
 @freezed
 class SvnRepositoryInfo with _$SvnRepositoryInfo {
   const factory SvnRepositoryInfo({
@@ -68,6 +69,7 @@ class SvnRepositoryInfo with _$SvnRepositoryInfo {
       _$SvnRepositoryInfoFromJson(json);
 }
 
+/// History での 1 つの変更されたファイルを指す.
 @freezed
 class SvnRevisionPath with _$SvnRevisionPath {
   const factory SvnRevisionPath({
@@ -83,6 +85,9 @@ class SvnRevisionPath with _$SvnRevisionPath {
       _$SvnRevisionPathFromJson(json);
 }
 
+/// `svn log` の結果
+///
+/// Project での 1 つの履歴(= History) を指す.
 @freezed
 class SvnRevisionLog with _$SvnRevisionLog {
   const factory SvnRevisionLog({
@@ -98,6 +103,7 @@ class SvnRevisionLog with _$SvnRevisionLog {
       _$SvnRevisionLogFromJson(json);
 }
 
+/// Projectの状態で過去にコミットがあった場合のリビジョン情報
 @freezed
 class SvnStatusCommitInfo with _$SvnStatusCommitInfo {
   const factory SvnStatusCommitInfo({
@@ -111,6 +117,9 @@ class SvnStatusCommitInfo with _$SvnStatusCommitInfo {
       _$SvnStatusCommitInfoFromJson(json);
 }
 
+/// `svn status` の結果
+///
+/// Project の状態を指す.
 @freezed
 class SvnStatusEntry with _$SvnStatusEntry {
   const factory SvnStatusEntry({

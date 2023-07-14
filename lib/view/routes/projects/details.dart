@@ -10,7 +10,7 @@ import '../../../vm/projects.dart';
 import '../../../vm/svn.dart';
 import '../../components/navbar.dart';
 import '../../components/projects/create_save_point.dart';
-import '../../components/projects/history.dart';
+import '../../components/projects/save_point.dart/history.dart';
 import '../../components/projects/status.dart';
 
 class CompProjectsDetails extends HookConsumerWidget {
@@ -193,7 +193,7 @@ class CompProjectsDetails extends HookConsumerWidget {
           children: [
             Expanded(child: CompPjStatus()),
             SizedBox(child: VerticalDivider()),
-            Expanded(child: CompPjHistory())
+            Expanded(child: CompPjSavePointHistory())
           ],
         ),
       )

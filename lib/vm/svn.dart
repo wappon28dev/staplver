@@ -29,7 +29,8 @@ class Svn extends _$Svn {
     if (currentPjSnapshot == null) {
       throw ProjectExceptions().currentPjIsNull();
     }
-    await _directoryExists(currentPjSnapshot);
+    // FIXME: プロジェクト作成時の runCheckout時にエラーを吐く
+    // await _directoryExists(currentPjSnapshot);
     return currentPjSnapshot;
   }
 
@@ -179,17 +180,14 @@ class Svn extends _$Svn {
   Future<void> runUpdate() async =>
       SvnRepository((await currentPj).workingDir).runUpdate();
 
-  Future<SvnRepositoryInfo> getRepositoryInfo() async {
-    return SvnRepository((await currentPj).workingDir).getRepositoryInfo();
-  }
+  Future<SvnRepositoryInfo> getRepositoryInfo() async =>
+      SvnRepository((await currentPj).workingDir).getRepositoryInfo();
 
-  Future<List<SvnRevisionLog>> getPjSavePoints() async {
-    return SvnRepository((await currentPj).workingDir).getRevisionsLog();
-  }
+  Future<List<SvnRevisionLog>> getPjSavePoints() async =>
+      SvnRepository((await currentPj).workingDir).getRevisionsLog();
 
-  Future<List<SvnStatusEntry>> getPjStatus() async {
-    return SvnRepository((await currentPj).workingDir).getStatusEntries();
-  }
+  Future<List<SvnStatusEntry>> getPjStatus() async =>
+      SvnRepository((await currentPj).workingDir).getStatusEntries();
 
   Future<Result<void, SystemException>> createSavePoint(
     String commitMessage,
