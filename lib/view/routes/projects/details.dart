@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:staplver/vm/log.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../model/constant.dart';
@@ -27,11 +28,13 @@ class CompProjectsDetails extends HookConsumerWidget {
   );
 
   static Future<void> refresh(WidgetRef ref, {bool needUpdate = false}) async {
+    log.ds('Providers refresh');
     if (needUpdate) await ref.read(svnPod.notifier).runUpdate();
     ref
       ..invalidate(repositoryProvider)
       ..invalidate(savePointsProvider)
       ..invalidate(pjStatusProvider);
+    log.df('Providers refresh');
   }
 
   @override

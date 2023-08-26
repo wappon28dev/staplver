@@ -203,4 +203,17 @@ class Svn extends _$Svn {
 
     return const Success(null);
   }
+
+  Future<void> runRevertSavePoint(SvnRevisionLog revisionLog) async =>
+      SvnRepository(
+        (await currentPj).workingDir,
+      ).runRevertRevision(revisionLog.revisionIndex);
+
+  Future<void> runRevertWorkingFile(String path) async => SvnRepository(
+        (await currentPj).workingDir,
+      ).runRevert(path);
+
+  Future<void> runRevertWorkingAll() async => SvnRepository(
+        (await currentPj).workingDir,
+      ).runRevertAll();
 }

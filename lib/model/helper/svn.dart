@@ -168,7 +168,8 @@ class SvnHelper {
           final commitElement = wcStatusElement.findElements('commit').first;
           final committedRevision = commitElement.getAttribute('revision');
           final date = DateTime.parse(
-              commitElement.findElements('date').first.innerText);
+            commitElement.findElements('date').first.innerText,
+          );
           final author = commitElement.findElements('author').first.innerText;
           final copied = commitElement.getAttribute('copied') == 'true';
 

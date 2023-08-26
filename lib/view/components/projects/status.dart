@@ -4,6 +4,9 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:staplver/vm/log.dart';
+import 'package:staplver/vm/page.dart';
+import 'package:staplver/vm/svn.dart';
 
 import '../../../model/class/svn.dart';
 import '../../../model/constant.dart';
@@ -14,9 +17,32 @@ class CompPjStatus extends HookConsumerWidget {
   const CompPjStatus({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // notifier
+    final pageNotifier = ref.read(pagePod.notifier);
+    final svnNotifier = ref.read(svnPod.notifier);
+
     // local
     final pjStatusState = ref.watch(CompProjectsDetails.pjStatusProvider);
-    final selectedEntry = useState(<SvnStatusEntry>[]);
+    final selectedEntries = useState(<SvnStatusEntry>[]);
+
+    // local - hooks
+    Future<void> revertChanges4SelectedFile() async {
+      final entries = selectedEntries.value;
+      await pageNotifier.resetProgress();
+      var count = 0;
+
+      for (final entry in entries) {
+        count++;
+        log.t(
+          'revertChanges4SelectedFile: ${entry.path} ($count/${entries.length})',
+        );
+        await svnNotifier.runRevertWorkingFile(entry.path);
+        pageNotifier.updateProgress(count / entries.length);
+      }
+      await CompProjectsDetails.refresh(ref, needUpdate: true);
+      await pageNotifier.completeProgress();
+      selectedEntries.value = [];
+    }
 
     // view
     Widget content(List<SvnStatusEntry> pjStatus) {
@@ -61,17 +87,17 @@ class CompPjStatus extends HookConsumerWidget {
       }
 
       Widget topTile() {
-        final someSelected = selectedEntry.value.isNotEmpty;
-        final allSelected = selectedEntry.value.length == pjStatus.length;
-        final isTristate = selectedEntry.value.isNotEmpty &&
-            selectedEntry.value.length != pjStatus.length;
+        final someSelected = selectedEntries.value.isNotEmpty;
+        final allSelected = selectedEntries.value.length == pjStatus.length;
+        final isTristate = selectedEntries.value.isNotEmpty &&
+            selectedEntries.value.length != pjStatus.length;
 
         void handleClick({required bool? isSelected}) {
           if (isSelected == null) return;
           if (isSelected) {
-            selectedEntry.value = pjStatus;
+            selectedEntries.value = pjStatus;
           } else {
-            selectedEntry.value = [];
+            selectedEntries.value = [];
           }
         }
 
@@ -92,8 +118,8 @@ class CompPjStatus extends HookConsumerWidget {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.restart_alt),
-                    tooltip: '変更の破棄',
-                    onPressed: someSelected ? () {} : null,
+                    tooltip: '変更をもとに戻す',
+                    onPressed: someSelected ? revertChanges4SelectedFile : null,
                   )
                 ],
               ),
@@ -110,17 +136,17 @@ class CompPjStatus extends HookConsumerWidget {
           final textColor =
               entry.action.color.harmonizeWith(colorScheme.background);
 
-          final isSelected = selectedEntry.value.contains(entry);
+          final isSelected = selectedEntries.value.contains(entry);
 
           void handleClick({required bool? isCheckedVal}) {
             if (isCheckedVal == null) return;
-            final copiedSelectedEntry = selectedEntry.value.toList();
+            final copiedSelectedEntry = selectedEntries.value.toList();
             if (isCheckedVal) {
               copiedSelectedEntry.add(entry);
             } else {
               copiedSelectedEntry.remove(entry);
             }
-            selectedEntry.value = copiedSelectedEntry;
+            selectedEntries.value = copiedSelectedEntry;
           }
 
           tiles.add(

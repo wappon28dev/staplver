@@ -130,4 +130,73 @@ class SvnRepository {
       ..t('Commit:\n  ${process.stdout}')
       ..df('Running commit ($commitMessage)');
   }
+
+  Future<void> runRevertRevision(int revisionId) async {
+    log.ds('running revert');
+
+    final rivLog = await getRevisionsLog();
+    final rivLogIndex =
+        rivLog.indexWhere((element) => element.revisionIndex == revisionId);
+
+    if (rivLogIndex == -1) {
+      throw Exception('Revision $revisionId is not found.');
+    }
+
+    final process = await runCommand(
+      currentDirectory: workingDir,
+      svnExecs: SvnExecs.svn,
+      args: [
+        'merge',
+        '-c',
+        '-$revisionId',
+        '.',
+      ],
+    );
+
+    log
+      ..t('Revert:\n  ${process.stdout}')
+      ..df('Running revert');
+  }
+
+  Future<void> runRevert(String path) async {
+    log.ds('running revert');
+
+    final statusEntries = await getStatusEntries();
+    final statusEntryIndex =
+        statusEntries.indexWhere((element) => element.path == path);
+    if (statusEntryIndex == -1) {
+      throw Exception('Path $path is not found.');
+    }
+
+    final process = await runCommand(
+      currentDirectory: workingDir,
+      svnExecs: SvnExecs.svn,
+      args: [
+        'revert',
+        path,
+      ],
+    );
+
+    log
+      ..t('Revert:\n  ${process.stdout}')
+      ..df('Running revert');
+  }
+
+  Future<void> runRevertAll() async {
+    log.ds('running revert all');
+
+    final process = await runCommand(
+      currentDirectory: workingDir,
+      svnExecs: SvnExecs.svn,
+      args: [
+        'revert',
+        '-R',
+        '.',
+      ],
+    );
+
+    log
+      ..t('Revert all:\n  ${process.stdout}')
+      ..df('Running revert all');
+  }
 }
