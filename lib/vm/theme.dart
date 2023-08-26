@@ -14,13 +14,13 @@ class AppTheme extends _$AppTheme {
   }
 
   void updateThemeMode(ThemeMode newThemeMode) {
-    log.v('newThemeMode:\n  $newThemeMode');
+    log.t('newThemeMode:\n  $newThemeMode');
     state = state.copyWith(themeMode: newThemeMode);
   }
 
   // ignore: avoid_positional_boolean_parameters
   void updateUseDynamicColor(bool newUseDynamicColor) {
-    log.v('newUseDynamicColor:\n  $newUseDynamicColor');
+    log.t('newUseDynamicColor:\n  $newUseDynamicColor');
     state = state.copyWith(useDynamicColor: newUseDynamicColor);
   }
 

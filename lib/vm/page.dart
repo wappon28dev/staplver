@@ -45,12 +45,12 @@ class Page extends _$Page {
 
   // ignore: avoid_positional_boolean_parameters
   void updateAskWhenClose(bool newAskWhenQuit) {
-    log.v('newAskWhenQuit:\n  $newAskWhenQuit');
+    log.t('newAskWhenQuit:\n  $newAskWhenQuit');
     state = state.copyWith(askWhenQuit: newAskWhenQuit);
   }
 
   void updateWizardIndex(int newWizardIndex) {
-    log.v('newWizardIndex:\n  $newWizardIndex');
+    log.t('newWizardIndex:\n  $newWizardIndex');
     state = state.copyWith(wizardIndex: newWizardIndex);
   }
 }

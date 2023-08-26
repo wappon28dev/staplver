@@ -87,7 +87,7 @@ class SystemErrorHandler {
   FutureOr<void> noticeErr(dynamic err, StackTrace? trace) {
     ScaffoldMessenger.of(context).clearMaterialBanners();
     if (err is SystemException) {
-      log.e('ERROR RECEIVED', err, trace);
+      log.e('ERROR RECEIVED', error: err, stackTrace: trace);
       if (err.needShowAsBanner) {
         pushBanner(
           title: err.message,
@@ -105,7 +105,7 @@ class SystemErrorHandler {
   void _noticeUnhandledErr(dynamic err, StackTrace? trace) {
     ScaffoldMessenger.of(context).clearMaterialBanners();
 
-    log.e('UNHANDLED ERROR RECEIVED', err, trace);
+    log.e('UNHANDLED ERROR RECEIVED', error: err, stackTrace: trace);
     pushBanner(
       title: '開発者の想定していないエラーが発生しました\n$err',
       actions: [

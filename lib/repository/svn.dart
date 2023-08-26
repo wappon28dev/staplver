@@ -24,7 +24,7 @@ class SvnRepository {
     required SvnExecs svnExecs,
     required List<String> args,
   }) async {
-    log.v('Executing svn command: `${svnExecs.name} ${args.join(' ')}` ...');
+    log.t('Executing svn command: `${svnExecs.name} ${args.join(' ')}` ...');
 
     final execPath = await AssetsRepository().getSvnExecPath(svnExecs);
     final process = await Process.run(
@@ -50,7 +50,7 @@ class SvnRepository {
     final repositoryInfo = SvnHelper.parseRepositoryInfo(stdout);
 
     log
-      ..v('Repository info:\n  $repositoryInfo')
+      ..t('Repository info:\n  $repositoryInfo')
       ..df('Getting repository info');
     return repositoryInfo;
   }
@@ -67,7 +67,7 @@ class SvnRepository {
     final revisionLog = SvnHelper.parseRevisionInfo(stdout);
 
     log
-      ..v('Revision log:\n  $revisionLog')
+      ..t('Revision log:\n  $revisionLog')
       ..df('Getting revision log');
     return revisionLog;
   }
@@ -84,7 +84,7 @@ class SvnRepository {
     final statusEntries = SvnHelper.parseStatusEntries(stdout);
 
     log
-      ..v('Status entries:\n  $statusEntries')
+      ..t('Status entries:\n  $statusEntries')
       ..df('Getting status entries');
     return statusEntries;
   }
@@ -99,7 +99,7 @@ class SvnRepository {
     );
 
     log
-      ..v('Update:\n  ${process.stdout}')
+      ..t('Update:\n  ${process.stdout}')
       ..df('Running update');
   }
 
@@ -113,7 +113,7 @@ class SvnRepository {
     );
 
     log
-      ..v('Staging all:\n  ${process.stdout}')
+      ..t('Staging all:\n  ${process.stdout}')
       ..df('Running staging all');
   }
 
@@ -127,7 +127,7 @@ class SvnRepository {
     );
 
     log
-      ..v('Commit:\n  ${process.stdout}')
+      ..t('Commit:\n  ${process.stdout}')
       ..df('Running commit ($commitMessage)');
   }
 }

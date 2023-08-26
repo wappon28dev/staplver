@@ -63,7 +63,7 @@ class AppConfigRepository {
     }
 
     log
-      ..v('appConfig: $appConfig')
+      ..t('appConfig: $appConfig')
       ..df('loading appConfig');
     return appConfig;
   }
@@ -75,7 +75,7 @@ class AppConfigRepository {
     await (await appConfigFile).writeAsString(appConfigStr);
 
     log
-      ..v('appConfig: $appConfig')
+      ..t('appConfig: $appConfig')
       ..df('saving appConfig');
   }
 
@@ -134,7 +134,7 @@ class PjConfigRepository {
     };
 
     log
-      ..v('config: $pjConfig')
+      ..t('config: $pjConfig')
       ..df('loading pjConfig');
     return pjConfig;
   }
@@ -151,7 +151,7 @@ class PjConfigRepository {
     await pjConfigFile.writeAsString(pjConfigStr);
 
     log
-      ..v('config: $pjConfig')
+      ..t('config: $pjConfig')
       ..df('creating new pjConfig');
   }
 
@@ -171,7 +171,7 @@ class PjConfigRepository {
     await pjConfigFile.writeAsString(pjConfigStr);
 
     log
-      ..v('config: $pjConfig')
+      ..t('config: $pjConfig')
       ..df('updating pjConfig');
   }
 }

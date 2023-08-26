@@ -20,14 +20,14 @@ class Contents extends _$Contents {
   }
 
   void updateDefaultBackupDir(Directory? newDefaultBackupDir) {
-    log.v('newDefaultBackupDir:\n  $newDefaultBackupDir');
+    log.t('newDefaultBackupDir:\n  $newDefaultBackupDir');
     state = state.copyWith(defaultBackupDir: newDefaultBackupDir);
   }
 
   void updateDragAndDropCallback(
     void Function(Directory)? newDragAndDropCallback,
   ) {
-    log.v('newDragAndDropCallback:\n  $newDragAndDropCallback');
+    log.t('newDragAndDropCallback:\n  $newDragAndDropCallback');
     state = state.copyWith(dragAndDropCallback: newDragAndDropCallback);
   }
 

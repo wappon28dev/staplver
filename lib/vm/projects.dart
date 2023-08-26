@@ -19,19 +19,19 @@ class Projects extends _$Projects {
   }
 
   void addSavedProject(Project newProject) {
-    log.v('newProject:\n  $newProject');
+    log.t('newProject:\n  $newProject');
     final savedProjectsClone = state.savedProjects.toList()..add(newProject);
 
     state = state.copyWith(savedProjects: savedProjectsClone);
   }
 
   void updateSavedProject(List<Project> newSavedProjects) {
-    log.v('newProjects:\n  $newSavedProjects');
+    log.t('newProjects:\n  $newSavedProjects');
     state = state.copyWith(savedProjects: newSavedProjects);
   }
 
   void updateCurrentPjIndex(int newCurrentPjIndex) {
-    log.v('newCurrentPjIndex:\n  $newCurrentPjIndex');
+    log.t('newCurrentPjIndex:\n  $newCurrentPjIndex');
     assert((state.savedProjects.length) >= newCurrentPjIndex);
     state = state.copyWith(currentPjIndex: newCurrentPjIndex);
   }

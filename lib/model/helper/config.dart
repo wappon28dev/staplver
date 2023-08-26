@@ -58,7 +58,7 @@ class AppConfigHelper {
       savedProject.add(project);
     });
     log
-      ..v('savedProject: $savedProject')
+      ..t('savedProject: $savedProject')
       ..df('appConfig2Projects');
     return savedProject;
   }
