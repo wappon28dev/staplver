@@ -19,6 +19,7 @@ class SvnRepository {
   SvnRepository(this.workingDir);
   final Directory workingDir;
 
+  // TODO: 将来的には private にする
   static Future<ProcessResult> runCommand({
     required Directory currentDirectory,
     required SvnExecs svnExecs,
@@ -198,5 +199,23 @@ class SvnRepository {
     log
       ..t('Revert all:\n  ${process.stdout}')
       ..df('Running revert all');
+  }
+
+  Future<void> runDelete(String path, {bool needForce = false}) async {
+    log.ds('running delete');
+
+    final process = await runCommand(
+      currentDirectory: workingDir,
+      svnExecs: SvnExecs.svn,
+      args: [
+        'delete',
+        if (needForce) '--force',
+        path,
+      ],
+    );
+
+    log
+      ..t('Delete:\n  ${process.stdout}')
+      ..df('Running delete');
   }
 }

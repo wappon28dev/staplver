@@ -2,9 +2,14 @@ import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:staplver/model/class/svn.dart';
 import 'package:staplver/model/constant.dart';
+import 'package:staplver/view/components/projects/save_point.dart/history.dart';
+import 'package:staplver/view/routes/projects/details.dart';
+import 'package:staplver/vm/page.dart';
+import 'package:staplver/vm/svn.dart';
 
 import '../../navbar.dart';
 
@@ -14,6 +19,10 @@ class CompPjSavePointDiff extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // notifier
+    final svnNotifier = ref.read(svnPod.notifier);
+    final pageNotifier = ref.read(pagePod.notifier);
+
     // local
     final orientation = MediaQuery.of(context).orientation;
     final paths = savePoint.paths;
@@ -48,7 +57,21 @@ class CompPjSavePointDiff extends ConsumerWidget {
 
     Widget content() {
       return Column(
-        children: [const Text('Diff'), const Divider(), getTiles()],
+        children: [
+          ActionChip(
+            label: const Text('このセーブポイントまでもとに戻す'),
+            avatar: const Icon(Icons.restore),
+            onPressed: () async {
+              Navigator.pop(context);
+              await pageNotifier.resetProgress();
+              await svnNotifier.runRevertSavePoint(savePoint);
+              await CompProjectsDetails.refresh(ref, needUpdate: true);
+              await pageNotifier.completeProgress();
+            },
+          ),
+          const Divider(),
+          getTiles(),
+        ],
       );
     }
 

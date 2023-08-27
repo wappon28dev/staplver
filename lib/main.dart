@@ -11,7 +11,7 @@ import 'vm/contents.dart';
 import 'vm/theme.dart';
 
 void main() async {
-  Logger.level = Level.verbose;
+  Logger.level = Level.trace;
 
   await initializeDateFormatting('ja_JP');
   WidgetsFlutterBinding.ensureInitialized();

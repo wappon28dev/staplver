@@ -64,7 +64,6 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
 
     // view
     const pages = [
-      PageHome(),
       PageProjects(),
       PageSettings(),
       PageDebug(),

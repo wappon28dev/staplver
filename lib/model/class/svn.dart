@@ -16,6 +16,7 @@ enum SvnActions {
   missing('!', '削除', Icons.error_outline, Colors.red),
   modified('M', '変更', Icons.edit, Colors.orange),
   none(' ', 'なし', Icons.check, Colors.green),
+  normal(' ', 'なし', Icons.check, Colors.green),
   replaced('R', '置換', Icons.swap_horiz, Colors.blue),
   unversioned('?', '新規', Icons.new_releases_outlined, Colors.green);
 

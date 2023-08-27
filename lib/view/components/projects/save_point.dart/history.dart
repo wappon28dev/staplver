@@ -39,7 +39,7 @@ class CompPjSavePointHistory extends HookConsumerWidget {
                   context: context,
                   page: CompPjSavePointDiff(savePoint: savePoint),
                   isFullscreen: true,
-                )
+                ),
               },
             ),
           ),

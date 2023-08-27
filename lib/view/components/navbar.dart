@@ -24,12 +24,6 @@ class NavBar {
 
     return <Destination>[
       Destination(
-        icon: const Icon(Icons.home_outlined),
-        selectedIcon: const Icon(Icons.home),
-        label: 'ホーム',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
-      ),
-      Destination(
         icon: const Icon(Icons.rocket_launch_outlined),
         selectedIcon: const Icon(Icons.rocket_launch),
         label: 'プロジェクト',
@@ -194,7 +188,7 @@ class NavBar {
         children: [
           rails,
           const VerticalDivider(thickness: 1, width: 1),
-          Expanded(child: mainContent)
+          Expanded(child: mainContent),
         ],
       );
     } else {

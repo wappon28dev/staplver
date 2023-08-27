@@ -36,7 +36,7 @@ class CompPjStatus extends HookConsumerWidget {
         log.t(
           'revertChanges4SelectedFile: ${entry.path} ($count/${entries.length})',
         );
-        await svnNotifier.runRevertWorkingFile(entry.path);
+        await svnNotifier.runRevertWorkingFile(entry);
         pageNotifier.updateProgress(count / entries.length);
       }
       await CompProjectsDetails.refresh(ref, needUpdate: true);
@@ -120,7 +120,7 @@ class CompPjStatus extends HookConsumerWidget {
                     icon: const Icon(Icons.restart_alt),
                     tooltip: '変更をもとに戻す',
                     onPressed: someSelected ? revertChanges4SelectedFile : null,
-                  )
+                  ),
                 ],
               ),
             ),
@@ -157,9 +157,13 @@ class CompPjStatus extends HookConsumerWidget {
                   color: textColor.harmonizeWith(colorScheme.background),
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              subtitle: Text(entry.path),
+              subtitle: Text(
+                entry.path,
+                style: const TextStyle(overflow: TextOverflow.ellipsis),
+              ),
               secondary: entry.action.chips(colorScheme),
               controlAffinity: ListTileControlAffinity.leading,
               value: isSelected,

@@ -209,11 +209,37 @@ class Svn extends _$Svn {
         (await currentPj).workingDir,
       ).runRevertRevision(revisionLog.revisionIndex);
 
-  Future<void> runRevertWorkingFile(String path) async => SvnRepository(
-        (await currentPj).workingDir,
-      ).runRevert(path);
+  Future<void> runRevertWorkingFile(SvnStatusEntry entry) async {
+    await SvnRepository(
+      (await currentPj).workingDir,
+    ).runRevert(entry.path);
+
+    if (entry.action == SvnActions.unversioned) {
+      await SvnRepository((await currentPj).workingDir).runDelete(
+        entry.path,
+        needForce: true,
+      );
+    }
+  }
 
   Future<void> runRevertWorkingAll() async => SvnRepository(
         (await currentPj).workingDir,
       ).runRevertAll();
+
+  Future<void> runDeleteFile(
+    SvnStatusEntry entry,
+  ) async {
+    final svnRepository = SvnRepository(
+      (await currentPj).workingDir,
+    );
+
+    await svnRepository.runDelete(entry.path);
+
+    if (entry.action == SvnActions.unversioned) {
+      await svnRepository.runDelete(
+        entry.path,
+        needForce: true,
+      );
+    }
+  }
 }
