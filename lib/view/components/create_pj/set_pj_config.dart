@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -98,6 +100,14 @@ class CompSetPjConfig extends HookConsumerWidget {
       isValidContentsNotifier.state = isPjNameValid && isWorkingDirValid;
     }
 
+    void updateDir(Directory dir) {
+      backupDirNotifier.state = dir;
+    }
+
+    Future<void> onDragDone(List<XFile> files) async {
+      updateDir(await Contents.getSingleDirectory(files));
+    }
+
     // view
     final pjNameField = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -189,48 +199,52 @@ class CompSetPjConfig extends HookConsumerWidget {
       ],
     );
 
-    final backupDirField = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Expanded(
-          flex: 2,
-          child: Column(
-            children: [
-              Icon(Icons.folder_copy, size: 47),
-              Text('バックアップ\nフォルダー', textAlign: TextAlign.center),
-            ],
-          ),
-        ),
-        Expanded(
-          flex: 12,
-          child: Focus(
-            child: TextFormField(
-              controller: backupDirFormController,
-              autovalidateMode: AutovalidateMode.always,
-              validator: backupDirValidator,
-              onChanged: (_) => updateValidState(),
-              decoration: InputDecoration(
-                hintText: getBackupDirStr() ?? '(ドラッグアンドドロップでも指定可)',
-                border: const OutlineInputBorder(),
-              ),
+    final backupDirField = DropTarget(
+      onDragDone: (details) => {onDragDone(details.files)},
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Expanded(
+            flex: 2,
+            child: Column(
+              children: [
+                Icon(Icons.folder_copy, size: 47),
+                Text('バックアップ\nフォルダー', textAlign: TextAlign.center),
+              ],
             ),
-            onFocusChange: (hasFocus) {
-              if (!hasFocus) {
-                if (backupDirValidator(backupDirFormController.text) == null) {
-                  backupDirNotifier.state =
-                      Directory(backupDirFormController.text);
+          ),
+          Expanded(
+            flex: 12,
+            child: Focus(
+              child: TextFormField(
+                controller: backupDirFormController,
+                autovalidateMode: AutovalidateMode.always,
+                validator: backupDirValidator,
+                onChanged: (_) => updateValidState(),
+                decoration: InputDecoration(
+                  hintText: getBackupDirStr() ?? '(ドラッグアンドドロップでも指定可)',
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              onFocusChange: (hasFocus) {
+                if (!hasFocus) {
+                  if (backupDirValidator(backupDirFormController.text) ==
+                      null) {
+                    backupDirNotifier.state =
+                        Directory(backupDirFormController.text);
+                  }
                 }
-              }
-            },
+              },
+            ),
           ),
-        ),
-        Expanded(
-          child: IconButton(
-            onPressed: handleClick,
-            icon: const Icon(Icons.more_horiz),
+          Expanded(
+            child: IconButton(
+              onPressed: handleClick,
+              icon: const Icon(Icons.more_horiz),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
 
     return Column(
@@ -258,9 +272,7 @@ class CompSetPjConfig extends HookConsumerWidget {
             onPressed: () {
               pjNameFormController.text = workingDirState?.name ?? '';
               backupDirFormController.text =
-                  contentsState.defaultBackupDir?.path ??
-                      backupDirState?.path ??
-                      '';
+                  contentsState.defaultBackupDir?.path ?? '';
             },
           ),
         ),
