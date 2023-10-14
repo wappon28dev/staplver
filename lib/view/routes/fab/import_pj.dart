@@ -11,7 +11,6 @@ import '../../../model/error/exception.dart';
 import '../../../model/error/handler.dart';
 import '../../../model/helper/config.dart';
 import '../../../repository/config.dart';
-import '../../../vm/contents.dart';
 import '../../../vm/page.dart';
 import '../../../vm/projects.dart';
 import '../../components/import_pj/pj_summary.dart';
@@ -26,9 +25,6 @@ class PageImportPj extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // notifier
-    final contentsNotifier = ref.read(contentsPod.notifier);
-
     // local
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
     final importedPjNotifier = ref.read(importedPjProvider.notifier);
@@ -39,9 +35,6 @@ class PageImportPj extends HookConsumerWidget {
       RouteController(ref).home2fabInit();
       workingDirNotifier.state = null;
       importedPjNotifier.state = null;
-      contentsNotifier.updateDragAndDropCallback(
-        (newDir) => workingDirNotifier.state = newDir,
-      );
       log.d('init (home -> importPj)');
     }
 
@@ -51,15 +44,13 @@ class PageImportPj extends HookConsumerWidget {
     final components = <WizardComponents>[
       WizardComponents(
         title: '作業フォルダーの選択',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(
-          (newDir) => workingDirNotifier.state = newDir,
-        ),
+        runInit: () {},
         icon: Icons.folder_copy,
         screen: const CompSetWorkingDir(),
       ),
       WizardComponents(
         title: 'インポートするプロジェクトの確認',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
+        runInit: () {},
         icon: Icons.settings,
         screen: const CompPjSummary(),
       ),
@@ -99,7 +90,6 @@ class PageImportPj extends HookConsumerWidget {
 
     void runDispose(BuildContext context, WidgetRef ref) {
       Navigator.pop(context);
-      ref.read(contentsPod.notifier).updateDragAndDropCallback(null);
     }
 
     return CompWizard(

@@ -40,7 +40,7 @@ class CompSetPjDetails extends ConsumerWidget {
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.error,
                   ),
-                )
+                ),
               ],
             ),
           ),

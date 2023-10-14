@@ -7,7 +7,6 @@ import 'package:staplver/vm/log.dart';
 
 import '../../../model/class/app.dart';
 import '../../../model/constant.dart';
-import '../../../vm/contents.dart';
 import '../../../vm/page.dart';
 import '../../components/checkout/pj_summary.dart';
 import '../../components/checkout/set_backup_dir.dart';
@@ -24,11 +23,7 @@ class PageCheckout extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // notifier
-    final contentsNotifier = ref.read(contentsPod.notifier);
-
     // local
-    final backupDirNotifier = ref.read(backupDirProvider.notifier);
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
     final newPjDataNotifier = ref.read(PageCheckout.newPjDataProvider.notifier);
 
@@ -38,9 +33,6 @@ class PageCheckout extends HookConsumerWidget {
       RouteController(ref).home2fabInit();
       workingDirNotifier.state = null;
       newPjDataNotifier.state = null;
-      contentsNotifier.updateDragAndDropCallback(
-        (newDir) => backupDirNotifier.state = newDir,
-      );
       log.d('init (home -> createPj)');
     }
 
@@ -50,23 +42,19 @@ class PageCheckout extends HookConsumerWidget {
     final components = <WizardComponents>[
       WizardComponents(
         title: 'バックアップフォルダーの選択',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(
-          (newDir) => backupDirNotifier.state = newDir,
-        ),
+        runInit: () {},
         icon: Icons.folder_copy,
         screen: const CompSetBackupDir(),
       ),
       WizardComponents(
         title: '作業フォルダーの選択',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(
-          (newDir) => workingDirNotifier.state = newDir,
-        ),
+        runInit: () {},
         icon: Icons.drive_file_move,
         screen: const CompSetWorkingDir(),
       ),
       WizardComponents(
         title: 'プロジェクト設定の確認',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
+        runInit: () {},
         icon: Icons.settings,
         screen: const CompPjSummary(),
       ),
@@ -92,7 +80,6 @@ class PageCheckout extends HookConsumerWidget {
 
     void runDispose(BuildContext context, WidgetRef ref) {
       Navigator.pop(context);
-      ref.read(contentsPod.notifier).updateDragAndDropCallback(null);
     }
 
     return CompWizard(

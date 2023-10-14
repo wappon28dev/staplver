@@ -33,7 +33,6 @@ class PageCreatePj extends HookConsumerWidget {
     final contentsState = ref.watch(contentsPod);
 
     // notifier
-    final contentsNotifier = ref.read(contentsPod.notifier);
     final workingDirNotifier = ref.read(workingDirProvider.notifier);
     final backupDirNotifier = ref.read(backupDirProvider.notifier);
 
@@ -49,9 +48,6 @@ class PageCreatePj extends HookConsumerWidget {
       workingDirNotifier.state = null;
       backupDirNotifier.state = contentsState.defaultBackupDir;
       ignoreFilesNotifier.state = [];
-      contentsNotifier.updateDragAndDropCallback(
-        (newDir) => workingDirNotifier.state = newDir,
-      );
       log.df('init (home -> createPj)');
     }
 
@@ -61,32 +57,25 @@ class PageCreatePj extends HookConsumerWidget {
     final components = [
       WizardComponents(
         title: '作業フォルダーの選択',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(
-          (newDir) => workingDirNotifier.state = newDir,
-        ),
+        runInit: () {},
         icon: Icons.drive_file_move,
         screen: const CompSetWorkingDir(),
       ),
       WizardComponents(
         title: 'バージョンの管理外にする ファイル/フォルダー を選択',
-        runInit: () {
-          pjNameNotifier.state = workingDirNotifier.state?.name ?? '';
-          contentsNotifier.updateDragAndDropCallback(null);
-        },
+        runInit: () {},
         icon: Icons.folder_off,
         screen: const CompSetIgnoreFiles(),
       ),
       WizardComponents(
         title: 'プロジェクトの設定',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(
-          (newDir) => backupDirNotifier.state = newDir,
-        ),
+        runInit: () {},
         icon: Icons.settings,
         screen: const CompSetPjConfig(),
       ),
       WizardComponents(
         title: 'プロジェクトの詳細',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
+        runInit: () {},
         icon: Icons.settings_suggest,
         screen: const CompSetPjDetails(),
       ),
@@ -136,7 +125,6 @@ class PageCreatePj extends HookConsumerWidget {
 
     void runDispose(BuildContext context, WidgetRef ref) {
       Navigator.pop(context);
-      ref.read(contentsPod.notifier).updateDragAndDropCallback(null);
     }
 
     return CompWizard(

@@ -1,4 +1,3 @@
-import 'package:drag_and_drop_windows/drag_and_drop_windows.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,7 +6,6 @@ import 'package:logger/logger.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'view/root.dart';
-import 'vm/contents.dart';
 import 'vm/theme.dart';
 
 void main() async {
@@ -39,13 +37,7 @@ class Staplver extends ConsumerWidget with WindowListener {
     final themeState = ref.watch(appThemePod);
 
     // notifier
-    final contentsNotifier = ref.read(contentsPod.notifier);
     final themeNotifier = ref.watch(appThemePod.notifier);
-
-    // local
-    dropEventStream.listen(
-      (paths) async => contentsNotifier.handleDragAndDrop(paths),
-    );
 
     // view
     return DynamicColorBuilder(

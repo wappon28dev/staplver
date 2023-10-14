@@ -38,7 +38,6 @@ class AppThemeState with _$AppThemeState {
 class ContentsState with _$ContentsState {
   const factory ContentsState({
     Directory? defaultBackupDir,
-    void Function(Directory)? dragAndDropCallback,
   }) = _ContentsState;
 }
 

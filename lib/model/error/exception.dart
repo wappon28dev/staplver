@@ -239,7 +239,7 @@ final class PjConfigExceptions extends ConfigExceptions {
             (ref) => ref
                 .read(appThemePod.notifier)
                 .updateThemeMode(ThemeMode.system),
-          )
+          ),
         ],
       );
 }

@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:staplver/vm/contents.dart';
 
 import '../../../model/error/exception.dart';
 import '../../../model/error/handler.dart';
@@ -67,12 +69,19 @@ class CompSetWorkingDir extends ConsumerWidget {
       }
     });
 
+    void updateDir(Directory dir) {
+      workingDirNotifier.state = dir;
+      textController.text = dir.path;
+    }
+
     Future<void> selectDir() async {
       final selectedDirectory = await FilePicker.platform.getDirectoryPath();
       if (selectedDirectory == null) return;
-      final dir = Directory(selectedDirectory);
-      workingDirNotifier.state = dir;
-      textController.text = dir.path;
+      updateDir(Directory(selectedDirectory));
+    }
+
+    Future<void> onDragDone(List<XFile> files) async {
+      updateDir(await Contents.getSingleDirectory(files));
     }
 
     String? validator(String? newVal) {
@@ -139,12 +148,13 @@ class CompSetWorkingDir extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const SizedBox(height: 20),
-        dragAndDropSquare(
-          selectDir,
-          Theme.of(context).colorScheme,
-          '作業フォルダーをドラッグ & ドロップ',
-          'または, クリックしてフォルダーを選択',
-          Icons.create_new_folder,
+        DragAndDropSquare(
+          onClick: selectDir,
+          onDragDone: onDragDone,
+          colorScheme: Theme.of(context).colorScheme,
+          aboveText: '作業フォルダーをドラッグ & ドロップ',
+          belowText: 'または, クリックしてフォルダーを選択',
+          icon: Icons.create_new_folder,
         ),
         const SizedBox(height: 40),
         workingDirField,

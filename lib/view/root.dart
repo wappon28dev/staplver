@@ -10,7 +10,6 @@ import '../vm/now.dart';
 import '../vm/page.dart';
 import 'components/navbar.dart';
 import 'routes/debug.dart';
-import 'routes/home.dart';
 import 'routes/projects/projects.dart';
 import 'routes/settings.dart';
 import 'util/route.dart';
@@ -87,7 +86,7 @@ class _AppRootState extends ConsumerState<AppRoot> with WindowListener {
               Text(
                 ' / ${dest[pageState.navbarIndex].label}',
                 style: const TextStyle(fontSize: 18),
-              )
+              ),
             ],
           ),
           leading: const SizedBox(),

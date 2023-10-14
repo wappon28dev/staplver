@@ -196,10 +196,10 @@ class CompProjectsDetails extends HookConsumerWidget {
           children: [
             Expanded(child: CompPjStatus()),
             SizedBox(child: VerticalDivider()),
-            Expanded(child: CompPjSavePointHistory())
+            Expanded(child: CompPjSavePointHistory()),
           ],
         ),
-      )
+      ),
     ];
 
     Widget content() {

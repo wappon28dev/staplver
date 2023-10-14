@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:staplver/vm/contents.dart';
 
 import '../../../model/constant.dart';
 import '../../routes/fab/create_pj.dart';
@@ -33,13 +35,20 @@ class CompSetWorkingDir extends HookConsumerWidget {
       (_) => isValidContentsNotifier.state = isValidContents(),
     );
 
-    Future<void> selectDir() async {
-      final selectedDirectory = await FilePicker.platform.getDirectoryPath();
-      if (selectedDirectory == null) return;
-      final dir = Directory(selectedDirectory);
+    void updateDir(Directory dir) {
       workingDirNotifier.state = dir;
       textController.text = dir.path;
       pjNameNotifier.state = dir.name;
+    }
+
+    Future<void> selectDir() async {
+      final selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      if (selectedDirectory == null) return;
+      updateDir(Directory(selectedDirectory));
+    }
+
+    Future<void> onDragDone(List<XFile> files) async {
+      updateDir(await Contents.getSingleDirectory(files));
     }
 
     String? validator(String? newVal) {
@@ -106,12 +115,13 @@ class CompSetWorkingDir extends HookConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const SizedBox(height: 20),
-        dragAndDropSquare(
-          selectDir,
-          Theme.of(context).colorScheme,
-          'バージョン管理をするフォルダーを\nドラッグ & ドロップ',
-          'または, クリックしてフォルダーを選択',
-          Icons.create_new_folder,
+        DragAndDropSquare(
+          onClick: selectDir,
+          onDragDone: onDragDone,
+          colorScheme: Theme.of(context).colorScheme,
+          aboveText: 'バージョン管理をするフォルダーを\nドラッグ & ドロップ',
+          belowText: 'または, クリックしてフォルダーを選択',
+          icon: Icons.create_new_folder,
         ),
         const SizedBox(height: 30),
         workingDirField,

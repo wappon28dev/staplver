@@ -186,7 +186,7 @@ class PageDebug extends HookConsumerWidget {
                   Text('log => ${logState.logs.join('\n')}'),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../model/class/app.dart';
-import '../../vm/contents.dart';
 import '../../vm/page.dart';
 import '../routes/fab/checkout.dart';
 import '../routes/fab/create_pj.dart';
@@ -20,28 +19,24 @@ class NavBar {
   Orientation orientation;
 
   List<Destination> getDest() {
-    final contentsNotifier = ref.read(contentsPod.notifier);
-
     return <Destination>[
       Destination(
         icon: const Icon(Icons.rocket_launch_outlined),
         selectedIcon: const Icon(Icons.rocket_launch),
         label: 'プロジェクト',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
+        runInit: () {},
       ),
       Destination(
         icon: const Icon(Icons.settings_outlined),
         selectedIcon: const Icon(Icons.settings),
         label: '設定',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(
-          contentsNotifier.updateDefaultBackupDir,
-        ),
+        runInit: () {},
       ),
       Destination(
         icon: const Icon(Icons.bug_report_outlined),
         selectedIcon: const Icon(Icons.bug_report),
         label: 'デバッグ',
-        runInit: () => contentsNotifier.updateDragAndDropCallback(null),
+        runInit: () {},
       ),
     ];
   }
