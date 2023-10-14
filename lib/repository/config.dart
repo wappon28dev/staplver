@@ -50,6 +50,10 @@ class AppConfigRepository {
   Future<AppConfig> getAppConfig() async {
     log.ds('loading appConfig');
 
+    if (!(await appConfigFile).existsSync()) {
+      await writeEmptyAppConfig();
+    }
+
     final appConfig = switch (
         await parseJson<AppConfig>(await appConfigFile, AppConfig.fromJson)) {
       Success(value: final value) => value,
